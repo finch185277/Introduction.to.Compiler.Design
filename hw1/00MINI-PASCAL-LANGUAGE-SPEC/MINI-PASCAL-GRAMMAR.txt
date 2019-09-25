@@ -3,9 +3,11 @@ Mini PASCAL Grammar.
 
 Additional notes:
 
-1.  In minipascal, there must be an ELSE clause. (if expression then statement else statement)
+1.  In minipascal, there must be an ELSE clause.
+(if expression then statement else statement)
 
-2.  In minipascal, ; is used to separate two statements. If there is ony one statement, sometimes we may omit the semicoln ;.
+2.  In minipascal, ; is used to separate two statements.
+If there is ony one statement, sometimes we may omit the semicoln ;.
 
 
 
@@ -13,11 +15,11 @@ Additional notes:
 The grammar starts here.
 
 
-prog    ::= PROGRAM id ( identifier_list ) ;
-  	    declarations
-	    subprogram_declarations
-	    compound_statement
-	    .
+prog ::= PROGRAM id ( identifier_list ) ;
+	declarations
+	subprogram_declarations
+	compound_statement
+	.
 
 
 identifier_list ::= id
@@ -34,7 +36,7 @@ type ::= standard_type
 
 standard_type ::= INTEGER
 	| REAL
-        | STRING
+	| STRING
 
 
 subprogram_declarations ::=
@@ -45,7 +47,7 @@ subprogram_declarations ::=
 subprogram_declaration ::=
 	subprogram_head
 	declarations
-        compound_statement
+	compound_statement
 
 subprogram_head ::= FUNCTION id arguments : standard_type ;
 	| PROCEDURE id arguments ;
@@ -59,13 +61,13 @@ parameter_list ::= optional_var identifier_list : type
 	| optional_var identifier_list : type ; parameter_list
 
 
-optional_var   ::= VAR
-        | lambda
+optional_var ::= VAR
+	| lambda
 
 
 compound_statement ::= begin
-		       optional_statements
-		       end
+	optional_statements
+	end
 
 
 optional_statements ::= statement_list
@@ -86,7 +88,7 @@ statement ::= variable := expression
 
 variable ::= id tail
 
-tail     ::= [ expression ] tail
+tail ::= [ expression ] tail
 	| lambda
 
 
@@ -113,7 +115,7 @@ term ::= factor
 factor ::= id tail
 	| id ( expression_list )
 	| num
-        | stringconstant
+	| stringconstant
 	| ( expression )
 	| not factor
 
@@ -122,7 +124,6 @@ addop ::= + | -
 
 
 mulop ::= * | /
-
 
 
 relop ::= <
