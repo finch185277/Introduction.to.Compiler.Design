@@ -1,9 +1,9 @@
 Mini PASCAL Grammar.
-  
+
 
 Additional notes:
 
-1.  In minipascal, there must be an ELSE clause. ¡§if expression then statement else statement¡¨
+1.  In minipascal, there must be an ELSE clause. (if expression then statement else statement)
 
 2.  In minipascal, ; is used to separate two statements. If there is ony one statement, sometimes we may omit the semicoln ;.
 
@@ -43,8 +43,8 @@ subprogram_declarations ::=
 
 
 subprogram_declaration ::=
-	subprogram_head 
-	declarations 			
+	subprogram_head
+	declarations
         compound_statement
 
 subprogram_head ::= FUNCTION id arguments : standard_type ;
@@ -56,7 +56,7 @@ arguments ::= ( parameter_list )
 
 
 parameter_list ::= optional_var identifier_list : type
-	| optional_var identifier_list : type ; parameter_list 
+	| optional_var identifier_list : type ; parameter_list
 
 
 optional_var   ::= VAR
@@ -87,7 +87,7 @@ statement ::= variable := expression
 variable ::= id tail
 
 tail     ::= [ expression ] tail
-	| lambda 
+	| lambda
 
 
 procedure_statement ::= id
