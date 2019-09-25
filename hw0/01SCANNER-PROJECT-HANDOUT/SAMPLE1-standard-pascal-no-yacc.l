@@ -5,7 +5,7 @@
  * lex input file for pascal scanner
  *
  * extensions: two ways to spell "external" and "->" ok for "^".
- */
+*/
 
 #include <stdio.h>
 
@@ -18,7 +18,6 @@
 #define   DOWNTO                   7
 #define   ELSE                     8
 #define   END                      9
-
 #define   EXTERNAL                10
 #define   FOR                     11
 #define   FORWARD                 12
@@ -49,7 +48,6 @@
 #define   WHILE                   37
 #define   WITH                    38
 #define   IDENTIFIER              39
-
 #define   ASSIGNMENT              40
 #define   CHARACTER_STRING        41
 #define   COLON                   42
@@ -75,8 +73,6 @@
 #define   STAR                    62
 #define   STARSTAR                63
 #define   UPARROW                 64
-
-
 #define   notEQUAL                65
 
 
@@ -185,23 +181,21 @@ NQUOTE [^']
 "^"                          return(UPARROW);
 
 "(*"   |
-"{"    { register int c;
-     while ((c = input()))
-     {
-      if (c == '}')
-       break;
-      else if (c == '*')
-      {
-       if ((c = input()) == ')')
-        break;
-       else
-        unput (c);
+"{" { register int c;
+      while ((c = input())) {
+        if (c == '}') {
+          break;
+        } else if (c == '*') {
+          if ((c = input()) == ')')
+            break;
+          else
+            unput (c);
+        } else if (c == '\n') {
+          line_no++;
+        } else if (c == 0) {
+          fprintf (stderr, "Unexpected EOF inside comment at line %d\n",line_no);
+        }
       }
-      else if (c == '\n')
-       line_no++;
-      else if (c == 0)
-        fprintf (stderr, "Unexpected EOF inside comment at line %d\n",line_no);
-     }
     }
 
 [ \t\f]    ;
