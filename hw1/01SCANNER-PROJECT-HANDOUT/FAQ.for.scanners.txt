@@ -23,7 +23,7 @@ You may modify the rules for factor in the MINI-PASCAL-GRAMMAR.txt file:
 factor ::= id tail
 	| id ( expression_list )
 	| num
-        | stringconstant
+	| stringconstant
 	| ( expression )
 	| not factor
 
