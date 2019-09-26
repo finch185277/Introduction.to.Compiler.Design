@@ -162,14 +162,15 @@ NQUOTE [^']
 
 %%
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   int i, tok;
   yyin = fopen(argv[1], "r");
-  for (i = 0; 1==1; i ++) {
+  for (i = 0; 1 == 1; i++) {
     tok = yylex();
-    fprintf(stderr, "%3d-th token(type:%d) on line %d : %s\n", i, tok,line_no, yytext);
+    fprintf(stderr, "%3d-th token(type:%d) on line %d : %s\n", i, tok, line_no,
+            yytext);
   }
-  return(0);
+  return (0);
 } /* end of main */
 
 int yywrap() {
