@@ -75,6 +75,7 @@
 #define   UPARROW                 64
 #define   notEQUAL                65
 
+#define   COMMENT                 66
 
 int line_no = 1;
 
@@ -156,7 +157,7 @@ NQUOTE [^']
 '({NQUOTE}|'')+'             return(CHARACTER_STRING);
 ":"                          return(COLON);
 ","                          return(COMMA);
-[0-9]+                       return(DIGSEQ);
+[+-]?[0-9]+                  return(DIGSEQ);
 "."                          return(DOT);
 ".."                         return(DOTDOT);
 "="                          return(EQUAL);
@@ -171,7 +172,7 @@ NQUOTE [^']
 "<>"                         return(NOTEQUAL);
 "+"                          return(PLUS);
 "]"                          return(RBRAC);
-[0-9]+"."[0-9]+              return(REALNUMBER);
+[0-9]+\.[0-9]+               return(REALNUMBER);
 ")"                          return(RPAREN);
 ";"                          return(SEMICOLON);
 "/"                          return(SLASH);
@@ -179,6 +180,9 @@ NQUOTE [^']
 "**"                         return(STARSTAR);
 "->"   |
 "^"                          return(UPARROW);
+
+\/\/.*$                      return(COMMENT);
+(\/\*)(.|\n)*(\*\/)          return(COMMENT);
 
 "(*"   |
 "{" { register int c;
