@@ -125,11 +125,11 @@ NQUOTE [^']
 "*"                                    return(STAR);
 
 [a-zA-Z]([a-zA-Z0-9_])*                return(ID);
-\/\/.*$                                return(COMMENT);
-(\/\*)(.|\n)*(\*\/)                    return(COMMENT);
-[+-]?[0-9]+                            return(INTERGER);
-[+-]?[0-9]+\.[0-9]+                    return(REAL);
-[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(REAL);
+\/\/.*$                                {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
+(\/\*)(.|\n)*(\*\/)                    {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
+[+-]?[0-9]+                            return(NUM);
+[+-]?[0-9]+\.[0-9]+                    return(NUM);
+[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(NUM);
 \'[^\'\n]*\'                           return(STRINGCONST);
 \"[^\"\n]*\"                           return(STRINGCONST);
 
@@ -148,7 +148,7 @@ NQUOTE [^']
         } else if (c == '\n') {
           line_no++;
         } else if (c == 0) {
-          fprintf (stderr, "Unexpected EOF inside comment at line %d\n",line_no);
+          fprintf (stderr, "Unexpected EOF inside comment at line %d\n", line_no);
         }
       }
     }
@@ -158,7 +158,7 @@ NQUOTE [^']
 \r         ;
 \n    line_no++;
 
-.    {fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no,yytext);}
+.    {fprintf(stderr, "Lexical analyzer error at line %d : %s\n", line_no, yytext);}
 
 %%
 
