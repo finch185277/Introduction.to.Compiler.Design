@@ -76,6 +76,8 @@
 #define   notEQUAL                65
 
 #define   COMMENT                 66
+#define   INTERGER                67
+#define   STRING                  68
 
 int line_no = 1;
 
@@ -151,13 +153,11 @@ NQUOTE [^']
 {V}{A}{R}                    return(VAR);
 {W}{H}{I}{L}{E}              return(WHILE);
 {W}{I}{T}{H}                 return(WITH);
-[a-zA-Z]([a-zA-Z0-9_])+      return(IDENTIFIER);
 
 ":="                         return(ASSIGNMENT);
 '({NQUOTE}|'')+'             return(CHARACTER_STRING);
 ":"                          return(COLON);
 ","                          return(COMMA);
-[+-]?[0-9]+                  return(DIGSEQ);
 "."                          return(DOT);
 ".."                         return(DOTDOT);
 "="                          return(EQUAL);
@@ -172,7 +172,6 @@ NQUOTE [^']
 "<>"                         return(NOTEQUAL);
 "+"                          return(PLUS);
 "]"                          return(RBRAC);
-[0-9]+\.[0-9]+               return(REALNUMBER);
 ")"                          return(RPAREN);
 ";"                          return(SEMICOLON);
 "/"                          return(SLASH);
@@ -181,8 +180,16 @@ NQUOTE [^']
 "->"   |
 "^"                          return(UPARROW);
 
-\/\/.*$                      return(COMMENT);
-(\/\*)(.|\n)*(\*\/)          return(COMMENT);
+[a-zA-Z]([a-zA-Z0-9_])*                      return(IDENTIFIER);
+\/\/.*$                                      return(COMMENT);
+(\/\*)(.|\n)*(\*\/)                          return(COMMENT);
+[+-]?[0-9]+                                  return(INTERGER);
+[+-]?[0-9]+\.[0-9]+                          return(REALNUMBER);
+[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+           return(REALNUMBER);
+\'[^\'\n]*\'                                 return(STRING);
+\"[^\"\n]*\"                                 return(STRING);
+
+
 
 "(*"   |
 "{" { register int c;
