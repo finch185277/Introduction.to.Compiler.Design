@@ -151,7 +151,7 @@ NQUOTE [^']
 {V}{A}{R}                    return(VAR);
 {W}{H}{I}{L}{E}              return(WHILE);
 {W}{I}{T}{H}                 return(WITH);
-[a-zA-Z]([a-zA-Z0-9])+       return(IDENTIFIER);
+[a-zA-Z]([a-zA-Z0-9_])+      return(IDENTIFIER);
 
 ":="                         return(ASSIGNMENT);
 '({NQUOTE}|'')+'             return(CHARACTER_STRING);
