@@ -95,6 +95,7 @@ NQUOTE [^']
 {F}{U}{N}{C}{T}{I}{O}{N}               return(FUNCTION);
 {I}{F}                                 return(IF);
 {N}{O}{T}                              return(NOT);
+{N}{U}{M}                              return(NUM);
 {O}{F}                                 return(OF);
 {B}{E}{G}{I}{N}                        return(PBEGIN);
 {P}{R}{O}{C}{E}{D}{U}{R}{E}            return(PROCEDURE);
@@ -127,9 +128,9 @@ NQUOTE [^']
 [a-zA-Z]([a-zA-Z0-9_])*                return(ID);
 \/\/.*$                                {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
 (\/\*)(.|\n)*(\*\/)                    {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
-[+-]?[0-9]+                            return(NUM);
-[+-]?[0-9]+\.[0-9]+                    return(NUM);
-[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(NUM);
+[+-]?[0-9]+                            return(INTERGER);
+[+-]?[0-9]+\.[0-9]+                    return(REAL);
+[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(REAL);
 \'[^\'\n]*\'                           return(STRINGCONST);
 \"[^\"\n]*\"                           return(STRINGCONST);
 
