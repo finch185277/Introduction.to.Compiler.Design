@@ -9,75 +9,49 @@
 
 #include <stdio.h>
 
-#define   AND                      1
-#define   ARRAY                    2
-#define   CASE                     3
-#define   CONST                    4
-#define   DIV                      5
-#define   DO                       6
-#define   DOWNTO                   7
-#define   ELSE                     8
-#define   END                      9
-#define   EXTERNAL                10
-#define   FOR                     11
-#define   FORWARD                 12
-#define   FUNCTION                13
-#define   GOTO                    14
-#define   IF                      15
-#define   IN                      16
-#define   LABEL                   17
-#define   MOD                     18
-#define   NIL                     19
-#define   NOT                     20
-#define   OF                      21
-#define   OR                      22
-#define   OTHERWISE               23
-#define   PACKED                  24
-#define   PBEGIN                  25
-#define   PFILE                   26
-#define   PROCEDURE               27
-#define   PROGRAM                 28
-#define   RECORD                  29
-#define   REPEAT                  30
-#define   SET                     31
-#define   THEN                    32
-#define   TO                      33
-#define   TYPE                    34
-#define   UNTIL                   35
-#define   VAR                     36
-#define   WHILE                   37
-#define   WITH                    38
-#define   IDENTIFIER              39
-#define   ASSIGNMENT              40
-#define   CHARACTER_STRING        41
-#define   COLON                   42
-#define   COMMA                   43
-#define   DIGSEQ                  44
-#define   DOT                     45
-#define   DOTDOT                  46
-#define   EQUAL                   47
-#define   GE                      48
-#define   GT                      49
-#define   LBRAC                   50
-#define   LE                      51
-#define   LPAREN                  52
-#define   LT                      53
-#define   MINUS                   54
-#define   NOTEQUAL                55
-#define   PLUS                    56
-#define   RBRAC                   57
-#define   REALNUMBER              58
-#define   RPAREN                  59
-#define   SEMICOLON               60
-#define   SLASH                   61
-#define   STAR                    62
-#define   STARSTAR                63
-#define   UPARROW                 64
-#define   notEQUAL                65
+#define   ARRAY                   1
+#define   INTERGER                2
+#define   REAL                    3
+#define   NUM                     4
+#define   STRINGCONST             5
 
-#define   COMMENT                 66
-#define   INTERGER                67
-#define   STRING                  68
+#define   COMMENT                 6  // should be ignore
+#define   DO                      7
+#define   ELSE                    8
+#define   END                     9
+#define   FUNCTION               10
+#define   ID                     11
+#define   IF                     12
+#define   NOT                    13
+#define   OF                     14
+#define   PBEGIN                 15  // BEGIN redefined in lex.yy.c
+#define   PROCEDURE              16
+#define   PROGRAM                17
+#define   THEN                   18
+#define   VAR                    19
+#define   WHILE                  20
+
+#define   ASSIGNMENT             21
+#define   COLON                  22
+#define   COMMA                  23
+#define   DOT                    24
+#define   DOTDOT                 25
+#define   EQUAL                  26
+#define   GE                     27
+#define   GT                     28
+#define   LBRAC                  29
+#define   LE                     30
+#define   LPAREN                 31
+#define   LT                     32
+#define   MINUS                  33
+#define   PLUS                   34
+#define   RBRAC                  35
+#define   RPAREN                 36
+#define   SEMICOLON              37
+#define   SLASH                  38
+#define   STAR                   39
+#define   notEQUAL               40
+
 
 int line_no = 1;
 
@@ -114,48 +88,22 @@ NQUOTE [^']
 
 %%
 
-{A}{N}{D}                    return(AND);
 {A}{R}{R}{A}{Y}              return(ARRAY);
-{C}{A}{S}{E}                 return(CASE);
-{C}{O}{N}{S}{T}              return(CONST);
-{D}{I}{V}                    return(DIV);
 {D}{O}                       return(DO);
-{D}{O}{W}{N}{T}{O}           return(DOWNTO);
 {E}{L}{S}{E}                 return(ELSE);
 {E}{N}{D}                    return(END);
-{E}{X}{T}{E}{R}{N} |
-{E}{X}{T}{E}{R}{N}{A}{L}     return(EXTERNAL);
-{F}{O}{R}                    return(FOR);
-{F}{O}{R}{W}{A}{R}{D}        return(FORWARD);
 {F}{U}{N}{C}{T}{I}{O}{N}     return(FUNCTION);
-{G}{O}{T}{O}                 return(GOTO);
 {I}{F}                       return(IF);
-{I}{N}                       return(IN);
-{L}{A}{B}{E}{L}              return(LABEL);
-{M}{O}{D}                    return(MOD);
-{N}{I}{L}                    return(NIL);
 {N}{O}{T}                    return(NOT);
 {O}{F}                       return(OF);
-{O}{R}                       return(OR);
-{O}{T}{H}{E}{R}{W}{I}{S}{E}  return(OTHERWISE);
-{P}{A}{C}{K}{E}{D}           return(PACKED);
 {B}{E}{G}{I}{N}              return(PBEGIN);
-{F}{I}{L}{E}                 return(PFILE);
 {P}{R}{O}{C}{E}{D}{U}{R}{E}  return(PROCEDURE);
 {P}{R}{O}{G}{R}{A}{M}        return(PROGRAM);
-{R}{E}{C}{O}{R}{D}           return(RECORD);
-{R}{E}{P}{E}{A}{T}           return(REPEAT);
-{S}{E}{T}                    return(SET);
 {T}{H}{E}{N}                 return(THEN);
-{T}{O}                       return(TO);
-{T}{Y}{P}{E}                 return(TYPE);
-{U}{N}{T}{I}{L}              return(UNTIL);
 {V}{A}{R}                    return(VAR);
 {W}{H}{I}{L}{E}              return(WHILE);
-{W}{I}{T}{H}                 return(WITH);
 
 ":="                         return(ASSIGNMENT);
-'({NQUOTE}|'')+'             return(CHARACTER_STRING);
 ":"                          return(COLON);
 ","                          return(COMMA);
 "."                          return(DOT);
@@ -169,25 +117,21 @@ NQUOTE [^']
 "("                          return(LPAREN);
 "<"                          return(LT);
 "-"                          return(MINUS);
-"<>"                         return(NOTEQUAL);
 "+"                          return(PLUS);
 "]"                          return(RBRAC);
 ")"                          return(RPAREN);
 ";"                          return(SEMICOLON);
 "/"                          return(SLASH);
 "*"                          return(STAR);
-"**"                         return(STARSTAR);
-"->"   |
-"^"                          return(UPARROW);
 
-[a-zA-Z]([a-zA-Z0-9_])*                      return(IDENTIFIER);
-\/\/.*$                                      return(COMMENT);
-(\/\*)(.|\n)*(\*\/)                          return(COMMENT);
-[+-]?[0-9]+                                  return(INTERGER);
-[+-]?[0-9]+\.[0-9]+                          return(REALNUMBER);
-[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+           return(REALNUMBER);
-\'[^\'\n]*\'                                 return(STRING);
-\"[^\"\n]*\"                                 return(STRING);
+[a-zA-Z]([a-zA-Z0-9_])*                return(ID);
+\/\/.*$                                return(COMMENT);
+(\/\*)(.|\n)*(\*\/)                    return(COMMENT);
+[+-]?[0-9]+                            return(INTERGER);
+[+-]?[0-9]+\.[0-9]+                    return(REAL);
+[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(REAL);
+\'[^\'\n]*\'                           return(STRINGCONST);
+\"[^\"\n]*\"                           return(STRINGCONST);
 
 
 
