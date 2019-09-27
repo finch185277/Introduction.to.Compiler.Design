@@ -131,7 +131,6 @@ NQUOTE [^']
 [+-]?[0-9]+                            return(INTERGER);
 [+-]?[0-9]+\.[0-9]+                    return(REAL);
 [+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(REAL);
-\'[^\'\n]*\'                           return(STRINGCONST);
 \"[^\"\n]*\"                           return(STRINGCONST);
 
 
