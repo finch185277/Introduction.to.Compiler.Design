@@ -133,26 +133,6 @@ NQUOTE [^']
 [+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(REAL);
 \"[^\"\n]*\"                           return(STRINGCONST);
 
-
-
-"(*"   |
-"{" { register int c;
-      while ((c = input())) {
-        if (c == '}') {
-          break;
-        } else if (c == '*') {
-          if ((c = input()) == ')')
-            break;
-          else
-            unput (c);
-        } else if (c == '\n') {
-          line_no++;
-        } else if (c == 0) {
-          fprintf (stderr, "Unexpected EOF inside comment at line %d\n", line_no);
-        }
-      }
-    }
-
 [ \t\f]    ;
 
 \r         ;
