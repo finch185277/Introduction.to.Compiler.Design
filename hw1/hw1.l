@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #define   ARRAY                   1
-#define   INTERGER                2
+#define   INTEGER                 2
 #define   REAL                    3
 #define   NUM                     4
 #define   STRINGCONST             5
@@ -94,12 +94,13 @@ NQUOTE [^']
 {E}{N}{D}                              return(END);
 {F}{U}{N}{C}{T}{I}{O}{N}               return(FUNCTION);
 {I}{F}                                 return(IF);
+{I}{N}{T}{E}{G}{E}{R}                  return(INTEGER);
 {N}{O}{T}                              return(NOT);
-{N}{U}{M}                              return(NUM);
 {O}{F}                                 return(OF);
 {B}{E}{G}{I}{N}                        return(PBEGIN);
 {P}{R}{O}{C}{E}{D}{U}{R}{E}            return(PROCEDURE);
 {P}{R}{O}{G}{R}{A}{M}                  return(PROGRAM);
+{R}{E}{A}{L}                           return(REAL);
 {T}{H}{E}{N}                           return(THEN);
 {V}{A}{R}                              return(VAR);
 {W}{H}{I}{L}{E}                        return(WHILE);
@@ -128,9 +129,9 @@ NQUOTE [^']
 [a-zA-Z]([a-zA-Z0-9_])*                return(ID);
 \/\/.*$                                {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
 (\/\*)(.|\n)*(\*\/)                    {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
-[+-]?[0-9]+                            return(INTERGER);
-[+-]?[0-9]+\.[0-9]+                    return(REAL);
-[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(REAL);
+[+-]?[0-9]+                            return(NUM);
+[+-]?[0-9]+\.[0-9]+                    return(NUM);
+[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(NUM);
 \"[^\"\n]*\"                           return(STRINGCONST);
 
 [ \t\f]    ;
