@@ -127,12 +127,29 @@ NQUOTE [^']
 "*"                                    return(STAR);
 
 [a-zA-Z]([a-zA-Z0-9_])*                return(ID);
-\/\/.*$                                {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
-(\/\*)(.|\n)*(\*\/)                    {fprintf(stderr, "Comment at line %d: %s\n", line_no, yytext);}
 [+-]?[0-9]+                            return(NUM);
 [+-]?[0-9]+\.[0-9]+                    return(NUM);
 [+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(NUM);
 \"[^\"\n]*\"                           return(STRINGCONST);
+
+\/\/.*$                                {fprintf(stderr, "  # Comment at line %d: %s\n", line_no, yytext);}
+"/*" { register int c;
+      fprintf(stderr, "  # Comment at line %d: %s", line_no, yytext);
+      while ((c = input())) {
+        fprintf(stderr, "%c", c);
+        if (c == '*') {
+          if ((c = input()) == '/'){
+            fprintf(stderr, "%c\n", c);
+            break;
+          } else
+            unput (c);
+        } else if (c == '\n') {
+          line_no++;
+        } else if (c == 0) {
+          fprintf (stderr, "Unexpected EOF inside comment at line %d\n",line_no);
+        }
+      }
+    }
 
 [ \t\f]    ;
 
