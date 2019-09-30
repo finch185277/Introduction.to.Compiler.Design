@@ -2,7 +2,9 @@
 
 ## Environment
 - Linux Mint 19.1 (Ubuntu 18.04)
-- `apt install flex libfl-dev`
+- `apt install flex libfl-dev gcc`
+  - flex version: `2.6.4`
+  - cc version: `7.4.0`
 
 ## Test
 - Without Makefile
