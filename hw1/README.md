@@ -11,7 +11,7 @@
   - `./a.out inut/{?}.p`
 - Use Makefile
   - `make`
-  - `./scanner < inut/{?}.p`
+  - `./scanner inut/{?}.p`
 
 ## Code
 ### INTEGER (2)
