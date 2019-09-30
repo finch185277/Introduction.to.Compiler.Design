@@ -82,3 +82,11 @@ In `STRINGCONST`, it can be split into many parts. And each part would be
 ```
 [a-zA-Z]([a-zA-Z0-9_])*                return(ID);
 ```
+
+## Extra files
+- `Makefile`:
+To generate the executable program.
+- `input/` (folder):
+To test the code correct. Basically copy from `spec/../Scanner/`.
+  - `input/Escape.p`
+  To test the string with escaped character.
