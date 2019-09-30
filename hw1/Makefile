@@ -1,5 +1,5 @@
 LEX = flex
-CXX = gcc
+CXX = cc
 ARG = -ll -g -o
 LEX_FILE = hw1.l
 INPUT_FILE = input.p
