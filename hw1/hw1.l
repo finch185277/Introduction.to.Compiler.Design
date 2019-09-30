@@ -130,7 +130,7 @@ NQUOTE [^']
 [+-]?[0-9]+                            return(NUM);
 [+-]?[0-9]+\.[0-9]+                    return(NUM);
 [+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(NUM);
-\"[^\"\n]*\"                           return(STRINGCONST);
+\"((\\.)|[^\\\"\n])*\"                 return(STRINGCONST);
 
 \/\/.*$                                {fprintf(stderr, "  # Comment at line %d: %s\n", line_no, yytext);}
 "/*" { register int c;
