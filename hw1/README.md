@@ -7,13 +7,14 @@
   - cc version: `7.4.0`
 
 ## Test
-- Without Makefile
+- Manual
   - `flex hw1.l`
   - `cc lex.yy.c -ll`
   - `./a.out inut/{?}.p`
-- Use Makefile
+- Use script
   - `make`
-  - `./scanner inut/{?}.p`
+  - `sh test.sh`
+  - check files in `output` folder
 
 ## Code
 ### INTEGER (2)
