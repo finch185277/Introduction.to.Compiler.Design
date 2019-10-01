@@ -1,0 +1,16 @@
+  0-th token(type:5) on line 1 : "hello"
+Lexical analyzer error at line 2 : "
+  1-th token(type:11) on line 2 : he
+Lexical analyzer error at line 2 : \
+Lexical analyzer error at line 2 : "
+Lexical analyzer error at line 3 : "
+  2-th token(type:11) on line 3 : he
+Lexical analyzer error at line 3 : \
+Lexical analyzer error at line 3 : "
+  3-th token(type:11) on line 3 : llo
+  4-th token(type:5) on line 4 : "he\"llo"
+  5-th token(type:5) on line 5 : "he\"llo"
+  6-th token(type:11) on line 5 : hello
+Lexical analyzer error at line 5 : "
+  7-th token(type:5) on line 6 : "he\"llo"
+  8-th token(type:5) on line 6 : "hello"

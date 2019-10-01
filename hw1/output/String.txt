@@ -1,0 +1,37 @@
+  0-th token(type:5) on line 1 : ""
+  1-th token(type:5) on line 2 : "Single String"
+  2-th token(type:5) on line 3 : "Double"
+  3-th token(type:5) on line 3 : "Strings"
+  4-th token(type:5) on line 4 : "double quote->"
+  5-th token(type:5) on line 4 : "<-double quote"
+  6-th token(type:5) on line 5 : "Your string should ignore these reserved words -> program var array not"
+  7-th token(type:5) on line 6 : " Test whether you can ignore comments // This is a comment "
+  8-th token(type:5) on line 7 : " Test whether you can ignore comments /* This is a comment */ "
+  9-th token(type:5) on line 8 : " Test whether you can ignore comments // This is a comment /* This is a comment */ "
+Lexical analyzer error at line 9 : "
+ 10-th token(type:11) on line 9 : Multi
+ 11-th token(type:33) on line 9 : -
+ 12-th token(type:11) on line 9 : Line
+ 13-th token(type:11) on line 10 : String
+ 14-th token(type:11) on line 10 : Can
+ 15-th token(type:11) on line 10 : you
+ 16-th token(type:11) on line 10 : tokenize
+ 17-th token(type:11) on line 10 : it
+Lexical analyzer error at line 10 : "
+Lexical analyzer error at line 11 : "
+ 18-th token(type:11) on line 11 : Multi
+ 19-th token(type:33) on line 11 : -
+ 20-th token(type:11) on line 11 : Line
+ 21-th token(type:11) on line 12 : With
+ 22-th token(type:11) on line 12 : comment
+  # Comment at line 12: // This is a comment "
+Lexical analyzer error at line 13 : "
+ 23-th token(type:11) on line 13 : Multi
+ 24-th token(type:33) on line 13 : -
+ 25-th token(type:11) on line 13 : Line
+ 26-th token(type:11) on line 14 : With
+ 27-th token(type:11) on line 14 : comment
+  # Comment at line 15: /* 
+    This is a comment
+  */
+Lexical analyzer error at line 17 : "
