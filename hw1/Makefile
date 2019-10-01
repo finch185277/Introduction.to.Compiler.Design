@@ -2,8 +2,6 @@ LEX = flex
 CXX = cc
 ARG = -ll -g -o
 LEX_FILE = hw1.l
-INPUT_FILE = input.p
-SAMPLE_OUTPUT = sample_output.txt
 
 C_FILE = lex.yy.c
 EXEC_FILE = scanner
