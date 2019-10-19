@@ -2,7 +2,8 @@
 
 ## Environment
 - Linux Mint 19.1 (Ubuntu 18.04)
-- `apt install flex libfl-dev gcc`
+- `apt install flex bison libfl-dev gcc`
+  - bison version: `3.0.4`
   - flex version: `2.6.4`
   - cc version: `7.4.0`
 
