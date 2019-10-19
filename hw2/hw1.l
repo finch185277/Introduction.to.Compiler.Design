@@ -20,7 +20,7 @@
 #define   ELSE                    8
 #define   END                     9
 #define   FUNCTION               10
-#define   ID                     11
+#define   IDENTIFIER             11
 #define   IF                     12
 #define   NOT                    13
 #define   OF                     14
@@ -126,7 +126,7 @@ NQUOTE [^']
 "/"                                    return(SLASH);
 "*"                                    return(STAR);
 
-[a-zA-Z]([a-zA-Z0-9_])*                return(ID);
+[a-zA-Z]([a-zA-Z0-9_])*                return(IDENTIFIER);
 [+-]?[0-9]+                            return(NUM);
 [+-]?[0-9]+\.[0-9]+                    return(NUM);
 [+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(NUM);
