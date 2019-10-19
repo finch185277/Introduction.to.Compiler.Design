@@ -8,6 +8,7 @@
 */
 
 #include <stdio.h>
+#include "y.tab.h"
 
 #define   ARRAY                   1
 #define   INTEGER                 2
