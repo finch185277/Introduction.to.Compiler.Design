@@ -26,10 +26,10 @@
 %%
 
 prog : PROGRAM ID LPAREN identifier_list RPAREN SEMICOLON
-	| declarations
-	| subprogram_declarations
-	| compound_statement
-	| DOT
+	declarations
+	subprogram_declarations
+	compound_statement
+	DOT
 	;
 
 
