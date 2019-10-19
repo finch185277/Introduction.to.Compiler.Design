@@ -18,14 +18,14 @@
 %}
 
 %token ARRAY INTEGER REAL NUM STRINGCONST
-%token COMMENT DO ELSE END FUNCTION ID IF NOT OF
+%token COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
 %token PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
 %token LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN SEMICOLON SLASH STAR notEQUAL
 
 %%
 
-prog : PROGRAM ID LPAREN identifier_list RPAREN SEMICOLON
+prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	declarations
 	subprogram_declarations
 	compound_statement
@@ -33,8 +33,8 @@ prog : PROGRAM ID LPAREN identifier_list RPAREN SEMICOLON
 	;
 
 
-identifier_list : ID
-	| identifier_list COMMA ID
+identifier_list : IDENTIFIER
+	| identifier_list COMMA IDENTIFIER
 	;
 
 declarations : declarations VAR identifier_list : type SEMICOLON
@@ -62,8 +62,8 @@ subprogram_declaration :
 	compound_statement
 	;
 
-subprogram_head : FUNCTION ID arguments COLON standard_type SEMICOLON
-	| PROCEDURE ID arguments SEMICOLON
+subprogram_head : FUNCTION IDENTIFIER arguments COLON standard_type SEMICOLON
+	| PROCEDURE IDENTIFIER arguments SEMICOLON
 	;
 
 
@@ -99,15 +99,15 @@ statement : variable ASSIGNMENT expression
 	| lambda
 	;
 
-variable : ID tail
+variable : IDENTIFIER tail
 	;
 
 tail : LBRAC expression RBRAC tail
 	| lambda
 	;
 
-procedure_statement : ID
-	| ID LPAREN expression_list RPAREN
+procedure_statement : IDENTIFIER
+	| IDENTIFIER LPAREN expression_list RPAREN
 	;
 
 expression_list : expression
@@ -126,8 +126,8 @@ term : factor
 	| term mulop factor
 	;
 
-factor : ID tail
-	| ID LPAREN expression_list RPAREN
+factor : IDENTIFIER tail
+	| IDENTIFIER LPAREN expression_list RPAREN
 	| NUM
 	| STRINGCONST
 	| LPAREN expression RPAREN
