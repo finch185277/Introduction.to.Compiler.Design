@@ -16,11 +16,11 @@ void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
 %%
 
 prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
-	| declarations
-	| subprogram_declarations
-	| compound_statement
-	| DOT
-  { fprintf(stdout, "hello"); }
+	declarations
+	subprogram_declarations
+	compound_statement
+	DOT
+	{ printf("prog\n"); }
 	;
 
 
@@ -28,7 +28,8 @@ identifier_list : IDENTIFIER
 	| identifier_list COMMA IDENTIFIER
 	;
 
-declarations : declarations VAR identifier_list type SEMICOLON
+declarations : declarations VAR identifier_list COLON
+	type SEMICOLON
 	| lambda
 	;
 
