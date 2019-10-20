@@ -1,7 +1,9 @@
 %{
 
 #include <stdio.h>
+int yylex(void);
 int yywrap() { return 1; }
+void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
 
 %}
 
@@ -144,5 +146,4 @@ lambda :
 
 %%
 
-void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
 int main(int argc, char **argv) { yyparse(); return 0; }
