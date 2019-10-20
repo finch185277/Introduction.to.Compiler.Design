@@ -1,19 +1,7 @@
 %{
-/*
- * grammar.y
- *
- * Pascal grammar in Yacc format, based originally on BNF given
- * in "Standard Pascal -- User Reference Manual", by Doug Cooper.
- * This in turn is the BNF given by the ANSI and ISO Pascal standards,
- * and so, is PUBLIC DOMAIN. The grammar is for ISO Level 0 Pascal.
- * The grammar has been massaged somewhat to make it LALR, and added
- * the following extensions.
- *
- * constant expressions
- * otherwise statement in a case
- * productions to correctly match else's with if's
- * beginnings of a separate compilation facility
- */
+
+#include <stdio.h>
+int yywrap() { return 1; }
 
 %}
 
@@ -22,13 +10,6 @@
 %token PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
 %token LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN SEMICOLON SLASH STAR notEQUAL
-
-/* %token tail term factor addop nulop relop lambda prog type
-%token declarations arguments expression variable statement
-%token standard_type optional_var optional_statements simple_expression
-%token identifier_list expression_list statement_list parameter_list
-%token subprogram_declaration subprogram_declarations subprogram_head
-%token compound_statement procedure_statement */
 
 %%
 
@@ -163,10 +144,5 @@ lambda :
 
 %%
 
-int yywrap() {
-  return 1;
-}
-
-int main(int argc, char **argv) {
-  return yyparse();
-}
+void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
+int main(int argc, char **argv) { yyparse(); return 0; }
