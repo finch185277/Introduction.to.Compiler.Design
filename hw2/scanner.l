@@ -10,50 +10,6 @@
 #include <stdio.h>
 #include "y.tab.h"
 
-#define   ARRAY                   1
-#define   INTEGER                 2
-#define   REAL                    3
-#define   NUM                     4
-#define   STRINGCONST             5
-
-#define   COMMENT                 6  // should be ignore
-#define   DO                      7
-#define   ELSE                    8
-#define   END                     9
-#define   FUNCTION               10
-#define   IDENTIFIER             11
-#define   IF                     12
-#define   NOT                    13
-#define   OF                     14
-#define   PBEGIN                 15  // BEGIN redefined in lex.yy.c
-#define   PROCEDURE              16
-#define   PROGRAM                17
-#define   THEN                   18
-#define   VAR                    19
-#define   WHILE                  20
-
-#define   ASSIGNMENT             21
-#define   COLON                  22
-#define   COMMA                  23
-#define   DOT                    24
-#define   DOTDOT                 25
-#define   EQUAL                  26
-#define   GE                     27
-#define   GT                     28
-#define   LBRAC                  29
-#define   LE                     30
-#define   LPAREN                 31
-#define   LT                     32
-#define   MINUS                  33
-#define   PLUS                   34
-#define   RBRAC                  35
-#define   RPAREN                 36
-#define   SEMICOLON              37
-#define   SLASH                  38
-#define   STAR                   39
-#define   notEQUAL               40
-
-
 int line_no = 1;
 
 
@@ -89,58 +45,137 @@ NQUOTE [^']
 
 %%
 
-{A}{R}{R}{A}{Y}                        return(ARRAY);
-{D}{O}                                 return(DO);
-{E}{L}{S}{E}                           return(ELSE);
-{E}{N}{D}                              return(END);
-{F}{U}{N}{C}{T}{I}{O}{N}               return(FUNCTION);
-{I}{F}                                 return(IF);
-{I}{N}{T}{E}{G}{E}{R}                  return(INTEGER);
-{N}{O}{T}                              return(NOT);
-{O}{F}                                 return(OF);
-{B}{E}{G}{I}{N}                        return(PBEGIN);
-{P}{R}{O}{C}{E}{D}{U}{R}{E}            return(PROCEDURE);
-{P}{R}{O}{G}{R}{A}{M}                  return(PROGRAM);
-{R}{E}{A}{L}                           return(REAL);
-{T}{H}{E}{N}                           return(THEN);
-{V}{A}{R}                              return(VAR);
-{W}{H}{I}{L}{E}                        return(WHILE);
+{A}{R}{R}{A}{Y}                       { printf("Shift ARRAY\n");
+                                        return(ARRAY);
+                                      }
+{D}{O}                                { printf("Shift DO\n");
+                                        return(DO);
+                                      }
+{E}{L}{S}{E}                          { printf("Shift ELSE\n");
+                                        return(ELSE);
+                                      }
+{E}{N}{D}                             { printf("Shift END\n");
+                                        return(END);
+                                      }
+{F}{U}{N}{C}{T}{I}{O}{N}              { printf("Shift FUNCTION\n");
+                                        return(FUNCTION);
+                                      }
+{I}{F}                                { printf("Shift IF\n");
+                                        return(IF);
+                                      }
+{I}{N}{T}{E}{G}{E}{R}                 { printf("Shift INTEGER\n");
+                                        return(INTEGER);
+                                      }
+{N}{O}{T}                             { printf("Shift NOT\n");
+                                        return(NOT);
+                                      }
+{O}{F}                                { printf("Shift OF\n");
+                                        return(OF);
+                                      }
+{B}{E}{G}{I}{N}                       { printf("Shift PBEGIN\n");
+                                        return(PBEGIN);
+                                      }
+{P}{R}{O}{C}{E}{D}{U}{R}{E}           { printf("Shift PROCEDURE\n");
+                                        return(PROCEDURE);
+                                      }
+{P}{R}{O}{G}{R}{A}{M}                 { printf("Shift PROGRAM\n");
+                                        return(PROGRAM);
+                                      }
+{R}{E}{A}{L}                          { printf("Shift REAL\n");
+                                        return(REAL);
+                                      }
+{T}{H}{E}{N}                          { printf("Shift THEN\n");
+                                        return(THEN);
+                                      }
+{V}{A}{R}                             { printf("Shift VAR\n");
+                                        return(VAR);
+                                      }
+{W}{H}{I}{L}{E}                       { printf("Shift WHILE\n");
+                                        return(WHILE);
+                                      }
 
-":="                                   return(ASSIGNMENT);
-":"                                    return(COLON);
-","                                    return(COMMA);
-"."                                    return(DOT);
-".."                                   return(DOTDOT);
-"="                                    return(EQUAL);
-"!="                                   return(notEQUAL);
-">="                                   return(GE);
-">"                                    return(GT);
-"["                                    return(LBRAC);
-"<="                                   return(LE);
-"("                                    return(LPAREN);
-"<"                                    return(LT);
-"-"                                    return(MINUS);
-"+"                                    return(PLUS);
-"]"                                    return(RBRAC);
-")"                                    return(RPAREN);
-";"                                    return(SEMICOLON);
-"/"                                    return(SLASH);
-"*"                                    return(STAR);
+":="                                  { printf("Shift ASSIGNMENT\n");
+                                        return(ASSIGNMENT);
+                                      }
+":"                                   { printf("Shift COLON\n");
+                                        return(COLON);
+                                      }
+","                                   { printf("Shift COMMA\n");
+                                        return(COMMA);
+                                      }
+"."                                   { printf("Shift DOT\n");
+                                        return(DOT);
+                                      }
+".."                                  { printf("Shift DOTDOT\n");
+                                        return(DOTDOT);
+                                      }
+"="                                   { printf("Shift EQUAL\n");
+                                        return(EQUAL);
+                                      }
+"!="                                  { printf("Shift notEQUAL\n");
+                                        return(notEQUAL);
+                                      }
+">="                                  { printf("Shift GE\n");
+                                        return(GE);
+                                      }
+">"                                   { printf("Shift GT\n");
+                                        return(GT);
+                                      }
+"["                                   { printf("Shift LBRAC\n");
+                                        return(LBRAC);
+                                      }
+"<="                                  { printf("Shift LE\n");
+                                        return(LE);
+                                      }
+"("                                   { printf("Shift LPAREN\n");
+                                        return(LPAREN);
+                                      }
+"<"                                   { printf("Shift LT\n");
+                                        return(LT);
+                                      }
+"-"                                   { printf("Shift MINUS\n");
+                                        return(MINUS);
+                                      }
+"+"                                   { printf("Shift PLUS\n");
+                                        return(PLUS);
+                                      }
+"]"                                   { printf("Shift RBRAC\n");
+                                        return(RBRAC);
+                                      }
+")"                                   { printf("Shift RPAREN\n");
+                                        return(RPAREN);
+                                      }
+";"                                   { printf("Shift SEMICOLON\n");
+                                        return(SEMICOLON);
+                                      }
+"/"                                   { printf("Shift SLASH\n");
+                                        return(SLASH);
+                                      }
+"*"                                   { printf("Shift STAR\n");
+                                        return(STAR);
+                                      }
 
-[a-zA-Z]([a-zA-Z0-9_])*                return(IDENTIFIER);
-[+-]?[0-9]+                            return(NUM);
-[+-]?[0-9]+\.[0-9]+                    return(NUM);
-[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+     return(NUM);
-\"((\\.)|[^\\\"\n])*\"                 return(STRINGCONST);
+[a-zA-Z]([a-zA-Z0-9_])*               { printf("Shift IDENTIFIER\n");
+                                        return(IDENTIFIER);
+                                      }
+[+-]?[0-9]+                           { printf("Shift NUM\n");
+                                        return(NUM);
+                                      }
+[+-]?[0-9]+\.[0-9]+                   { printf("Shift NUM\n");
+                                        return(NUM);
+                                      }
+[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+    { printf("Shift NUM\n");
+                                        return(NUM);
+                                      }
+\"((\\.)|[^\\\"\n])*\"                { printf("Shift STRINGCONST\n");
+                                        return(STRINGCONST);
+                                      }
 
-\/\/.*$                                {fprintf(stderr, "  # Comment at line %d: %s\n", line_no, yytext);}
+\/\/.*$                               ;
 "/*" { register int c;
-      fprintf(stderr, "  # Comment at line %d: %s", line_no, yytext);
       while ((c = input())) {
-        fprintf(stderr, "%c", c);
         if (c == '*') {
           if ((c = input()) == '/'){
-            fprintf(stderr, "%c\n", c);
             break;
           } else
             unput (c);
@@ -160,19 +195,3 @@ NQUOTE [^']
 .    {fprintf(stderr, "Lexical analyzer error at line %d : %s\n", line_no, yytext);}
 
 %%
-
-int main(int argc, char **argv) {
-  int i, tok;
-  yyin = fopen(argv[1], "r");
-  for (i = 0; 1 == 1; i++) {
-    tok = yylex();
-    fprintf(stderr, "%3d-th token(type:%d) on line %d : %s\n", i, tok, line_no,
-            yytext);
-  }
-  return (0);
-} /* end of main */
-
-int yywrap() {
-  fclose(yyin);
-  exit(1);
-}
