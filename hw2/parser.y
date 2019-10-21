@@ -16,7 +16,8 @@ struct Node *ASTROOT;
 %token <node> COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
 %token <node> PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token <node> ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
-%token <node> LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN SEMICOLON SLASH STAR notEQUAL
+%token <node> LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN
+%token <node> SEMICOLON SLASH STAR notEQUAL
 
 %token <node> tail term factor addop nulop relop lambda prog type
 %token <node> declarations arguments expression variable statement
@@ -127,43 +128,145 @@ standard_type : INTEGER
 
 subprogram_declarations :
 	subprogram_declarations subprogram_declaration SEMICOLON
+  {
+    $$ = new_node("subprogram_declarations");
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, new_node("SEMICOLON"));
+    printf("[Reduction] subprogram_declarations: ");
+    printf("subprogram_declarations subprogram_declaration ;\n");
+  }
 	| lambda
-	;
+  {
+    $$ = new_node("subprogram_declarations");
+    add_child($$, $1);
+    printf("[Reduction] subprogram_declarations: lambda\n");
+  };
 
 subprogram_declaration :
 	subprogram_head
 	declarations
 	compound_statement
-	;
+  {
+    $$ = new_node("subprogram_declaration");
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    printf("[Reduction] subprogram_declaration: ");
+    printf("subprogram_head declarations compound_statement\n");
+  };
 
 subprogram_head : FUNCTION IDENTIFIER arguments COLON standard_type SEMICOLON
+  {
+    $$ = new_node("subprogram_head");
+    add_child($$, new_node("FUNCTION"));
+    add_child($$, new_node("IDENTIFIER"));
+    add_child($$, $3);
+    add_child($$, new_node("COLON"));
+    add_child($$, $5);
+    add_child($$, new_node("SEMICOLON"));
+    printf("[Reduction] subprogram_head: ");
+    printf("FUNCTION id arguments : standard_type ;\n");
+
+  }
 	| PROCEDURE IDENTIFIER arguments SEMICOLON
-	;
+  {
+    $$ = new_node("subprogram_head");
+    add_child($$, new_node("PROCEDURE"));
+    add_child($$, new_node("IDENTIFIER"));
+    add_child($$, $3);
+    add_child($$, new_node("SEMICOLON"));
+    printf("[Reduction] subprogram_head: PROCEDURE id arguments ;\n");
+  };
 
 
 arguments : LPAREN parameter_list RPAREN
+  {
+    $$ = new_node("arguments");
+    add_child($$, new_node("LPAREN"));
+    add_child($$, $2);
+    add_child($$, new_node("RPAREN"));
+    printf("[Reduction] arguments: ( parameter_list )\n");
+  }
 	| lambda
-	;
+  {
+    $$ = new_node("arguments");
+    add_child($$, $1);
+    printf("[Reduction] arguments: lambda\n");
+  };
 
 
 parameter_list : optional_var identifier_list COLON type
+  {
+    $$ = new_node("parameter_list");
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, new_node("COLON"));
+    add_child($$, $4);
+    printf("[Reduction] parameter_list: optional_var identifier_list : type\n");
+  }
 	| optional_var identifier_list COLON type SEMICOLON parameter_list
-	;
+  {
+    $$ = new_node("parameter_list");
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, new_node("COLON"));
+    add_child($$, $4);
+    add_child($$, new_node("SEMICOLON"));
+    add_child($$, $6);
+    printf("[Reduction] parameter_list: ");
+    printf("optional_var identifier_list : type ; parameter_list\n");
+  };
 
 optional_var : VAR
+  {
+    $$ = new_node("optional_var");
+    add_child($$, new_node("VAR"));
+    printf("[Reduction] optional_var: VAR\n");
+  }
 	| lambda
-	;
+  {
+    $$ = new_node("optional_var");
+    add_child($$, $1);
+    printf("[Reduction] optional_var: lambda\n");
+  };
 
 compound_statement : PBEGIN optional_statements END
-	;
+  {
+    $$ = new_node("compound_statement");
+    add_child($$, new_node("PBEGIN"));
+    add_child($$, $2);
+    add_child($$, new_node("END"));
+    printf("[Reduction] compound_statement: begin optional_statements end\n");
+  };
 
 optional_statements : statement_list
+  {
+    $$ = new_node("optional_statements");
+    add_child($$, $1);
+    printf("[Reduction] optional_statements: statement_list\n");
+  }
 	| lambda
-	;
+  {
+    $$ = new_node("optional_statements");
+    add_child($$, $1);
+    printf("[Reduction] optional_statements: lambda\n");
+  };
 
 statement_list : statement
+  {
+    $$ = new_node("statement_list");
+    add_child($$, $1);
+    printf("[Reduction] statement_list: statement\n");
+  }
 	| statement_list SEMICOLON statement
-	;
+  {
+    $$ = new_node("statement_list");
+    add_child($$, $1);
+    add_child($$, new_node("SEMICOLON"));
+    add_child($$, $3);
+    printf("[Reduction] statement_list: statement_list ; statement\n");
+  };
 
 statement : variable ASSIGNMENT expression
 	| procedure_statement
