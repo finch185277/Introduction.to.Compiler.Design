@@ -428,7 +428,7 @@ factor : IDENTIFIER tail
     $$ = new_node("factor");
     add_child($$, new_node("IDENTIFIER"));
     add_child($$, new_node("LPAREN"));
-    add_child($$, $23;
+    add_child($$, $3);
     add_child($$, new_node("RPAREN"));
     printf("[Reduction] factor: id ( expression_list )\n");
   }
