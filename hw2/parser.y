@@ -340,51 +340,194 @@ tail : LBRAC expression RBRAC tail
   };
 
 procedure_statement : IDENTIFIER
+  {
+    $$ = new_node("procedure_statement");
+    add_child($$, new_node("IDENTIFIER"));
+    printf("[Reduction] procedure_statement: id\n");
+  }
 	| IDENTIFIER LPAREN expression_list RPAREN
-	;
+  {
+    $$ = new_node("procedure_statement");
+    add_child($$, new_node("IDENTIFIER"));
+    add_child($$, new_node("LBRAC"));
+    add_child($$, $3);
+    add_child($$, new_node("RPAREN"));
+    printf("[Reduction] procedure_statement: id ( expression_list )\n");
+  };
 
 expression_list : expression
+  {
+    $$ = new_node("expression_list");
+    add_child($$, $1);
+    printf("[Reduction] expression_list: expression\n");
+  }
 	| expression_list COMMA expression
-	;
+  {
+    $$ = new_node("expression_list");
+    add_child($$, $1);
+    add_child($$, new_node("COMMA"));
+    add_child($$, $3);
+    printf("[Reduction] expression_list: expression_list , expression\n");
+  };
 
 expression : simple_expression
+  {
+    $$ = new_node("expression");
+    add_child($$, $1);
+    printf("[Reduction] expression: simple_expression\n");
+  }
 	| simple_expression relop simple_expression
-	;
+  {
+    $$ = new_node("expression");
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    printf("[Reduction] expression: ");
+    printf("simple_expression relop simple_expression\n");
+  };
 
 simple_expression : term
+  {
+    $$ = new_node("simple_expression");
+    add_child($$, $1);
+    printf("[Reduction] simple_expression: term\n");
+  }
 	| simple_expression addop term
-	;
+  {
+    $$ = new_node("simple_expression");
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    printf("[Reduction] simple_expression: simple_expression addop term\n");
+  };
 
 term : factor
+  {
+    $$ = new_node("term");
+    add_child($$, $1);
+    printf("[Reduction] term: factor\n");
+  }
 	| term mulop factor
-	;
+  {
+    $$ = new_node("term");
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    printf("[Reduction] term: term mulop factor\n");
+  };
 
 factor : IDENTIFIER tail
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("IDENTIFIER"));
+    add_child($$, $2);
+    printf("[Reduction] factor: id tail\n");
+  }
 	| IDENTIFIER LPAREN expression_list RPAREN
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("IDENTIFIER"));
+    add_child($$, new_node("LPAREN"));
+    add_child($$, $23;
+    add_child($$, new_node("RPAREN"));
+    printf("[Reduction] factor: id ( expression_list )\n");
+  }
 	| NUM
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("NUM"));
+    printf("[Reduction] factor: num\n");
+  }
 	| STRING
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("STRING"));
+    printf("[Reduction] factor: stringconstant\n");
+  }
 	| LPAREN expression RPAREN
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("LPAREN"));
+    add_child($$, $2);
+    add_child($$, new_node("RPAREN"));
+    printf("[Reduction] factor: ( expression )\n");
+  }
 	| NOT factor
-	;
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("NOT"));
+    add_child($$, $2);
+    printf("[Reduction] factor: not factor\n");
+  };
 
 addop : PLUS
+  {
+    $$ = new_node("addop");
+    add_child($$, new_node("PLUS"));
+    printf("[Reduction] addop: +\n");
+  }
 	| MINUS
-	;
+  {
+    $$ = new_node("addop");
+    add_child($$, new_node("MINUS"));
+    printf("[Reduction] addop: -\n");
+  };
 
 mulop : STAR
+  {
+    $$ = new_node("mulop");
+    add_child($$, new_node("STAR"));
+    printf("[Reduction] mulop: *\n");
+  }
 	| SLASH
-	;
+  {
+    $$ = new_node("mulop");
+    add_child($$, new_node("SLASH"));
+    printf("[Reduction] mulop: /\n");
+  };
 
 relop : LT
+  {
+    $$ = new_node("relop");
+    add_child($$, new_node("LT"));
+    printf("[Reduction] relop: <\n");
+  }
 	| GT
+  {
+    $$ = new_node("relop");
+    add_child($$, new_node("GT"));
+    printf("[Reduction] relop: >\n");
+  }
 	| EQUAL
+  {
+    $$ = new_node("relop");
+    add_child($$, new_node("EQUAL"));
+    printf("[Reduction] relop: =\n");
+  }
 	| LE
+  {
+    $$ = new_node("relop");
+    add_child($$, new_node("LE"));
+    printf("[Reduction] relop: <=\n");
+  }
 	| GE
+  {
+    $$ = new_node("relop");
+    add_child($$, new_node("GE"));
+    printf("[Reduction] relop: >=\n");
+  }
 	| notEQUAL
-	;
+  {
+    $$ = new_node("relop");
+    add_child($$, new_node("notEQUAL"));
+    printf("[Reduction] relop: !=\n");
+  };
 
 lambda :
-	;
+  {
+    $$ = new_node("lambda");
+    printf("[Reduction] lambda:\n");
+  };
 
 %%
 
