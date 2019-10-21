@@ -32,7 +32,8 @@ struct Node *ASTROOT;
 prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	declarations
 	subprogram_declarations
-	compound_statement DOT {
+	compound_statement DOT
+  {
     $$ = new_node("prog");
     add_child($$, new_node("PROGRAM"));
     add_child($$, new_node("IDENTIFIER"));
@@ -50,11 +51,13 @@ prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
   };
 
 
-identifier_list : IDENTIFIER {
+identifier_list : IDENTIFIER
+  {
     $$ = new_node("identifier_list");
     add_child($$, new_node("IDENTIFIER"));
     printf("[Reduction] identifier_list: id\n");
-  } | identifier_list COMMA IDENTIFIER {
+  } | identifier_list COMMA IDENTIFIER
+  {
     $$ = new_node("identifier_list");
     add_child($$, $1);
     add_child($$, new_node("COMMA"));
@@ -62,7 +65,8 @@ identifier_list : IDENTIFIER {
     printf("[Reduction] identifier_list: identifier_list , id\n");
   };
 
-declarations : declarations VAR identifier_list COLON type SEMICOLON {
+declarations : declarations VAR identifier_list COLON type SEMICOLON
+  {
     $$ = new_node("declarations");
     add_child($$, $1);
     add_child($$, new_node("VAR"));
@@ -72,18 +76,21 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON {
     add_child($$, new_node("SEMICOLON"));
     printf("[Reduction] declarations: ");
     printf("declarations VAR identifier_list : type ;\n");
-  } | lambda {
+  } | lambda
+  {
     $$ = new_node("declarations");
     add_child($$, $1);
     printf("[Reduction] declarations: lambda\n");
   };
 
 
-type : standard_type {
+type : standard_type
+  {
     $$ = new_node("type");
     add_child($$, $1);
     printf("[Reduction] type: standard_type\n");
-  } | ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type {
+  } | ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type
+  {
     $$ = new_node("type");
     add_child($$, new_node("ARRAY"));
     add_child($$, new_node("LBRAC"));
@@ -96,15 +103,18 @@ type : standard_type {
     printf("[Reduction] type: ARRAY [ num .. num ] OF type\n");
   };
 
-standard_type : INTEGER {
+standard_type : INTEGER
+  {
     $$ = new_node("standard_type");
     add_child($$, new_node("INTEGER"));
     printf("[Reduction] standard_type: INTEGER\n");
-  } | REAL {
+  } | REAL
+  {
     $$ = new_node("standard_type");
     add_child($$, new_node("REAL"));
     printf("[Reduction] standard_type: REAL\n");
-  } | STRING {
+  } | STRING
+  {
     $$ = new_node("standard_type");
     add_child($$, new_node("STRING"));
     printf("[Reduction] standard_type: STRING\n");
