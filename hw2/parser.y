@@ -269,19 +269,75 @@ statement_list : statement
   };
 
 statement : variable ASSIGNMENT expression
+  {
+    $$ = new_node("statement");
+    add_child($$, $1);
+    add_child($$, new_node("ASSIGNMENT"));
+    add_child($$, $3);
+    printf("[Reduction] statement: variable := expression\n");
+  }
 	| procedure_statement
+  {
+    $$ = new_node("statement");
+    add_child($$, $1);
+    printf("[Reduction] statement: procedure_statement\n");
+  }
 	| compound_statement
+  {
+    $$ = new_node("statement");
+    add_child($$, $1);
+    printf("[Reduction] statement: compound_statement\n");
+  }
 	| IF expression THEN statement ELSE statement
+  {
+    $$ = new_node("statement");
+    add_child($$, new_node("IF"));
+    add_child($$, $2);
+    add_child($$, new_node("THEN"));
+    add_child($$, $4);
+    add_child($$, new_node("ELSE"));
+    add_child($$, $6);
+    printf("[Reduction] statement: ");
+    printf("IF expression THEN statement ELSE statement\n");
+  }
 	| WHILE expression DO statement
+  {
+    $$ = new_node("statement");
+    add_child($$, new_node("WHILE"));
+    add_child($$, $2);
+    add_child($$, new_node("DO"));
+    add_child($$, $4);
+    printf("[Reduction] statement: WHILE expression DO statement\n");
+  }
 	| lambda
-	;
+  {
+    $$ = new_node("statement");
+    add_child($$, $1);
+    printf("[Reduction] statement: lambda\n");
+  };
 
 variable : IDENTIFIER tail
-	;
+  {
+    $$ = new_node("variable");
+    add_child($$, new_node("IDENTIFIER"));
+    add_child($$, $2);
+    printf("[Reduction] variable: id tail\n");
+  };
 
 tail : LBRAC expression RBRAC tail
-	| lambda
-	;
+  {
+    $$ = new_node("tail");
+    add_child($$, new_node("LBRAC"));
+    add_child($$, $2);
+    add_child($$, new_node("RBRAC"));
+    add_child($$, $4);
+    printf("[Reduction] tail: [ expression ] tail\n");
+  }
+	| lambda {
+    $$ = new_node("tail");
+    add_child($$, $1);
+    printf("[Reduction] tail: lambda\n");
+  };
 
 procedure_statement : IDENTIFIER
 	| IDENTIFIER LPAREN expression_list RPAREN
