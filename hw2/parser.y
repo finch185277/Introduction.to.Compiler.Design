@@ -6,13 +6,19 @@ int yylex(void);
 int yywrap() { return 1; }
 void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
 
+struct Node *ASTROOT;
+
 %}
 
-%token ARRAY INTEGER REAL NUM STRINGCONST
-%token COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
-%token PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
-%token ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
-%token LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN SEMICOLON SLASH STAR notEQUAL
+%union{ struct Node *node; }
+
+%token <node> ARRAY INTEGER REAL NUM STRINGCONST
+%token <node> COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
+%token <node> PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
+%token <node> ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
+%token <node> LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN SEMICOLON SLASH STAR notEQUAL
+
+%left PLUS MINUS STAR SLASH
 
 %%
 
@@ -21,7 +27,6 @@ prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	subprogram_declarations
 	compound_statement
 	DOT
-	{ printf("prog\n"); }
 	;
 
 
