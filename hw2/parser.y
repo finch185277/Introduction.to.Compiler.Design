@@ -1,6 +1,7 @@
 %{
 
 #include <stdio.h>
+#include "node.hpp"
 int yylex(void);
 int yywrap() { return 1; }
 void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
