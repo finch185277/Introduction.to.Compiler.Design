@@ -45,129 +45,129 @@ NQUOTE [^']
 
 %%
 
-{A}{R}{R}{A}{Y}                       { printf("Shift ARRAY\n");
+{A}{R}{R}{A}{Y}                       { printf("[Shift] ARRAY\n");
                                         return(ARRAY);
                                       }
-{D}{O}                                { printf("Shift DO\n");
+{D}{O}                                { printf("[Shift] DO\n");
                                         return(DO);
                                       }
-{E}{L}{S}{E}                          { printf("Shift ELSE\n");
+{E}{L}{S}{E}                          { printf("[Shift] ELSE\n");
                                         return(ELSE);
                                       }
-{E}{N}{D}                             { printf("Shift END\n");
+{E}{N}{D}                             { printf("[Shift] END\n");
                                         return(END);
                                       }
-{F}{U}{N}{C}{T}{I}{O}{N}              { printf("Shift FUNCTION\n");
+{F}{U}{N}{C}{T}{I}{O}{N}              { printf("[Shift] FUNCTION\n");
                                         return(FUNCTION);
                                       }
-{I}{F}                                { printf("Shift IF\n");
+{I}{F}                                { printf("[Shift] IF\n");
                                         return(IF);
                                       }
-{I}{N}{T}{E}{G}{E}{R}                 { printf("Shift INTEGER\n");
+{I}{N}{T}{E}{G}{E}{R}                 { printf("[Shift] INTEGER\n");
                                         return(INTEGER);
                                       }
-{N}{O}{T}                             { printf("Shift NOT\n");
+{N}{O}{T}                             { printf("[Shift] NOT\n");
                                         return(NOT);
                                       }
-{O}{F}                                { printf("Shift OF\n");
+{O}{F}                                { printf("[Shift] OF\n");
                                         return(OF);
                                       }
-{B}{E}{G}{I}{N}                       { printf("Shift PBEGIN\n");
+{B}{E}{G}{I}{N}                       { printf("[Shift] PBEGIN\n");
                                         return(PBEGIN);
                                       }
-{P}{R}{O}{C}{E}{D}{U}{R}{E}           { printf("Shift PROCEDURE\n");
+{P}{R}{O}{C}{E}{D}{U}{R}{E}           { printf("[Shift] PROCEDURE\n");
                                         return(PROCEDURE);
                                       }
-{P}{R}{O}{G}{R}{A}{M}                 { printf("Shift PROGRAM\n");
+{P}{R}{O}{G}{R}{A}{M}                 { printf("[Shift] PROGRAM\n");
                                         return(PROGRAM);
                                       }
-{R}{E}{A}{L}                          { printf("Shift REAL\n");
+{R}{E}{A}{L}                          { printf("[Shift] REAL\n");
                                         return(REAL);
                                       }
-{T}{H}{E}{N}                          { printf("Shift THEN\n");
+{T}{H}{E}{N}                          { printf("[Shift] THEN\n");
                                         return(THEN);
                                       }
-{V}{A}{R}                             { printf("Shift VAR\n");
+{V}{A}{R}                             { printf("[Shift] VAR\n");
                                         return(VAR);
                                       }
-{W}{H}{I}{L}{E}                       { printf("Shift WHILE\n");
+{W}{H}{I}{L}{E}                       { printf("[Shift] WHILE\n");
                                         return(WHILE);
                                       }
 
-":="                                  { printf("Shift ASSIGNMENT\n");
+":="                                  { printf("[Shift] ASSIGNMENT\n");
                                         return(ASSIGNMENT);
                                       }
-":"                                   { printf("Shift COLON\n");
+":"                                   { printf("[Shift] COLON\n");
                                         return(COLON);
                                       }
-","                                   { printf("Shift COMMA\n");
+","                                   { printf("[Shift] COMMA\n");
                                         return(COMMA);
                                       }
-"."                                   { printf("Shift DOT\n");
+"."                                   { printf("[Shift] DOT\n");
                                         return(DOT);
                                       }
-".."                                  { printf("Shift DOTDOT\n");
+".."                                  { printf("[Shift] DOTDOT\n");
                                         return(DOTDOT);
                                       }
-"="                                   { printf("Shift EQUAL\n");
+"="                                   { printf("[Shift] EQUAL\n");
                                         return(EQUAL);
                                       }
-"!="                                  { printf("Shift notEQUAL\n");
+"!="                                  { printf("[Shift] notEQUAL\n");
                                         return(notEQUAL);
                                       }
-">="                                  { printf("Shift GE\n");
+">="                                  { printf("[Shift] GE\n");
                                         return(GE);
                                       }
-">"                                   { printf("Shift GT\n");
+">"                                   { printf("[Shift] GT\n");
                                         return(GT);
                                       }
-"["                                   { printf("Shift LBRAC\n");
+"["                                   { printf("[Shift] LBRAC\n");
                                         return(LBRAC);
                                       }
-"<="                                  { printf("Shift LE\n");
+"<="                                  { printf("[Shift] LE\n");
                                         return(LE);
                                       }
-"("                                   { printf("Shift LPAREN\n");
+"("                                   { printf("[Shift] LPAREN\n");
                                         return(LPAREN);
                                       }
-"<"                                   { printf("Shift LT\n");
+"<"                                   { printf("[Shift] LT\n");
                                         return(LT);
                                       }
-"-"                                   { printf("Shift MINUS\n");
+"-"                                   { printf("[Shift] MINUS\n");
                                         return(MINUS);
                                       }
-"+"                                   { printf("Shift PLUS\n");
+"+"                                   { printf("[Shift] PLUS\n");
                                         return(PLUS);
                                       }
-"]"                                   { printf("Shift RBRAC\n");
+"]"                                   { printf("[Shift] RBRAC\n");
                                         return(RBRAC);
                                       }
-")"                                   { printf("Shift RPAREN\n");
+")"                                   { printf("[Shift] RPAREN\n");
                                         return(RPAREN);
                                       }
-";"                                   { printf("Shift SEMICOLON\n");
+";"                                   { printf("[Shift] SEMICOLON\n");
                                         return(SEMICOLON);
                                       }
-"/"                                   { printf("Shift SLASH\n");
+"/"                                   { printf("[Shift] SLASH\n");
                                         return(SLASH);
                                       }
-"*"                                   { printf("Shift STAR\n");
+"*"                                   { printf("[Shift] STAR\n");
                                         return(STAR);
                                       }
 
-[a-zA-Z]([a-zA-Z0-9_])*               { printf("Shift IDENTIFIER\n");
+[a-zA-Z]([a-zA-Z0-9_])*               { printf("[Shift] IDENTIFIER\n");
                                         return(IDENTIFIER);
                                       }
-[+-]?[0-9]+                           { printf("Shift NUM\n");
+[+-]?[0-9]+                           { printf("[Shift] NUM\n");
                                         return(NUM);
                                       }
-[+-]?[0-9]+\.[0-9]+                   { printf("Shift NUM\n");
+[+-]?[0-9]+\.[0-9]+                   { printf("[Shift] NUM\n");
                                         return(NUM);
                                       }
-[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+    { printf("Shift NUM\n");
+[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+    { printf("[Shift] NUM\n");
                                         return(NUM);
                                       }
-\"((\\.)|[^\\\"\n])*\"                { printf("Shift STRINGCONST\n");
+\"((\\.)|[^\\\"\n])*\"                { printf("[Shift] STRINGCONST\n");
                                         return(STRINGCONST);
                                       }
 
