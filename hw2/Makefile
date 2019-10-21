@@ -2,7 +2,7 @@ YACC = yacc
 LEX = flex
 CXX = cc
 YACC_ARG = -d
-CXX_ARG = -ly -g -o
+CXX_ARG = -g -o
 LEX_FILE = scanner.l
 YACC_FILE = parser.y
 
