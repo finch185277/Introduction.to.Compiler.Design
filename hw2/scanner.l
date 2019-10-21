@@ -167,8 +167,8 @@ NQUOTE [^']
 [+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+    { printf("[Shift] NUM\n");
                                         return(NUM);
                                       }
-\"((\\.)|[^\\\"\n])*\"                { printf("[Shift] STRINGCONST\n");
-                                        return(STRINGCONST);
+\"((\\.)|[^\\\"\n])*\"                { printf("[Shift] STRING\n");
+                                        return(STRING);
                                       }
 
 \/\/.*$                               ;
