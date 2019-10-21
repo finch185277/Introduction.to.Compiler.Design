@@ -1,7 +1,9 @@
 #include "node.hpp"
+#include <stdio.h>
+#include <stdlib.h>
 
-struct Node *new_node(std::string str) {
-  Node *node = new Node;
+struct Node *new_node(char *str) {
+  Node *node = (struct Node *)malloc(sizeof(struct Node));
   node->name = str;
   node->parent = nullptr;
   node->child = nullptr;
@@ -12,7 +14,7 @@ struct Node *new_node(std::string str) {
 
 void delete_node(struct Node *node) {
   if (node != nullptr)
-    delete (node);
+    free(node);
 }
 
 void add_child(struct Node *node, struct Node *child) {
@@ -29,8 +31,8 @@ void add_child(struct Node *node, struct Node *child) {
 
 void print_tree(struct Node *node, int ident) {
   for (int i = 0; i < ident; i++)
-    std::cout << "  ";
-  std::cout << node->name << '\n';
+    printf("  ");
+  printf("%s\n", node->name);
   ident++;
   struct Node *child = node->child;
   if (child != nullptr) {
