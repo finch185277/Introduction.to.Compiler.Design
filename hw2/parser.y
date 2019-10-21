@@ -12,7 +12,7 @@ struct Node *ASTROOT;
 
 %union{ struct Node *node; }
 
-%token <node> ARRAY INTEGER REAL NUM STRINGCONST
+%token <node> ARRAY INTEGER REAL NUM STRING
 %token <node> COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
 %token <node> PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token <node> ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
@@ -32,8 +32,7 @@ struct Node *ASTROOT;
 prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	declarations
 	subprogram_declarations
-	compound_statement DOT
-  {
+	compound_statement DOT {
     $$ = new_node("prog");
     add_child($$, new_node("PROGRAM"));
     add_child($$, new_node("IDENTIFIER"));
@@ -51,14 +50,11 @@ prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
   };
 
 
-identifier_list : IDENTIFIER
-  {
+identifier_list : IDENTIFIER {
     $$ = new_node("identifier_list");
     add_child($$, new_node("IDENTIFIER"));
     printf("[Reduction] identifier_list: id\n");
-  }
-	| identifier_list COMMA IDENTIFIER
-  {
+  } | identifier_list COMMA IDENTIFIER {
     $$ = new_node("identifier_list");
     add_child($$, $1);
     add_child($$, new_node("COMMA"));
@@ -66,8 +62,7 @@ identifier_list : IDENTIFIER
     printf("[Reduction] identifier_list: identifier_list , id\n");
   };
 
-declarations : declarations VAR identifier_list COLON type SEMICOLON
-  {
+declarations : declarations VAR identifier_list COLON type SEMICOLON {
     $$ = new_node("declarations");
     add_child($$, $1);
     add_child($$, new_node("VAR"));
@@ -77,23 +72,43 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON
     add_child($$, new_node("SEMICOLON"));
     printf("[Reduction] declarations: ");
     printf("declarations VAR identifier_list : type ;\n");
-  }
-	| lambda
-  {
+  } | lambda {
     $$ = new_node("declarations");
     add_child($$, $1);
     printf("[Reduction] declarations: lambda\n");
   };
 
 
-type : standard_type
-	| ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type
-	;
+type : standard_type {
+    $$ = new_node("type");
+    add_child($$, $1);
+    printf("[Reduction] type: standard_type\n");
+  } | ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type {
+    $$ = new_node("type");
+    add_child($$, new_node("ARRAY"));
+    add_child($$, new_node("LBRAC"));
+    add_child($$, new_node("NUM"));
+    add_child($$, new_node("DOTDOT"));
+    add_child($$, new_node("NUM"));
+    add_child($$, new_node("RBRAC"));
+    add_child($$, new_node("OF"));
+    add_child($$, $8);
+    printf("[Reduction] type: ARRAY [ num .. num ] OF type\n");
+  };
 
-standard_type : INTEGER
-	| REAL
-	| STRINGCONST
-	;
+standard_type : INTEGER {
+    $$ = new_node("standard_type");
+    add_child($$, new_node("INTEGER"));
+    printf("[Reduction] standard_type: INTEGER\n");
+  } | REAL {
+    $$ = new_node("standard_type");
+    add_child($$, new_node("REAL"));
+    printf("[Reduction] standard_type: REAL\n");
+  } | STRING {
+    $$ = new_node("standard_type");
+    add_child($$, new_node("STRING"));
+    printf("[Reduction] standard_type: STRING\n");
+  };
 
 subprogram_declarations :
 	subprogram_declarations subprogram_declaration SEMICOLON
@@ -173,7 +188,7 @@ term : factor
 factor : IDENTIFIER tail
 	| IDENTIFIER LPAREN expression_list RPAREN
 	| NUM
-	| STRINGCONST
+	| STRING
 	| LPAREN expression RPAREN
 	| NOT factor
 	;
