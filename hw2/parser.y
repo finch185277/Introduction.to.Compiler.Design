@@ -18,6 +18,13 @@ struct Node *ASTROOT;
 %token <node> ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
 %token <node> LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN SEMICOLON SLASH STAR notEQUAL
 
+%token <node> tail term factor addop nulop relop lambda prog type
+%token <node> declarations arguments expression variable statement
+%token <node> standard_type optional_var optional_statements simple_expression
+%token <node> identifier_list expression_list statement_list parameter_list
+%token <node> subprogram_declaration subprogram_declarations subprogram_head
+%token <node> compound_statement procedure_statement
+
 %left PLUS MINUS STAR SLASH
 
 %%
