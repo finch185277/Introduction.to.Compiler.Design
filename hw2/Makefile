@@ -7,6 +7,7 @@ LEX_FILE = scanner.l
 YACC_FILE = parser.y
 
 C_FILE = lex.yy.c y.tab.c node.cpp
+H_FILE = y.tab.h
 EXEC_FILE = parser
 
 all: $(LEX_FILE) $(YACC_FILE)
@@ -17,4 +18,4 @@ all: $(LEX_FILE) $(YACC_FILE)
 .PHONY:  clean
 
 clean:
-	rm -rf $(C_FILE) $(EXEC_FILE)
+	rm -rf $(C_FILE) $(H_FILE) $(EXEC_FILE)
