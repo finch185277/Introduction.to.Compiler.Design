@@ -56,7 +56,8 @@ identifier_list : IDENTIFIER
     $$ = new_node("identifier_list");
     add_child($$, new_node("IDENTIFIER"));
     printf("[Reduction] identifier_list: id\n");
-  } | identifier_list COMMA IDENTIFIER
+  }
+	| identifier_list COMMA IDENTIFIER
   {
     $$ = new_node("identifier_list");
     add_child($$, $1);
@@ -76,7 +77,8 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON
     add_child($$, new_node("SEMICOLON"));
     printf("[Reduction] declarations: ");
     printf("declarations VAR identifier_list : type ;\n");
-  } | lambda
+  }
+	| lambda
   {
     $$ = new_node("declarations");
     add_child($$, $1);
@@ -89,7 +91,8 @@ type : standard_type
     $$ = new_node("type");
     add_child($$, $1);
     printf("[Reduction] type: standard_type\n");
-  } | ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type
+  }
+	| ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type
   {
     $$ = new_node("type");
     add_child($$, new_node("ARRAY"));
@@ -108,12 +111,14 @@ standard_type : INTEGER
     $$ = new_node("standard_type");
     add_child($$, new_node("INTEGER"));
     printf("[Reduction] standard_type: INTEGER\n");
-  } | REAL
+  }
+	| REAL
   {
     $$ = new_node("standard_type");
     add_child($$, new_node("REAL"));
     printf("[Reduction] standard_type: REAL\n");
-  } | STRING
+  }
+	| STRING
   {
     $$ = new_node("standard_type");
     add_child($$, new_node("STRING"));
