@@ -25,19 +25,58 @@ struct Node *ASTROOT;
 prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	declarations
 	subprogram_declarations
-	compound_statement
-	DOT
-	;
+	compound_statement DOT
+  {
+    $$ = new_node("prog");
+    add_child($$, new_node("PROGRAM"));
+    add_child($$, new_node("IDENTIFIER"));
+    add_child($$, new_node("LPAREN"));
+    add_child($$, $4);
+    add_child($$, new_node("RPAREN"));
+    add_child($$, new_node("SEMICOLON"));
+    add_child($$, $7);
+    add_child($$, $8);
+    add_child($$, $9);
+    add_child($$, new_node("DOT"));
+    ASTROOT = $$;
+    printf("[Reduction] prog: PROGRAM id ( identifier_list ) ; ");
+    printf("declarations subprogram_declarations compound_statement .\n");
+  };
 
 
 identifier_list : IDENTIFIER
+  {
+    $$ = new_node("identifier_list");
+    add_child($$, new_node("IDENTIFIER"));
+    printf("[Reduction] identifier_list: id\n");
+  }
 	| identifier_list COMMA IDENTIFIER
-	;
+  {
+    $$ = new_node("identifier_list");
+    add_child($$, $1);
+    add_child($$, new_node("COMMA"));
+    add_child($$, new_node("IDENTIFIER"));
+    printf("[Reduction] identifier_list: identifier_list , id\n");
+  };
 
-declarations : declarations VAR identifier_list COLON
-	type SEMICOLON
+declarations : declarations VAR identifier_list COLON type SEMICOLON
+  {
+    $$ = new_node("declarations");
+    add_child($$, $1);
+    add_child($$, new_node("VAR"));
+    add_child($$, $3);
+    add_child($$, new_node("COLON"));
+    add_child($$, $5);
+    add_child($$, new_node("SEMICOLON"));
+    printf("[Reduction] declarations: ");
+    printf("declarations VAR identifier_list : type ;\n");
+  }
 	| lambda
-	;
+  {
+    $$ = new_node("declarations");
+    add_child($$, $1);
+    printf("[Reduction] declarations: lambda\n");
+  };
 
 
 type : standard_type
