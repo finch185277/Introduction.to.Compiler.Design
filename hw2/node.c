@@ -3,23 +3,23 @@
 #include <stdlib.h>
 
 struct Node *new_node(char *str) {
-  Node *node = (struct Node *)malloc(sizeof(struct Node));
+  struct Node *node = (struct Node *)malloc(sizeof(struct Node));
   node->name = str;
-  node->parent = nullptr;
-  node->child = nullptr;
+  node->parent = NULL;
+  node->child = NULL;
   node->lsibling = node;
   node->rsibling = node;
   return node;
 }
 
 void delete_node(struct Node *node) {
-  if (node != nullptr)
+  if (node != NULL)
     free(node);
 }
 
 void add_child(struct Node *node, struct Node *child) {
   child->parent = node;
-  if (node->child == nullptr) {
+  if (node->child == NULL) {
     node->child = child;
   } else {
     child->lsibling = node->child->lsibling;
@@ -35,7 +35,7 @@ void print_tree(struct Node *node, int ident) {
   printf("%s\n", node->name);
   ident++;
   struct Node *child = node->child;
-  if (child != nullptr) {
+  if (child != NULL) {
     do {
       print_tree(child, ident);
       child = child->rsibling;
