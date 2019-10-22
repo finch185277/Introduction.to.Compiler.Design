@@ -156,23 +156,32 @@ NQUOTE [^']
                                         return(STAR);
                                       }
 
-[a-zA-Z]([a-zA-Z0-9_])*               { printf("[  Shift  ] | IDENTIFIER\n");
-                                        return(IDENTIFIER);
-                                      }
-[+-]?[0-9]+                           { printf("[  Shift  ] | NUM\n");
-                                        return(NUM);
-                                      }
-[+-]?[0-9]+\.[0-9]+                   { printf("[  Shift  ] | NUM\n");
-                                        return(NUM);
-                                      }
-[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+    { printf("[  Shift  ] | NUM\n");
-                                        return(NUM);
-                                      }
-\"((\\.)|[^\\\"\n])*\"                { printf("[  Shift  ] | STRING\n");
-                                        return(STRING);
-                                      }
+[a-zA-Z]([a-zA-Z0-9_])*                 { printf("[  Shift  ] | IDENTIFIER\n");
+                                          return(IDENTIFIER);
+                                        }
+[0-9]+                                  { printf("[  Shift  ] | NUM\n");
+                                          return(NUM);
+                                        }
+(=\ )[+-]?[0-9]+                         { printf("[  Shift  ] | NUM\n");
+                                          return(NUM);
+                                        }
+[0-9]+\.[0-9]+                          { printf("[  Shift  ] | NUM\n");
+                                          return(NUM);
+                                        }
+(=\ )[+-]?[0-9]+\.[0-9]+                { printf("[  Shift  ] | NUM\n");
+                                          return(NUM);
+                                        }
+[0-9]+(\.[0-9]+)?E[+-]?[0-9]+           { printf("[  Shift  ] | NUM\n");
+                                          return(NUM);
+                                        }
+(=\ )[+-]?[0-9]+(\.[0-9]+)?E[+-]?[0-9]+ { printf("[  Shift  ] | NUM\n");
+                                          return(NUM);
+                                        }
+\"((\\.)|[^\\\"\n])*\"                  { printf("[  Shift  ] | STRING\n");
+                                          return(STRING);
+                                        }
 
-\/\/.*$                               ;
+\/\/.*$                                 ;
 "/*" { register int c;
       while ((c = input())) {
         if (c == '*') {
