@@ -1,3 +1,5 @@
+%option yylineno
+
 %{
 /*
  * scan.l
@@ -11,7 +13,6 @@
 #include "y.tab.h"
 
 int line_no = 1;
-
 
 %}
 
