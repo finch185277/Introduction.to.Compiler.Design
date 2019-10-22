@@ -1,5 +1,5 @@
-#ifndef __NODE_HPP__
-#define __NODE_HPP__
+#ifndef __NODE_H__
+#define __NODE_H__
 
 enum ntype { INVALID, NODE };
 

@@ -1,7 +1,7 @@
 %{
 
 #include <stdio.h>
-#include "node.hpp"
+#include "node.h"
 
 int yylex(void);
 int yywrap() { return 1; }

@@ -7,7 +7,7 @@ LEX_FILE = scanner.l
 YACC_FILE = parser.y
 
 MID_FILE = lex.yy.c y.tab.c y.tab.h
-C_FILE = node.cpp
+C_FILE = node.c
 EXEC_FILE = parser
 
 all: $(LEX_FILE) $(YACC_FILE)
