@@ -6,6 +6,6 @@ filename=$(ls ${input_folder})
 
 mkdir ${output_folder}
 for file in ${filename}; do
-  ./scanner ${input_folder}/"${file%.*}".p 2> ${output_folder}/"${file%.*}".txt
+  ./parser ${input_folder}/"${file%.*}".p > ${output_folder}/"${file%.*}".txt
   echo "${file} be output"
 done
