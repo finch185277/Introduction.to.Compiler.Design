@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include "node.h"
 
-int yylineno;
 int yylex(void);
 int yywrap() { return 1; }
 void yyerror(const char* str) {
+  extern int yylineno;
   fprintf(stderr, "Error at line %d: %s\n", yylineno, str);
 }
 
