@@ -447,6 +447,18 @@ factor : IDENTIFIER tail
     add_child($$, new_node("NUM"));
     printf("[Reduction] | factor: num\n");
   }
+  | PLUS NUM
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("NUM"));
+    printf("[Reduction] | factor: positive num\n");
+  }
+  | MINUS NUM
+  {
+    $$ = new_node("factor");
+    add_child($$, new_node("NUM"));
+    printf("[Reduction] | factor: negative num\n");
+  }
 	| STRING
   {
     $$ = new_node("factor");
