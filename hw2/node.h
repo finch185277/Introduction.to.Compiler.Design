@@ -1,8 +1,6 @@
 #ifndef __NODE_H__
 #define __NODE_H__
 
-enum ntype { INVALID, NODE };
-
 struct Node {
   char *name;
   struct Node *parent;
