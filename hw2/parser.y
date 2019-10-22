@@ -3,9 +3,12 @@
 #include <stdio.h>
 #include "node.h"
 
+int yylineno;
 int yylex(void);
 int yywrap() { return 1; }
-void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
+void yyerror(const char* str) {
+  fprintf(stderr, "Error at line %d: %s\n", yylineno, str);
+}
 
 struct Node *ASTROOT;
 
