@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include "node.hpp"
+
 int yylex(void);
 int yywrap() { return 1; }
 void yyerror(const char* str) { fprintf(stderr, "error: %s\n", str); }
@@ -10,7 +11,12 @@ struct Node *ASTROOT;
 
 %}
 
-%union{ struct Node *node; }
+%start prog
+
+%union
+{
+  struct Node *node;
+}
 
 %token <node> ARRAY INTEGER REAL NUM STRING
 %token <node> COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
@@ -19,12 +25,12 @@ struct Node *ASTROOT;
 %token <node> LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN
 %token <node> SEMICOLON SLASH STAR notEQUAL
 
-%token <node> tail term factor addop nulop relop lambda prog type
-%token <node> declarations arguments expression variable statement
-%token <node> standard_type optional_var optional_statements simple_expression
-%token <node> identifier_list expression_list statement_list parameter_list
-%token <node> subprogram_declaration subprogram_declarations subprogram_head
-%token <node> compound_statement procedure_statement
+%type <node> tail term factor addop mulop relop lambda prog type
+%type <node> declarations arguments expression variable statement
+%type <node> standard_type optional_var optional_statements simple_expression
+%type <node> identifier_list expression_list statement_list parameter_list
+%type <node> subprogram_declaration subprogram_declarations subprogram_head
+%type <node> compound_statement procedure_statement
 
 %left PLUS MINUS STAR SLASH
 
@@ -539,7 +545,7 @@ int main(int argc, char **argv) {
     print_tree(ASTROOT, 0);
     printf("------------------------- END -------------------------\n");
   } else {
-    print("ERROR\n");
+    printf("ERROR\n");
   }
   return 0;
 }
