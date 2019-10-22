@@ -6,16 +6,16 @@ CXX_ARG = -g -o
 LEX_FILE = scanner.l
 YACC_FILE = parser.y
 
-C_FILE = lex.yy.c y.tab.c node.cpp
-H_FILE = y.tab.h
+MID_FILE = lex.yy.c y.tab.c y.tab.h
+C_FILE = node.cpp
 EXEC_FILE = parser
 
 all: $(LEX_FILE) $(YACC_FILE)
 	$(LEX) $(LEX_FILE)
 	$(YACC) $(YACC_ARG) $(YACC_FILE)
-	$(CXX) $(CXX_ARG) $(EXEC_FILE) $(C_FILE)
+	$(CXX) $(CXX_ARG) $(EXEC_FILE) $(MID_FILE) $(C_FILE)
 
 .PHONY:  clean
 
 clean:
-	rm -rf $(C_FILE) $(H_FILE) $(EXEC_FILE)
+	rm -rf $(MID_FILE) $(EXEC_FILE)
