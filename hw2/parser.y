@@ -554,7 +554,7 @@ lambda :
 
 int main(int argc, char **argv) {
   int flag = yyparse();
-  if(flag ==0) {
+  if(flag == 0) {
     printf("OK\n");
     printf("------------------------- AST -------------------------\n");
     print_tree(ASTROOT, 0);
