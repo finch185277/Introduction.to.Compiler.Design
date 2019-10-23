@@ -2,10 +2,24 @@
 
 input_folder="input"
 output_folder="output"
-filename=$(ls ${input_folder})
+no_error_folder="no-parsing-error"
 
-mkdir ${output_folder}
-for file in ${filename}; do
-  ./parser ${input_folder}/"${file%.*}".p > ${output_folder}/"${file%.*}".txt
-  echo "${file} be output"
+input_error_files="test-minus-neg.p test-parser-error.p"
+input_no_error_files=$(ls ${input_folder}/${no_error_folder})
+
+if [ ! -d ${output_folder}/${no_error_folder} ] || [ ! -d ${output_folder}/${no_error_folder} ]; then
+  mkdir -p ${output_folder}
+  mkdir -p ${output_folder}/${no_error_folder}
+fi
+
+for file in ${input_error_files}; do
+  echo "--------------- [${file}] will be output ---------------"
+  ./parser < ${input_folder}/"${file%.*}".p > ${output_folder}/"${file%.*}".txt
+  echo "------------------------- done! -------------------------"
+done
+
+for file in ${input_no_error_files}; do
+  echo "--------------- [${file}] will be output ---------------"
+  ./parser < ${input_folder}/${no_error_folder}/"${file%.*}".p > ${output_folder}/${no_error_folder}/"${file%.*}".txt
+  echo "------------------------- done! -------------------------"
 done
