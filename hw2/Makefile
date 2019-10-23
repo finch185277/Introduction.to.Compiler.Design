@@ -15,7 +15,10 @@ all: $(LEX_FILE) $(YACC_FILE)
 	$(YACC) $(YACC_ARG) $(YACC_FILE)
 	$(CXX) $(CXX_ARG) $(EXEC_FILE) $(MID_FILE) $(C_FILE)
 
-.PHONY:  clean
+.PHONY: test clean
+
+test: all
+	./test.sh
 
 clean:
 	rm -rf $(MID_FILE) $(EXEC_FILE)
