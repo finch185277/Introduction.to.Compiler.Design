@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include "y.tab.h"
 
-int line_no = 1;
-
 %}
 
 A [aA]
@@ -176,14 +174,13 @@ NQUOTE [^']
 "/*" { register int c;
       while ((c = input())) {
         if (c == '*') {
-          if ((c = input()) == '/'){
+          if ((c = input()) == '/') {
             break;
-          } else
+          } else {
             unput (c);
-        } else if (c == '\n') {
-          line_no++;
+          }
         } else if (c == 0) {
-          fprintf (stderr, "Unexpected EOF inside comment at line %d\n",line_no);
+          fprintf (stderr, "Unexpected EOF inside comment at line %d\n", yylineno);
         }
       }
     }
@@ -191,8 +188,8 @@ NQUOTE [^']
 [ \t\f]    ;
 
 \r         ;
-\n    line_no++;
+\n         ;
 
-.    {fprintf(stderr, "Lexical analyzer error at line %d : %s\n", line_no, yytext);}
+.    {fprintf(stderr, "Lexical analyzer error at line %d : %s\n", yylineno, yytext);}
 
 %%
