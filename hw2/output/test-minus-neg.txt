@@ -1,0 +1,67 @@
+[  Shift  ] | PROGRAM
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | RPAREN
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | declarations: lambda
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COLON
+[  Shift  ] | REAL
+[Reduction] | standard_type: REAL
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | PBEGIN
+[Reduction] | lambda:
+[Reduction] | subprogram_declarations: lambda
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | MINUS
+[  Shift  ] | NUM
+[Reduction] | factor: negative num
+[Reduction] | term: factor
+[  Shift  ] | MINUS
+[Reduction] | simple_expression: term
+[Reduction] | addop: -
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | MINUS
+[  Shift  ] | MINUS
+ERROR

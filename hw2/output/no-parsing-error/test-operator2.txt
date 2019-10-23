@@ -1,0 +1,1101 @@
+[  Shift  ] | PROGRAM
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | RPAREN
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | declarations: lambda
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | ARRAY
+[  Shift  ] | LBRAC
+[  Shift  ] | NUM
+[  Shift  ] | DOTDOT
+[  Shift  ] | NUM
+[  Shift  ] | RBRAC
+[  Shift  ] | OF
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[Reduction] | type: ARRAY [ num .. num ] OF type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | PBEGIN
+[Reduction] | lambda:
+[Reduction] | subprogram_declarations: lambda
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IF
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | THEN
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | ELSE
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement: IF expression THEN statement ELSE statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IF
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | THEN
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | IF
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: <
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | MINUS
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | addop: -
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | THEN
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | ELSE
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | ELSE
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement: IF expression THEN statement ELSE statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SLASH
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: /
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | STAR
+[Reduction] | mulop: *
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: term mulop factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement: IF expression THEN statement ELSE statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IF
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | THEN
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | ELSE
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[  Shift  ] | IF
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | PLUS
+[Reduction] | simple_expression: term
+[Reduction] | addop: +
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | THEN
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | MINUS
+[Reduction] | simple_expression: term
+[Reduction] | addop: -
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ELSE
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SLASH
+[Reduction] | mulop: /
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: term mulop factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement: IF expression THEN statement ELSE statement
+[Reduction] | statement: IF expression THEN statement ELSE statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | WHILE
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | DO
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement: WHILE expression DO statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | WHILE
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | DO
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | PBEGIN
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | PLUS
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | addop: +
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | END
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[Reduction] | optional_statements: statement_list
+[Reduction] | compound_statement: begin optional_statements end
+[Reduction] | statement: compound_statement
+[Reduction] | statement: WHILE expression DO statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | SEMICOLON
+[  Shift  ] | WHILE
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | DO
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | WHILE
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | GT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | relop: >
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | PLUS
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | addop: +
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | DO
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression relop simple_expression
+[  Shift  ] | PBEGIN
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | PLUS
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | addop: +
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | STAR
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | mulop: *
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: term mulop factor
+[  Shift  ] | END
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[Reduction] | optional_statements: statement_list
+[Reduction] | compound_statement: begin optional_statements end
+[Reduction] | statement: compound_statement
+[Reduction] | statement: WHILE expression DO statement
+[Reduction] | statement: WHILE expression DO statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | END
+[Reduction] | optional_statements: statement_list
+[Reduction] | compound_statement: begin optional_statements end
+[  Shift  ] | DOT
+[Reduction] | prog: PROGRAM id ( identifier_list ) ; declarations subprogram_declarations compound_statement .
+OK
+------------------------- AST -------------------------
+prog
+  PROGRAM
+  IDENTIFIER
+  LPAREN
+  identifier_list
+    identifier_list
+      identifier_list
+        IDENTIFIER
+      COMMA
+      IDENTIFIER
+    COMMA
+    IDENTIFIER
+  RPAREN
+  SEMICOLON
+  declarations
+    declarations
+      declarations
+        lambda
+      VAR
+      identifier_list
+        identifier_list
+          identifier_list
+            IDENTIFIER
+          COMMA
+          IDENTIFIER
+        COMMA
+        IDENTIFIER
+      COLON
+      type
+        standard_type
+          INTEGER
+      SEMICOLON
+    VAR
+    identifier_list
+      identifier_list
+        IDENTIFIER
+      COMMA
+      IDENTIFIER
+    COLON
+    type
+      ARRAY
+      LBRAC
+      NUM
+      DOTDOT
+      NUM
+      RBRAC
+      OF
+      type
+        standard_type
+          INTEGER
+    SEMICOLON
+  subprogram_declarations
+    lambda
+  compound_statement
+    PBEGIN
+    optional_statements
+      statement_list
+        statement_list
+          statement_list
+            statement_list
+              statement_list
+                statement_list
+                  statement_list
+                    statement_list
+                      statement
+                        variable
+                          IDENTIFIER
+                          tail
+                            lambda
+                        ASSIGNMENT
+                        expression
+                          simple_expression
+                            term
+                              factor
+                                NUM
+                    SEMICOLON
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              STAR
+                            factor
+                              NUM
+                  SEMICOLON
+                  statement
+                    IF
+                    expression
+                      simple_expression
+                        term
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+                      relop
+                        GT
+                      simple_expression
+                        term
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+                    THEN
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              STAR
+                            factor
+                              NUM
+                    ELSE
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              STAR
+                            factor
+                              NUM
+                SEMICOLON
+                statement
+                  IF
+                  expression
+                    simple_expression
+                      term
+                        factor
+                          IDENTIFIER
+                          tail
+                            lambda
+                    relop
+                      GT
+                    simple_expression
+                      term
+                        factor
+                          IDENTIFIER
+                          tail
+                            lambda
+                  THEN
+                  statement
+                    IF
+                    expression
+                      simple_expression
+                        term
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+                      relop
+                        LT
+                      simple_expression
+                        simple_expression
+                          term
+                            factor
+                              IDENTIFIER
+                              tail
+                                lambda
+                        addop
+                          MINUS
+                        term
+                          factor
+                            NUM
+                    THEN
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              STAR
+                            factor
+                              NUM
+                    ELSE
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              STAR
+                            factor
+                              NUM
+                  ELSE
+                  statement
+                    variable
+                      IDENTIFIER
+                      tail
+                        lambda
+                    ASSIGNMENT
+                    expression
+                      simple_expression
+                        term
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              SLASH
+                            factor
+                              NUM
+                          mulop
+                            STAR
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+              SEMICOLON
+              statement
+                IF
+                expression
+                  simple_expression
+                    term
+                      factor
+                        IDENTIFIER
+                        tail
+                          lambda
+                  relop
+                    GT
+                  simple_expression
+                    term
+                      factor
+                        IDENTIFIER
+                        tail
+                          lambda
+                THEN
+                statement
+                  variable
+                    IDENTIFIER
+                    tail
+                      lambda
+                  ASSIGNMENT
+                  expression
+                    simple_expression
+                      term
+                        term
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+                        mulop
+                          STAR
+                        factor
+                          NUM
+                ELSE
+                statement
+                  IF
+                  expression
+                    simple_expression
+                      term
+                        factor
+                          IDENTIFIER
+                          tail
+                            lambda
+                    relop
+                      GT
+                    simple_expression
+                      simple_expression
+                        term
+                          factor
+                            NUM
+                      addop
+                        PLUS
+                      term
+                        factor
+                          IDENTIFIER
+                          tail
+                            lambda
+                  THEN
+                  statement
+                    variable
+                      IDENTIFIER
+                      tail
+                        lambda
+                    ASSIGNMENT
+                    expression
+                      simple_expression
+                        simple_expression
+                          term
+                            factor
+                              NUM
+                        addop
+                          MINUS
+                        term
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+                  ELSE
+                  statement
+                    variable
+                      IDENTIFIER
+                      tail
+                        lambda
+                    ASSIGNMENT
+                    expression
+                      simple_expression
+                        term
+                          term
+                            factor
+                              NUM
+                          mulop
+                            SLASH
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+            SEMICOLON
+            statement
+              WHILE
+              expression
+                simple_expression
+                  term
+                    factor
+                      IDENTIFIER
+                      tail
+                        lambda
+                relop
+                  GT
+                simple_expression
+                  term
+                    factor
+                      IDENTIFIER
+                      tail
+                        lambda
+              DO
+              statement
+                variable
+                  IDENTIFIER
+                  tail
+                    lambda
+                ASSIGNMENT
+                expression
+                  simple_expression
+                    term
+                      term
+                        factor
+                          IDENTIFIER
+                          tail
+                            lambda
+                      mulop
+                        STAR
+                      factor
+                        NUM
+          SEMICOLON
+          statement
+            WHILE
+            expression
+              simple_expression
+                term
+                  factor
+                    IDENTIFIER
+                    tail
+                      lambda
+              relop
+                GT
+              simple_expression
+                term
+                  factor
+                    IDENTIFIER
+                    tail
+                      lambda
+            DO
+            statement
+              compound_statement
+                PBEGIN
+                optional_statements
+                  statement_list
+                    statement_list
+                      statement
+                        variable
+                          IDENTIFIER
+                          tail
+                            lambda
+                        ASSIGNMENT
+                        expression
+                          simple_expression
+                            simple_expression
+                              term
+                                factor
+                                  IDENTIFIER
+                                  tail
+                                    lambda
+                            addop
+                              PLUS
+                            term
+                              factor
+                                NUM
+                    SEMICOLON
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              STAR
+                            factor
+                              NUM
+                END
+        SEMICOLON
+        statement
+          WHILE
+          expression
+            simple_expression
+              term
+                factor
+                  IDENTIFIER
+                  tail
+                    lambda
+            relop
+              GT
+            simple_expression
+              term
+                factor
+                  IDENTIFIER
+                  tail
+                    lambda
+          DO
+          statement
+            WHILE
+            expression
+              simple_expression
+                term
+                  factor
+                    IDENTIFIER
+                    tail
+                      lambda
+              relop
+                GT
+              simple_expression
+                simple_expression
+                  term
+                    factor
+                      IDENTIFIER
+                      tail
+                        lambda
+                addop
+                  PLUS
+                term
+                  factor
+                    IDENTIFIER
+                    tail
+                      lambda
+            DO
+            statement
+              compound_statement
+                PBEGIN
+                optional_statements
+                  statement_list
+                    statement_list
+                      statement
+                        variable
+                          IDENTIFIER
+                          tail
+                            lambda
+                        ASSIGNMENT
+                        expression
+                          simple_expression
+                            simple_expression
+                              term
+                                factor
+                                  IDENTIFIER
+                                  tail
+                                    lambda
+                            addop
+                              PLUS
+                            term
+                              factor
+                                NUM
+                    SEMICOLON
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  lambda
+                            mulop
+                              STAR
+                            factor
+                              NUM
+                END
+    END
+  DOT
+------------------------- END -------------------------

@@ -1,0 +1,75 @@
+[  Shift  ] | PROGRAM
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | RPAREN
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | declarations: lambda
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | PROCEDURE
+[Reduction] | lambda:
+[Reduction] | subprogram_declarations: lambda
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | IDENTIFIER
+[Reduction] | lambda:
+[Reduction] | optional_var: lambda
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[  Shift  ] | RPAREN
+[Reduction] | parameter_list: optional_var identifier_list : type
+[Reduction] | arguments: ( parameter_list )
+[  Shift  ] | SEMICOLON
+[Reduction] | subprogram_head: PROCEDURE id arguments ;
+[Reduction] | lambda:
+[Reduction] | declarations: lambda
+[  Shift  ] | PBEGIN
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | PLUS
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | addop: +
+[  Shift  ] | SEMICOLON
+ERROR

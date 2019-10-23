@@ -1,0 +1,933 @@
+[  Shift  ] | PROGRAM
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | RPAREN
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | declarations: lambda
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COLON
+[  Shift  ] | REAL
+[Reduction] | standard_type: REAL
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COLON
+[  Shift  ] | ARRAY
+[  Shift  ] | LBRAC
+[  Shift  ] | NUM
+[  Shift  ] | DOTDOT
+[  Shift  ] | NUM
+[  Shift  ] | RBRAC
+[  Shift  ] | OF
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[Reduction] | type: ARRAY [ num .. num ] OF type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | FUNCTION
+[Reduction] | lambda:
+[Reduction] | subprogram_declarations: lambda
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | IDENTIFIER
+[Reduction] | lambda:
+[Reduction] | optional_var: lambda
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[  Shift  ] | IDENTIFIER
+[Reduction] | lambda:
+[Reduction] | optional_var: lambda
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | REAL
+[Reduction] | standard_type: REAL
+[Reduction] | type: standard_type
+[  Shift  ] | RPAREN
+[Reduction] | parameter_list: optional_var identifier_list : type
+[Reduction] | parameter_list: optional_var identifier_list : type ; parameter_list
+[Reduction] | arguments: ( parameter_list )
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[  Shift  ] | SEMICOLON
+[Reduction] | subprogram_head: FUNCTION id arguments : standard_type ;
+[Reduction] | lambda:
+[Reduction] | declarations: lambda
+[  Shift  ] | VAR
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: id
+[  Shift  ] | COMMA
+[  Shift  ] | IDENTIFIER
+[Reduction] | identifier_list: identifier_list , id
+[  Shift  ] | COLON
+[  Shift  ] | INTEGER
+[Reduction] | standard_type: INTEGER
+[Reduction] | type: standard_type
+[  Shift  ] | SEMICOLON
+[Reduction] | declarations: declarations VAR identifier_list : type ;
+[  Shift  ] | PBEGIN
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | END
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement
+[Reduction] | optional_statements: statement_list
+[Reduction] | compound_statement: begin optional_statements end
+[Reduction] | subprogram_declaration: subprogram_head declarations compound_statement
+[  Shift  ] | SEMICOLON
+[Reduction] | subprogram_declarations: subprogram_declarations subprogram_declaration ;
+[  Shift  ] | PBEGIN
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | COMMA
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | RPAREN
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[Reduction] | procedure_statement: id ( expression_list )
+[Reduction] | statement: procedure_statement
+[Reduction] | statement_list: statement
+[  Shift  ] | SEMICOLON
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LBRAC
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | RBRAC
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | tail: [ expression ] tail
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LBRAC
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | RBRAC
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | tail: [ expression ] tail
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LBRAC
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | RBRAC
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | tail: [ expression ] tail
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LBRAC
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | RBRAC
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[  Shift  ] | PLUS
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | tail: [ expression ] tail
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | addop: +
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LBRAC
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | RBRAC
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | tail: [ expression ] tail
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | PLUS
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | addop: +
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: simple_expression addop term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | procedure_statement: id
+[Reduction] | statement: procedure_statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | COMMA
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | COMMA
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | COMMA
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | COMMA
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | COMMA
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | RPAREN
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[Reduction] | procedure_statement: id ( expression_list )
+[Reduction] | statement: procedure_statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | SEMICOLON
+[  Shift  ] | IF
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | THEN
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[  Shift  ] | PBEGIN
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | procedure_statement: id
+[Reduction] | statement: procedure_statement
+[Reduction] | statement_list: statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | procedure_statement: id
+[Reduction] | statement: procedure_statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | procedure_statement: id
+[Reduction] | statement: procedure_statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | SEMICOLON
+[Reduction] | procedure_statement: id
+[Reduction] | statement: procedure_statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | WHILE
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | DO
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | LPAREN
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | COMMA
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | COMMA
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | COMMA
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | RPAREN
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | factor: id tail
+[Reduction] | term: factor
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | expression_list: expression_list , expression
+[Reduction] | procedure_statement: id ( expression_list )
+[Reduction] | statement: procedure_statement
+[Reduction] | statement: WHILE expression DO statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | END
+[Reduction] | optional_statements: statement_list
+[Reduction] | compound_statement: begin optional_statements end
+[Reduction] | statement: compound_statement
+[  Shift  ] | ELSE
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | SEMICOLON
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement: IF expression THEN statement ELSE statement
+[Reduction] | statement_list: statement_list ; statement
+[  Shift  ] | IDENTIFIER
+[  Shift  ] | ASSIGNMENT
+[Reduction] | lambda:
+[Reduction] | tail: lambda
+[Reduction] | variable: id tail
+[  Shift  ] | NUM
+[Reduction] | factor: num
+[Reduction] | term: factor
+[  Shift  ] | END
+[Reduction] | simple_expression: term
+[Reduction] | expression: simple_expression
+[Reduction] | statement: variable := expression
+[Reduction] | statement_list: statement_list ; statement
+[Reduction] | optional_statements: statement_list
+[Reduction] | compound_statement: begin optional_statements end
+[  Shift  ] | DOT
+[Reduction] | prog: PROGRAM id ( identifier_list ) ; declarations subprogram_declarations compound_statement .
+OK
+------------------------- AST -------------------------
+prog
+  PROGRAM
+  IDENTIFIER
+  LPAREN
+  identifier_list
+    IDENTIFIER
+  RPAREN
+  SEMICOLON
+  declarations
+    declarations
+      declarations
+        declarations
+          lambda
+        VAR
+        identifier_list
+          identifier_list
+            IDENTIFIER
+          COMMA
+          IDENTIFIER
+        COLON
+        type
+          standard_type
+            INTEGER
+        SEMICOLON
+      VAR
+      identifier_list
+        IDENTIFIER
+      COLON
+      type
+        standard_type
+          REAL
+      SEMICOLON
+    VAR
+    identifier_list
+      IDENTIFIER
+    COLON
+    type
+      ARRAY
+      LBRAC
+      NUM
+      DOTDOT
+      NUM
+      RBRAC
+      OF
+      type
+        standard_type
+          INTEGER
+    SEMICOLON
+  subprogram_declarations
+    subprogram_declarations
+      lambda
+    subprogram_declaration
+      subprogram_head
+        FUNCTION
+        IDENTIFIER
+        arguments
+          LPAREN
+          parameter_list
+            optional_var
+              lambda
+            identifier_list
+              identifier_list
+                identifier_list
+                  IDENTIFIER
+                COMMA
+                IDENTIFIER
+              COMMA
+              IDENTIFIER
+            COLON
+            type
+              standard_type
+                INTEGER
+            SEMICOLON
+            parameter_list
+              optional_var
+                lambda
+              identifier_list
+                identifier_list
+                  identifier_list
+                    IDENTIFIER
+                  COMMA
+                  IDENTIFIER
+                COMMA
+                IDENTIFIER
+              COLON
+              type
+                standard_type
+                  REAL
+          RPAREN
+        COLON
+        standard_type
+          INTEGER
+        SEMICOLON
+      declarations
+        declarations
+          lambda
+        VAR
+        identifier_list
+          identifier_list
+            IDENTIFIER
+          COMMA
+          IDENTIFIER
+        COLON
+        type
+          standard_type
+            INTEGER
+        SEMICOLON
+      compound_statement
+        PBEGIN
+        optional_statements
+          statement_list
+            statement
+              variable
+                IDENTIFIER
+                tail
+                  lambda
+              ASSIGNMENT
+              expression
+                simple_expression
+                  term
+                    factor
+                      NUM
+        END
+    SEMICOLON
+  compound_statement
+    PBEGIN
+    optional_statements
+      statement_list
+        statement_list
+          statement_list
+            statement_list
+              statement_list
+                statement_list
+                  statement_list
+                    statement_list
+                      statement_list
+                        statement_list
+                          statement_list
+                            statement
+                              procedure_statement
+                                IDENTIFIER
+                                LBRAC
+                                expression_list
+                                  expression_list
+                                    expression
+                                      simple_expression
+                                        term
+                                          factor
+                                            IDENTIFIER
+                                            tail
+                                              lambda
+                                  COMMA
+                                  expression
+                                    simple_expression
+                                      term
+                                        factor
+                                          IDENTIFIER
+                                          tail
+                                            lambda
+                                RPAREN
+                          SEMICOLON
+                          statement
+                            variable
+                              IDENTIFIER
+                              tail
+                                LBRAC
+                                expression
+                                  simple_expression
+                                    term
+                                      factor
+                                        NUM
+                                RBRAC
+                                tail
+                                  lambda
+                            ASSIGNMENT
+                            expression
+                              simple_expression
+                                term
+                                  factor
+                                    NUM
+                        SEMICOLON
+                        statement
+                          variable
+                            IDENTIFIER
+                            tail
+                              LBRAC
+                              expression
+                                simple_expression
+                                  term
+                                    factor
+                                      NUM
+                              RBRAC
+                              tail
+                                lambda
+                          ASSIGNMENT
+                          expression
+                            simple_expression
+                              term
+                                factor
+                                  NUM
+                      SEMICOLON
+                      statement
+                        variable
+                          IDENTIFIER
+                          tail
+                            lambda
+                        ASSIGNMENT
+                        expression
+                          simple_expression
+                            term
+                              factor
+                                NUM
+                    SEMICOLON
+                    statement
+                      variable
+                        IDENTIFIER
+                        tail
+                          lambda
+                      ASSIGNMENT
+                      expression
+                        simple_expression
+                          term
+                            factor
+                              IDENTIFIER
+                              tail
+                                LBRAC
+                                expression
+                                  simple_expression
+                                    term
+                                      factor
+                                        NUM
+                                RBRAC
+                                tail
+                                  lambda
+                  SEMICOLON
+                  statement
+                    variable
+                      IDENTIFIER
+                      tail
+                        lambda
+                    ASSIGNMENT
+                    expression
+                      simple_expression
+                        simple_expression
+                          term
+                            factor
+                              IDENTIFIER
+                              tail
+                                LBRAC
+                                expression
+                                  simple_expression
+                                    term
+                                      factor
+                                        NUM
+                                RBRAC
+                                tail
+                                  lambda
+                        addop
+                          PLUS
+                        term
+                          factor
+                            IDENTIFIER
+                            tail
+                              LBRAC
+                              expression
+                                simple_expression
+                                  term
+                                    factor
+                                      NUM
+                              RBRAC
+                              tail
+                                lambda
+                SEMICOLON
+                statement
+                  variable
+                    IDENTIFIER
+                    tail
+                      lambda
+                  ASSIGNMENT
+                  expression
+                    simple_expression
+                      simple_expression
+                        term
+                          factor
+                            IDENTIFIER
+                            tail
+                              lambda
+                      addop
+                        PLUS
+                      term
+                        factor
+                          NUM
+              SEMICOLON
+              statement
+                procedure_statement
+                  IDENTIFIER
+            SEMICOLON
+            statement
+              procedure_statement
+                IDENTIFIER
+                LBRAC
+                expression_list
+                  expression_list
+                    expression_list
+                      expression_list
+                        expression_list
+                          expression_list
+                            expression
+                              simple_expression
+                                term
+                                  factor
+                                    NUM
+                          COMMA
+                          expression
+                            simple_expression
+                              term
+                                factor
+                                  NUM
+                        COMMA
+                        expression
+                          simple_expression
+                            term
+                              factor
+                                NUM
+                      COMMA
+                      expression
+                        simple_expression
+                          term
+                            factor
+                              NUM
+                    COMMA
+                    expression
+                      simple_expression
+                        term
+                          factor
+                            NUM
+                  COMMA
+                  expression
+                    simple_expression
+                      term
+                        factor
+                          NUM
+                RPAREN
+          SEMICOLON
+          statement
+            IF
+            expression
+              simple_expression
+                term
+                  factor
+                    IDENTIFIER
+                    tail
+                      lambda
+            THEN
+            statement
+              compound_statement
+                PBEGIN
+                optional_statements
+                  statement_list
+                    statement_list
+                      statement_list
+                        statement_list
+                          statement_list
+                            statement_list
+                              statement
+                                procedure_statement
+                                  IDENTIFIER
+                            SEMICOLON
+                            statement
+                              variable
+                                IDENTIFIER
+                                tail
+                                  lambda
+                              ASSIGNMENT
+                              expression
+                                simple_expression
+                                  term
+                                    factor
+                                      IDENTIFIER
+                                      tail
+                                        lambda
+                          SEMICOLON
+                          statement
+                            procedure_statement
+                              IDENTIFIER
+                        SEMICOLON
+                        statement
+                          procedure_statement
+                            IDENTIFIER
+                      SEMICOLON
+                      statement
+                        procedure_statement
+                          IDENTIFIER
+                    SEMICOLON
+                    statement
+                      WHILE
+                      expression
+                        simple_expression
+                          term
+                            factor
+                              NUM
+                      DO
+                      statement
+                        procedure_statement
+                          IDENTIFIER
+                          LBRAC
+                          expression_list
+                            expression_list
+                              expression_list
+                                expression_list
+                                  expression
+                                    simple_expression
+                                      term
+                                        factor
+                                          NUM
+                                COMMA
+                                expression
+                                  simple_expression
+                                    term
+                                      factor
+                                        NUM
+                              COMMA
+                              expression
+                                simple_expression
+                                  term
+                                    factor
+                                      IDENTIFIER
+                                      tail
+                                        lambda
+                            COMMA
+                            expression
+                              simple_expression
+                                term
+                                  factor
+                                    IDENTIFIER
+                                    tail
+                                      lambda
+                          RPAREN
+                END
+            ELSE
+            statement
+              variable
+                IDENTIFIER
+                tail
+                  lambda
+              ASSIGNMENT
+              expression
+                simple_expression
+                  term
+                    factor
+                      NUM
+        SEMICOLON
+        statement
+          variable
+            IDENTIFIER
+            tail
+              lambda
+          ASSIGNMENT
+          expression
+            simple_expression
+              term
+                factor
+                  NUM
+    END
+  DOT
+------------------------- END -------------------------
