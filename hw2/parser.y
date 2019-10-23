@@ -254,12 +254,6 @@ optional_statements : statement_list
     $$ = new_node("optional_statements");
     add_child($$, $1);
     printf("[Reduction] | optional_statements: statement_list\n");
-  }
-	| lambda
-  {
-    $$ = new_node("optional_statements");
-    add_child($$, $1);
-    printf("[Reduction] | optional_statements: lambda\n");
   };
 
 statement_list : statement
