@@ -22,13 +22,6 @@ void yyerror(const char* msg) {
 %token LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN
 %token SEMICOLON SLASH STAR notEQUAL
 
-%type tail term factor addop mulop relop lambda prog type
-%type declarations arguments expression variable statement
-%type standard_type optional_var optional_statements simple_expression
-%type identifier_list expression_list statement_list parameter_list
-%type subprogram_declaration subprogram_declarations subprogram_head
-%type compound_statement procedure_statement
-
 %left PLUS MINUS
 %left STAR SLASH
 
