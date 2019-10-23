@@ -13,13 +13,11 @@ if [ ! -d ${output_folder}/${no_error_folder} ] || [ ! -d ${output_folder}/${no_
 fi
 
 for file in ${input_error_files}; do
-  echo "--------------- [${file}] will be output ---------------"
+  echo "--------------- [${file}] ---------------"
   ./parser < ${input_folder}/"${file%.*}".p > ${output_folder}/"${file%.*}".txt
-  echo "------------------------- done! -------------------------"
 done
 
 for file in ${input_no_error_files}; do
-  echo "--------------- [${file}] will be output ---------------"
+  echo "--------------- [${file}] ---------------"
   ./parser < ${input_folder}/${no_error_folder}/"${file%.*}".p > ${output_folder}/${no_error_folder}/"${file%.*}".txt
-  echo "------------------------- done! -------------------------"
 done
