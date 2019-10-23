@@ -5,14 +5,16 @@
 
 int yylex(void);
 int yywrap() { return 1; }
-void yyerror(const char* str) {
+void yyerror(const char* msg) {
   extern int yylineno;
-  fprintf(stderr, "Error at line %d: %s\n", yylineno, str);
+  fprintf(stderr, "line %d: %s\n", yylineno, msg);
 }
 
 struct Node *ASTROOT;
 
 %}
+
+%error-verbose
 
 %start prog
 
@@ -35,7 +37,8 @@ struct Node *ASTROOT;
 %type <node> subprogram_declaration subprogram_declarations subprogram_head
 %type <node> compound_statement procedure_statement
 
-%left PLUS MINUS STAR SLASH
+%left PLUS MINUS
+%left STAR SLASH
 
 %%
 
