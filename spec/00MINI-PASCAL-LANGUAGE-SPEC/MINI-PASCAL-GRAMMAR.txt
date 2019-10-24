@@ -47,6 +47,7 @@ subprogram_declarations ::=
 subprogram_declaration ::=
 	subprogram_head
 	declarations
+	subprogram_declarations
 	compound_statement
 
 subprogram_head ::= FUNCTION id arguments : standard_type ;
