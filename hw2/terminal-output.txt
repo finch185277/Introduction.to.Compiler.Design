@@ -4,10 +4,10 @@ cc -g -o parser lex.yy.c y.tab.c y.tab.h
 ./test.sh
 --------------- [test-minus-neg.p] ---------------
 line 6: error token -
-syntax error, unexpected MINUS, expecting NUM
+syntax error
 --------------- [test-parser-error.p] ---------------
 line 6: error token ;
-syntax error, unexpected SEMICOLON
+syntax error
 --------------- [test00-runtime-range-check.p] ---------------
 --------------- [test01-global-var.p] ---------------
 --------------- [test02-uninitialized-var.p] ---------------
@@ -19,7 +19,7 @@ Lexical analyzer error at line 15 : '
 --------------- [test-function.p] ---------------
 --------------- [test-mini.p] ---------------
 line 21: error token END
-syntax error, unexpected END, expecting ELSE
+syntax error
 --------------- [test-operator2.p] ---------------
 --------------- [test-operator.p] ---------------
 --------------- [test-procedure.p] ---------------

@@ -12,8 +12,6 @@ void yyerror(const char* msg) {
 
 %}
 
-%error-verbose
-
 %start prog
 
 %token ARRAY INTEGER REAL NUM STRING

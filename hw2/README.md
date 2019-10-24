@@ -68,6 +68,8 @@ void yyerror(const char* msg) {
   - `extern char* token_content`: catch the current token content passed from scanner.
 
 - `%error-verbose`: return __detailed__ error message.
+(this option have been removed in latest version, because this option cannot use in workstation)
+
 - `factor`: the smallest element of grammar.
 ```
 factor : IDENTIFIER tail
