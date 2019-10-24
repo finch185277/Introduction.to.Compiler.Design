@@ -18,7 +18,40 @@
   - `make test`
   - check files in `output` folder
 
+# Introduction
+Combining the scanner(hw1), we build the parser of mini-pascal.
+We assume scanner would not return error while scanning input.
+And the parser result depend on input:
+- parse successfully:
+  - standard output
+  ```
+  OK
+  ```
+
+- parse interrupt:
+  - standard error
+  ```
+  line <no.>: error token <token content>
+  <error message>
+  ```
+  - standard output
+  ```
+  ERROR
+  ```
+
 ## Code
+
+## Grammar bug
+`optional_statements` and `statement` both reduce to `lambda`,
+so `lambda` could be reduced by two way:
+- `statement` -> `lambda`
+- `statement` -> `statement_list` -> `optional_statements` -> `lambda`
+
+And this would cause yacc error
+```
+parser.y: warning: 1 reduce/reduce conflict [-Wconflicts-rr]
+```
+Solution: remove `lambda` from `optional_statements` section.
 
 ## Extra files
 - `test.sh`:
