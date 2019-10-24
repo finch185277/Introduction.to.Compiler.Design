@@ -61,6 +61,7 @@ subprogram_declarations :
 subprogram_declaration :
 	subprogram_head
 	declarations
+	subprogram_declarations
 	compound_statement
   ;
 
