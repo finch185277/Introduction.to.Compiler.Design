@@ -18,8 +18,8 @@ Lexical analyzer error at line 15 : '
 --------------- [test-constant.p] ---------------
 --------------- [test-function.p] ---------------
 --------------- [test-mini.p] ---------------
-line 12: error token IntArrType
-syntax error, unexpected IDENTIFIER, expecting ARRAY or INTEGER or REAL or STRING
+line 21: error token END
+syntax error, unexpected END, expecting ELSE
 --------------- [test-operator2.p] ---------------
 --------------- [test-operator.p] ---------------
 --------------- [test-procedure.p] ---------------
