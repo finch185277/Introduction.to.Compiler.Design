@@ -3,25 +3,25 @@ PROGRAM Sort(input, output);
         MaxElts = 50; */
 
     /* TYPE      -- TYPE is not in minipascal.
-        IntArrType = ARRAY [1..MaxElts] of Integer; */
+        ARRAY [1..50] of Integer = ARRAY [1..MaxElts] of Integer; */
 
     VAR
         i, j, tmp, size: integer;
 
     VAR
-        arr: IntArrType;
+        arr: ARRAY [1..50] of Integer;
 
-    PROCEDURE ReadArr(VAR size: Integer; VAR a: IntArrType);
+    PROCEDURE ReadArr(VAR size: Integer; VAR a: ARRAY [1..50] of Integer);
         BEGIN
             size := 1;
             WHILE NOT eof DO BEGIN
                 readln(a[size]);
-                IF NOT eof THEN 
+                IF NOT eof THEN
                     size := size + 1
             END
         END;
 
-    PROCEDURE Quicksort(size: Integer; VAR arr: IntArrType);
+    PROCEDURE Quicksort(size: Integer; VAR arr: ARRAY [1..50] of Integer);
         PROCEDURE QuicksortRecur(start, stop: integer);
             VAR
                 m: integer;
@@ -30,8 +30,8 @@ PROGRAM Sort(input, output);
 
             FUNCTION Split(start, stop: integer): integer;
                 VAR
-                    left, right: integer;  
-                    pivot: integer;       
+                    left, right: integer;
+                    pivot: integer;
 
                 PROCEDURE swap(VAR a, b: integer);
                     VAR
@@ -42,7 +42,7 @@ PROGRAM Sort(input, output);
                         b := t
                     END;
 
-                BEGIN 
+                BEGIN
                     pivot := arr[start];
                     left := start + 1;
                     right := stop;
@@ -52,7 +52,7 @@ PROGRAM Sort(input, output);
                             left := left + 1;
                         WHILE (right > start) AND (arr[right] >= pivot) DO
                             right := right - 1;
-                        IF left < right THEN 
+                        IF left < right THEN
                             swap(arr[left], arr[right]);
                     END;
 
@@ -61,15 +61,15 @@ PROGRAM Sort(input, output);
                     Split := right
                 END;
 
-            BEGIN 
+            BEGIN
                 IF start < stop THEN BEGIN
                     splitpt := Split(start, stop);
                     QuicksortRecur(start, splitpt-1);
                     QuicksortRecur(splitpt+1, stop);
                 END
             END;
-                    
-        BEGIN 
+
+        BEGIN
             QuicksortRecur(1, size)
         END;
 

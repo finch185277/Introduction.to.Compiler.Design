@@ -7,7 +7,8 @@ int yylex(void);
 int yywrap() { return 1; }
 void yyerror(const char* msg) {
   extern int yylineno;
-  fprintf(stderr, "line %d: %s\n", yylineno, msg);
+  extern char* token_content;
+  fprintf(stderr, "line %d: error token %s\n%s\n", yylineno, token_content, msg);
 }
 
 struct Node *ASTROOT;
@@ -158,14 +159,17 @@ subprogram_declarations :
 subprogram_declaration :
 	subprogram_head
 	declarations
+	subprogram_declarations
 	compound_statement
   {
     $$ = new_node("subprogram_declaration");
     add_child($$, $1);
     add_child($$, $2);
     add_child($$, $3);
+    add_child($$, $4);
     printf("[Reduction] | subprogram_declaration: ");
-    printf("subprogram_head declarations compound_statement\n");
+    printf("subprogram_head declarations ");
+    printf("subprogram_declarations compound_statement\n");
   };
 
 subprogram_head : FUNCTION IDENTIFIER arguments COLON standard_type SEMICOLON
