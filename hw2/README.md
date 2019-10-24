@@ -12,7 +12,7 @@
   - `flex scanner.l`
   - `yacc -d parser.y`
   - `cc -g -o parser lex.yy.c y.tab.c y.tab.h`
-  - `./parser inut/{?}.p`
+  - `./parser < inut/{?}.p`
 
 - Use script
   - `make test`
@@ -42,6 +42,7 @@ And the parser result depend on input:
 ## Code
 
 ## Grammar bug
+### optional_statements
 `optional_statements` and `statement` both reduce to `lambda`,
 so `lambda` could be reduced by two way:
 - `statement` -> `lambda`
