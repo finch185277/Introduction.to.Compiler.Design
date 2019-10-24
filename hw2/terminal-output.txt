@@ -1,0 +1,26 @@
+flex scanner.l
+yacc -d parser.y
+cc -g -o parser lex.yy.c y.tab.c y.tab.h
+./test.sh
+--------------- [test-minus-neg.p] ---------------
+line 6: error token -
+syntax error, unexpected MINUS, expecting NUM
+--------------- [test-parser-error.p] ---------------
+line 6: error token ;
+syntax error, unexpected SEMICOLON
+--------------- [test00-runtime-range-check.p] ---------------
+--------------- [test01-global-var.p] ---------------
+--------------- [test02-uninitialized-var.p] ---------------
+--------------- [test04.p] ---------------
+Lexical analyzer error at line 15 : '
+Lexical analyzer error at line 15 : !
+Lexical analyzer error at line 15 : '
+--------------- [test-constant.p] ---------------
+--------------- [test-function.p] ---------------
+--------------- [test-mini.p] ---------------
+line 12: error token IntArrType
+syntax error, unexpected IDENTIFIER, expecting ARRAY or INTEGER or REAL or STRING
+--------------- [test-operator2.p] ---------------
+--------------- [test-operator.p] ---------------
+--------------- [test-procedure.p] ---------------
+--------------- [test-recursion.p] ---------------
