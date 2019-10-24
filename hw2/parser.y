@@ -7,7 +7,7 @@ int yywrap() { return 1; }
 void yyerror(const char* msg) {
   extern int yylineno;
   extern char* token_content;
-  fprintf(stderr, "line %d: error token %s, %s\n", yylineno, token_content, msg);
+  fprintf(stderr, "line %d: error token %s\n%s\n", yylineno, token_content, msg);
 }
 
 %}
