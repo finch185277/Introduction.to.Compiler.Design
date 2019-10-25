@@ -114,7 +114,12 @@ expression_list : expression
 	| expression_list COMMA expression
   ;
 
-expression : simple_expression
+expression ::= boolexpression
+	| boolexpression AND boolexpression
+	| boolexpression OR  boolexpression
+  ;
+
+boolexpression ::= simple_expression
 	| simple_expression relop simple_expression
   ;
 
