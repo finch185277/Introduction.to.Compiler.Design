@@ -17,9 +17,7 @@ Lexical analyzer error at line 15 : !
 Lexical analyzer error at line 15 : '
 --------------- [test-constant.p] ---------------
 --------------- [test-function.p] ---------------
---------------- [test-mini.p] ---------------
-line 21: error token END
-syntax error
+--------------- [test-mini-nested-subprogram.p] ---------------
 --------------- [test-operator2.p] ---------------
 --------------- [test-operator.p] ---------------
 --------------- [test-procedure.p] ---------------
