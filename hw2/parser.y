@@ -19,7 +19,7 @@ void yyerror(const char* msg) {
 %token PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
 %token LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN
-%token SEMICOLON SLASH STAR notEQUAL
+%token SEMICOLON SLASH STAR notEQUAL AND OR
 
 %left PLUS MINUS
 %left STAR SLASH
@@ -114,12 +114,12 @@ expression_list : expression
 	| expression_list COMMA expression
   ;
 
-expression ::= boolexpression
+expression : boolexpression
 	| boolexpression AND boolexpression
-	| boolexpression OR  boolexpression
+	| boolexpression OR boolexpression
   ;
 
-boolexpression ::= simple_expression
+boolexpression : simple_expression
 	| simple_expression relop simple_expression
   ;
 
