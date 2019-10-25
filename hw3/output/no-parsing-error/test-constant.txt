@@ -67,7 +67,8 @@
 [Reduction] | term: factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement
 [  Shift  ] | IDENTIFIER
@@ -114,12 +115,14 @@
 [Reduction] | term: term mulop factor
 [  Shift  ] | RPAREN
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | factor: ( expression )
 [Reduction] | term: term mulop factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -135,7 +138,8 @@
 [Reduction] | term: factor
 [  Shift  ] | RBRAC
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | ASSIGNMENT
 [Reduction] | lambda:
 [Reduction] | tail: lambda
@@ -180,12 +184,14 @@
 [Reduction] | term: term mulop factor
 [  Shift  ] | RPAREN
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | factor: ( expression )
 [Reduction] | term: term mulop factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -229,12 +235,14 @@
 [Reduction] | term: term mulop factor
 [  Shift  ] | RPAREN
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | factor: ( expression )
 [Reduction] | term: term mulop factor
 [  Shift  ] | RBRAC
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | ASSIGNMENT
 [Reduction] | lambda:
 [Reduction] | tail: lambda
@@ -279,12 +287,14 @@
 [Reduction] | term: term mulop factor
 [  Shift  ] | RPAREN
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | factor: ( expression )
 [Reduction] | term: term mulop factor
 [  Shift  ] | END
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [Reduction] | optional_statements: statement_list
@@ -360,16 +370,17 @@ prog
                     lambda
                 ASSIGNMENT
                 expression
-                  simple_expression
+                  boolexpression
                     simple_expression
+                      simple_expression
+                        term
+                          factor
+                            NUM
+                      addop
+                        PLUS
                       term
                         factor
                           NUM
-                    addop
-                      PLUS
-                    term
-                      factor
-                        NUM
             SEMICOLON
             statement
               variable
@@ -378,6 +389,75 @@ prog
                   lambda
               ASSIGNMENT
               expression
+                boolexpression
+                  simple_expression
+                    simple_expression
+                      simple_expression
+                        term
+                          factor
+                            NUM
+                      addop
+                        PLUS
+                      term
+                        term
+                          factor
+                            NUM
+                        mulop
+                          STAR
+                        factor
+                          NUM
+                    addop
+                      PLUS
+                    term
+                      term
+                        factor
+                          NUM
+                      mulop
+                        STAR
+                      factor
+                        LPAREN
+                        expression
+                          boolexpression
+                            simple_expression
+                              simple_expression
+                                term
+                                  factor
+                                    NUM
+                              addop
+                                PLUS
+                              term
+                                term
+                                  factor
+                                    NUM
+                                mulop
+                                  STAR
+                                factor
+                                  NUM
+                        RPAREN
+          SEMICOLON
+          statement
+            variable
+              IDENTIFIER
+              tail
+                LBRAC
+                expression
+                  boolexpression
+                    simple_expression
+                      simple_expression
+                        term
+                          factor
+                            NUM
+                      addop
+                        PLUS
+                      term
+                        factor
+                          NUM
+                RBRAC
+                tail
+                  lambda
+            ASSIGNMENT
+            expression
+              boolexpression
                 simple_expression
                   simple_expression
                     simple_expression
@@ -405,44 +485,81 @@ prog
                     factor
                       LPAREN
                       expression
-                        simple_expression
+                        boolexpression
                           simple_expression
+                            simple_expression
+                              term
+                                factor
+                                  NUM
+                            addop
+                              PLUS
                             term
+                              term
+                                factor
+                                  NUM
+                              mulop
+                                STAR
                               factor
                                 NUM
-                          addop
-                            PLUS
-                          term
-                            term
-                              factor
-                                NUM
-                            mulop
-                              STAR
-                            factor
-                              NUM
                       RPAREN
-          SEMICOLON
-          statement
-            variable
-              IDENTIFIER
-              tail
-                LBRAC
-                expression
+        SEMICOLON
+        statement
+          variable
+            IDENTIFIER
+            tail
+              LBRAC
+              expression
+                boolexpression
                   simple_expression
                     simple_expression
+                      simple_expression
+                        term
+                          factor
+                            NUM
+                      addop
+                        PLUS
                       term
+                        term
+                          factor
+                            NUM
+                        mulop
+                          STAR
                         factor
                           NUM
                     addop
                       PLUS
                     term
+                      term
+                        factor
+                          NUM
+                      mulop
+                        STAR
                       factor
-                        NUM
-                RBRAC
-                tail
-                  lambda
-            ASSIGNMENT
-            expression
+                        LPAREN
+                        expression
+                          boolexpression
+                            simple_expression
+                              simple_expression
+                                term
+                                  factor
+                                    NUM
+                              addop
+                                PLUS
+                              term
+                                term
+                                  factor
+                                    NUM
+                                mulop
+                                  STAR
+                                factor
+                                  NUM
+                        RPAREN
+              RBRAC
+              tail
+                lambda
+          ASSIGNMENT
+          expression
+            boolexpression
               simple_expression
                 simple_expression
                   simple_expression
@@ -470,56 +587,7 @@ prog
                   factor
                     LPAREN
                     expression
-                      simple_expression
-                        simple_expression
-                          term
-                            factor
-                              NUM
-                        addop
-                          PLUS
-                        term
-                          term
-                            factor
-                              NUM
-                          mulop
-                            STAR
-                          factor
-                            NUM
-                    RPAREN
-        SEMICOLON
-        statement
-          variable
-            IDENTIFIER
-            tail
-              LBRAC
-              expression
-                simple_expression
-                  simple_expression
-                    simple_expression
-                      term
-                        factor
-                          NUM
-                    addop
-                      PLUS
-                    term
-                      term
-                        factor
-                          NUM
-                      mulop
-                        STAR
-                      factor
-                        NUM
-                  addop
-                    PLUS
-                  term
-                    term
-                      factor
-                        NUM
-                    mulop
-                      STAR
-                    factor
-                      LPAREN
-                      expression
+                      boolexpression
                         simple_expression
                           simple_expression
                             term
@@ -535,55 +603,7 @@ prog
                               STAR
                             factor
                               NUM
-                      RPAREN
-              RBRAC
-              tail
-                lambda
-          ASSIGNMENT
-          expression
-            simple_expression
-              simple_expression
-                simple_expression
-                  term
-                    factor
-                      NUM
-                addop
-                  PLUS
-                term
-                  term
-                    factor
-                      NUM
-                  mulop
-                    STAR
-                  factor
-                    NUM
-              addop
-                PLUS
-              term
-                term
-                  factor
-                    NUM
-                mulop
-                  STAR
-                factor
-                  LPAREN
-                  expression
-                    simple_expression
-                      simple_expression
-                        term
-                          factor
-                            NUM
-                      addop
-                        PLUS
-                      term
-                        term
-                          factor
-                            NUM
-                        mulop
-                          STAR
-                        factor
-                          NUM
-                  RPAREN
+                    RPAREN
     END
   DOT
 ------------------------- END -------------------------

@@ -54,7 +54,8 @@
 [Reduction] | term: factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement
 [  Shift  ] | IDENTIFIER

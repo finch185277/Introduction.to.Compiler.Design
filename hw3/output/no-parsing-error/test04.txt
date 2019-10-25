@@ -103,6 +103,8 @@
 [  Shift  ] | SEMICOLON
 [Reduction] | declarations: declarations VAR identifier_list : type ;
 [  Shift  ] | PBEGIN
+[Reduction] | lambda:
+[Reduction] | subprogram_declarations: lambda
 [  Shift  ] | IDENTIFIER
 [  Shift  ] | ASSIGNMENT
 [Reduction] | lambda:
@@ -113,12 +115,13 @@
 [Reduction] | term: factor
 [  Shift  ] | END
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement
 [Reduction] | optional_statements: statement_list
 [Reduction] | compound_statement: begin optional_statements end
-[Reduction] | subprogram_declaration: subprogram_head declarations compound_statement
+[Reduction] | subprogram_declaration: subprogram_head declarations subprogram_declarations compound_statement
 [  Shift  ] | SEMICOLON
 [Reduction] | subprogram_declarations: subprogram_declarations subprogram_declaration ;
 [  Shift  ] | PBEGIN
@@ -131,7 +134,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression
 [  Shift  ] | IDENTIFIER
 [  Shift  ] | RPAREN
@@ -140,7 +144,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [Reduction] | procedure_statement: id ( expression_list )
 [Reduction] | statement: procedure_statement
@@ -153,7 +158,8 @@
 [Reduction] | term: factor
 [  Shift  ] | RBRAC
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | ASSIGNMENT
 [Reduction] | lambda:
 [Reduction] | tail: lambda
@@ -164,7 +170,8 @@
 [Reduction] | term: factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -174,7 +181,8 @@
 [Reduction] | term: factor
 [  Shift  ] | RBRAC
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | ASSIGNMENT
 [Reduction] | lambda:
 [Reduction] | tail: lambda
@@ -185,7 +193,8 @@
 [Reduction] | term: factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -198,7 +207,8 @@
 [Reduction] | term: factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -213,7 +223,8 @@
 [Reduction] | term: factor
 [  Shift  ] | RBRAC
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | SEMICOLON
 [Reduction] | lambda:
 [Reduction] | tail: lambda
@@ -221,7 +232,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -236,7 +248,8 @@
 [Reduction] | term: factor
 [  Shift  ] | RBRAC
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | PLUS
 [Reduction] | lambda:
 [Reduction] | tail: lambda
@@ -252,7 +265,8 @@
 [Reduction] | term: factor
 [  Shift  ] | RBRAC
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | SEMICOLON
 [Reduction] | lambda:
 [Reduction] | tail: lambda
@@ -260,7 +274,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -281,7 +296,8 @@
 [Reduction] | term: factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: simple_expression addop term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -296,42 +312,48 @@
 [Reduction] | term: factor
 [  Shift  ] | COMMA
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression
 [  Shift  ] | NUM
 [Reduction] | factor: num
 [Reduction] | term: factor
 [  Shift  ] | COMMA
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [  Shift  ] | NUM
 [Reduction] | factor: num
 [Reduction] | term: factor
 [  Shift  ] | COMMA
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [  Shift  ] | NUM
 [Reduction] | factor: num
 [Reduction] | term: factor
 [  Shift  ] | COMMA
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [  Shift  ] | NUM
 [Reduction] | factor: num
 [Reduction] | term: factor
 [  Shift  ] | COMMA
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [  Shift  ] | NUM
 [Reduction] | factor: num
 [Reduction] | term: factor
 [  Shift  ] | RPAREN
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [Reduction] | procedure_statement: id ( expression_list )
 [Reduction] | statement: procedure_statement
@@ -345,7 +367,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | PBEGIN
 [  Shift  ] | IDENTIFIER
 [  Shift  ] | SEMICOLON
@@ -364,7 +387,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [  Shift  ] | IDENTIFIER
@@ -388,7 +412,8 @@
 [Reduction] | term: factor
 [  Shift  ] | DO
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [  Shift  ] | IDENTIFIER
 [  Shift  ] | LPAREN
 [  Shift  ] | NUM
@@ -396,14 +421,16 @@
 [Reduction] | term: factor
 [  Shift  ] | COMMA
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression
 [  Shift  ] | NUM
 [Reduction] | factor: num
 [Reduction] | term: factor
 [  Shift  ] | COMMA
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [  Shift  ] | IDENTIFIER
 [  Shift  ] | COMMA
@@ -412,7 +439,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [  Shift  ] | IDENTIFIER
 [  Shift  ] | RPAREN
@@ -421,7 +449,8 @@
 [Reduction] | factor: id tail
 [Reduction] | term: factor
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | expression_list: expression_list , expression
 [Reduction] | procedure_statement: id ( expression_list )
 [Reduction] | statement: procedure_statement
@@ -442,7 +471,8 @@
 [Reduction] | term: factor
 [  Shift  ] | SEMICOLON
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement: IF expression THEN statement ELSE statement
 [Reduction] | statement_list: statement_list ; statement
@@ -456,7 +486,8 @@
 [Reduction] | term: factor
 [  Shift  ] | END
 [Reduction] | simple_expression: term
-[Reduction] | expression: simple_expression
+[Reduction] | boolexpression: simple_expression
+[Reduction] | expression: boolexpression
 [Reduction] | statement: variable := expression
 [Reduction] | statement_list: statement_list ; statement
 [Reduction] | optional_statements: statement_list
@@ -572,6 +603,8 @@ prog
           standard_type
             INTEGER
         SEMICOLON
+      subprogram_declarations
+        lambda
       compound_statement
         PBEGIN
         optional_statements
@@ -583,10 +616,11 @@ prog
                   lambda
               ASSIGNMENT
               expression
-                simple_expression
-                  term
-                    factor
-                      NUM
+                boolexpression
+                  simple_expression
+                    term
+                      factor
+                        NUM
         END
     SEMICOLON
   compound_statement
@@ -610,20 +644,22 @@ prog
                                 expression_list
                                   expression_list
                                     expression
+                                      boolexpression
+                                        simple_expression
+                                          term
+                                            factor
+                                              IDENTIFIER
+                                              tail
+                                                lambda
+                                  COMMA
+                                  expression
+                                    boolexpression
                                       simple_expression
                                         term
                                           factor
                                             IDENTIFIER
                                             tail
                                               lambda
-                                  COMMA
-                                  expression
-                                    simple_expression
-                                      term
-                                        factor
-                                          IDENTIFIER
-                                          tail
-                                            lambda
                                 RPAREN
                           SEMICOLON
                           statement
@@ -632,19 +668,21 @@ prog
                               tail
                                 LBRAC
                                 expression
-                                  simple_expression
-                                    term
-                                      factor
-                                        NUM
+                                  boolexpression
+                                    simple_expression
+                                      term
+                                        factor
+                                          NUM
                                 RBRAC
                                 tail
                                   lambda
                             ASSIGNMENT
                             expression
-                              simple_expression
-                                term
-                                  factor
-                                    NUM
+                              boolexpression
+                                simple_expression
+                                  term
+                                    factor
+                                      NUM
                         SEMICOLON
                         statement
                           variable
@@ -652,19 +690,21 @@ prog
                             tail
                               LBRAC
                               expression
-                                simple_expression
-                                  term
-                                    factor
-                                      NUM
+                                boolexpression
+                                  simple_expression
+                                    term
+                                      factor
+                                        NUM
                               RBRAC
                               tail
                                 lambda
                           ASSIGNMENT
                           expression
-                            simple_expression
-                              term
-                                factor
-                                  NUM
+                            boolexpression
+                              simple_expression
+                                term
+                                  factor
+                                    NUM
                       SEMICOLON
                       statement
                         variable
@@ -673,10 +713,11 @@ prog
                             lambda
                         ASSIGNMENT
                         expression
-                          simple_expression
-                            term
-                              factor
-                                NUM
+                          boolexpression
+                            simple_expression
+                              term
+                                factor
+                                  NUM
                     SEMICOLON
                     statement
                       variable
@@ -685,20 +726,22 @@ prog
                           lambda
                       ASSIGNMENT
                       expression
-                        simple_expression
-                          term
-                            factor
-                              IDENTIFIER
-                              tail
-                                LBRAC
-                                expression
-                                  simple_expression
-                                    term
-                                      factor
-                                        NUM
-                                RBRAC
+                        boolexpression
+                          simple_expression
+                            term
+                              factor
+                                IDENTIFIER
                                 tail
-                                  lambda
+                                  LBRAC
+                                  expression
+                                    boolexpression
+                                      simple_expression
+                                        term
+                                          factor
+                                            NUM
+                                  RBRAC
+                                  tail
+                                    lambda
                   SEMICOLON
                   statement
                     variable
@@ -707,36 +750,39 @@ prog
                         lambda
                     ASSIGNMENT
                     expression
-                      simple_expression
+                      boolexpression
                         simple_expression
+                          simple_expression
+                            term
+                              factor
+                                IDENTIFIER
+                                tail
+                                  LBRAC
+                                  expression
+                                    boolexpression
+                                      simple_expression
+                                        term
+                                          factor
+                                            NUM
+                                  RBRAC
+                                  tail
+                                    lambda
+                          addop
+                            PLUS
                           term
                             factor
                               IDENTIFIER
                               tail
                                 LBRAC
                                 expression
-                                  simple_expression
-                                    term
-                                      factor
-                                        NUM
+                                  boolexpression
+                                    simple_expression
+                                      term
+                                        factor
+                                          NUM
                                 RBRAC
                                 tail
                                   lambda
-                        addop
-                          PLUS
-                        term
-                          factor
-                            IDENTIFIER
-                            tail
-                              LBRAC
-                              expression
-                                simple_expression
-                                  term
-                                    factor
-                                      NUM
-                              RBRAC
-                              tail
-                                lambda
                 SEMICOLON
                 statement
                   variable
@@ -745,18 +791,19 @@ prog
                       lambda
                   ASSIGNMENT
                   expression
-                    simple_expression
+                    boolexpression
                       simple_expression
+                        simple_expression
+                          term
+                            factor
+                              IDENTIFIER
+                              tail
+                                lambda
+                        addop
+                          PLUS
                         term
                           factor
-                            IDENTIFIER
-                            tail
-                              lambda
-                      addop
-                        PLUS
-                      term
-                        factor
-                          NUM
+                            NUM
               SEMICOLON
               statement
                 procedure_statement
@@ -773,51 +820,58 @@ prog
                         expression_list
                           expression_list
                             expression
+                              boolexpression
+                                simple_expression
+                                  term
+                                    factor
+                                      NUM
+                          COMMA
+                          expression
+                            boolexpression
                               simple_expression
                                 term
                                   factor
                                     NUM
-                          COMMA
-                          expression
+                        COMMA
+                        expression
+                          boolexpression
                             simple_expression
                               term
                                 factor
                                   NUM
-                        COMMA
-                        expression
+                      COMMA
+                      expression
+                        boolexpression
                           simple_expression
                             term
                               factor
                                 NUM
-                      COMMA
-                      expression
+                    COMMA
+                    expression
+                      boolexpression
                         simple_expression
                           term
                             factor
                               NUM
-                    COMMA
-                    expression
+                  COMMA
+                  expression
+                    boolexpression
                       simple_expression
                         term
                           factor
                             NUM
-                  COMMA
-                  expression
-                    simple_expression
-                      term
-                        factor
-                          NUM
                 RPAREN
           SEMICOLON
           statement
             IF
             expression
-              simple_expression
-                term
-                  factor
-                    IDENTIFIER
-                    tail
-                      lambda
+              boolexpression
+                simple_expression
+                  term
+                    factor
+                      IDENTIFIER
+                      tail
+                        lambda
             THEN
             statement
               compound_statement
@@ -840,12 +894,13 @@ prog
                                   lambda
                               ASSIGNMENT
                               expression
-                                simple_expression
-                                  term
-                                    factor
-                                      IDENTIFIER
-                                      tail
-                                        lambda
+                                boolexpression
+                                  simple_expression
+                                    term
+                                      factor
+                                        IDENTIFIER
+                                        tail
+                                          lambda
                           SEMICOLON
                           statement
                             procedure_statement
@@ -862,10 +917,11 @@ prog
                     statement
                       WHILE
                       expression
-                        simple_expression
-                          term
-                            factor
-                              NUM
+                        boolexpression
+                          simple_expression
+                            term
+                              factor
+                                NUM
                       DO
                       statement
                         procedure_statement
@@ -876,32 +932,36 @@ prog
                               expression_list
                                 expression_list
                                   expression
+                                    boolexpression
+                                      simple_expression
+                                        term
+                                          factor
+                                            NUM
+                                COMMA
+                                expression
+                                  boolexpression
                                     simple_expression
                                       term
                                         factor
                                           NUM
-                                COMMA
-                                expression
+                              COMMA
+                              expression
+                                boolexpression
                                   simple_expression
                                     term
                                       factor
-                                        NUM
-                              COMMA
-                              expression
+                                        IDENTIFIER
+                                        tail
+                                          lambda
+                            COMMA
+                            expression
+                              boolexpression
                                 simple_expression
                                   term
                                     factor
                                       IDENTIFIER
                                       tail
                                         lambda
-                            COMMA
-                            expression
-                              simple_expression
-                                term
-                                  factor
-                                    IDENTIFIER
-                                    tail
-                                      lambda
                           RPAREN
                 END
             ELSE
@@ -912,10 +972,11 @@ prog
                   lambda
               ASSIGNMENT
               expression
-                simple_expression
-                  term
-                    factor
-                      NUM
+                boolexpression
+                  simple_expression
+                    term
+                      factor
+                        NUM
         SEMICOLON
         statement
           variable
@@ -924,10 +985,11 @@ prog
               lambda
           ASSIGNMENT
           expression
-            simple_expression
-              term
-                factor
-                  NUM
+            boolexpression
+              simple_expression
+                term
+                  factor
+                    NUM
     END
   DOT
 ------------------------- END -------------------------

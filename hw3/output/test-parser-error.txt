@@ -58,6 +58,8 @@
 [Reduction] | lambda:
 [Reduction] | declarations: lambda
 [  Shift  ] | PBEGIN
+[Reduction] | lambda:
+[Reduction] | subprogram_declarations: lambda
 [  Shift  ] | IDENTIFIER
 [  Shift  ] | ASSIGNMENT
 [Reduction] | lambda:
