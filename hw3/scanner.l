@@ -46,6 +46,11 @@ NQUOTE [^']
 
 %%
 
+{A}{N}{D}                             {
+                                        printf("[  Shift  ] | AND\n");
+                                        token_content = strdup(yytext);
+                                        return(AND);
+                                      }
 {A}{R}{R}{A}{Y}                       { printf("[  Shift  ] | ARRAY\n");
                                         token_content = strdup(yytext);
                                         return(ARRAY);
@@ -81,6 +86,11 @@ NQUOTE [^']
 {O}{F}                                { printf("[  Shift  ] | OF\n");
                                         token_content = strdup(yytext);
                                         return(OF);
+                                      }
+{O}{R}                                {
+                                        printf("[  Shift  ] | OR\n");
+                                        token_content = strdup(yytext);
+                                        return(OR);
                                       }
 {B}{E}{G}{I}{N}                       { printf("[  Shift  ] | PBEGIN\n");
                                         token_content = strdup(yytext);
