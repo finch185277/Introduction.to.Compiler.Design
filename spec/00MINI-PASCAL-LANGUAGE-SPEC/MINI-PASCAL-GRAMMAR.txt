@@ -103,7 +103,7 @@ expression_list ::= expression
 
 expression ::= boolexpression
 	| boolexpression AND boolexpression
-	| boolexpression OR  boolexpression
+	| boolexpression OR boolexpression
 
 
 boolexpression ::= simple_expression
