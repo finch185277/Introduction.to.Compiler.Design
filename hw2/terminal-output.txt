@@ -12,9 +12,6 @@ syntax error
 --------------- [test01-global-var.p] ---------------
 --------------- [test02-uninitialized-var.p] ---------------
 --------------- [test04.p] ---------------
-Lexical analyzer error at line 15 : '
-Lexical analyzer error at line 15 : !
-Lexical analyzer error at line 15 : '
 --------------- [test-constant.p] ---------------
 --------------- [test-function.p] ---------------
 --------------- [test-mini-nested-subprogram.p] ---------------

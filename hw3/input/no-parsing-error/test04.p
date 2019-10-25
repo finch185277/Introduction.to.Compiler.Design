@@ -12,7 +12,7 @@ end;
 
 
 begin
-    writeln('Hello, world!');
+    writeln("Hello, world!");
     d[3] := 5;
     d[4] := 6;
     a := 3;
