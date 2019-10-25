@@ -29,14 +29,14 @@ struct Node *ASTROOT;
 %token <node> PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token <node> ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
 %token <node> LBRAC LE LPAREN LT MINUS PLUS RBRAC RPAREN
-%token <node> SEMICOLON SLASH STAR notEQUAL
+%token <node> SEMICOLON SLASH STAR notEQUAL AND OR
 
 %type <node> tail term factor addop mulop relop lambda prog type
 %type <node> declarations arguments expression variable statement
 %type <node> standard_type optional_var optional_statements simple_expression
 %type <node> identifier_list expression_list statement_list parameter_list
 %type <node> subprogram_declaration subprogram_declarations subprogram_head
-%type <node> compound_statement procedure_statement
+%type <node> compound_statement procedure_statement boolexpression
 
 %left PLUS MINUS
 %left STAR SLASH
@@ -380,19 +380,44 @@ expression_list : expression
     printf("[Reduction] | expression_list: expression_list , expression\n");
   };
 
-expression : simple_expression
+  expression : boolexpression
   {
     $$ = new_node("expression");
     add_child($$, $1);
-    printf("[Reduction] | expression: simple_expression\n");
+    printf("[Reduction] | expression: boolexpression\n");
+  }
+	| boolexpression AND boolexpression
+  {
+    $$ = new_node("expression");
+    add_child($$, $1);
+    add_child($$, new_node("AND"));
+    add_child($$, $3);
+    printf("[Reduction] | expression: ");
+    printf("boolexpression AND boolexpression\n");
+  }
+	| boolexpression OR boolexpression
+  {
+    $$ = new_node("expression");
+    add_child($$, $1);
+    add_child($$, new_node("OR"));
+    add_child($$, $3);
+    printf("[Reduction] | expression: ");
+    printf("boolexpression OR boolexpression\n");
+  };
+
+  boolexpression : simple_expression
+  {
+    $$ = new_node("boolexpression");
+    add_child($$, $1);
+    printf("[Reduction] | boolexpression: simple_expression\n");
   }
 	| simple_expression relop simple_expression
   {
-    $$ = new_node("expression");
+    $$ = new_node("boolexpression");
     add_child($$, $1);
     add_child($$, $2);
     add_child($$, $3);
-    printf("[Reduction] | expression: ");
+    printf("[Reduction] | boolexpression: ");
     printf("simple_expression relop simple_expression\n");
   };
 
