@@ -46,6 +46,10 @@ NQUOTE [^']
 
 %%
 
+{A}{N}{D}                             {
+                                        token_content = strdup(yytext);
+                                        return(AND);
+                                      }
 {A}{R}{R}{A}{Y}                       {
                                         token_content = strdup(yytext);
                                         return(ARRAY);
@@ -81,6 +85,10 @@ NQUOTE [^']
 {O}{F}                                {
                                         token_content = strdup(yytext);
                                         return(OF);
+                                      }
+{O}{R}                                {
+                                        token_content = strdup(yytext);
+                                        return(OR);
                                       }
 {B}{E}{G}{I}{N}                       {
                                         token_content = strdup(yytext);
