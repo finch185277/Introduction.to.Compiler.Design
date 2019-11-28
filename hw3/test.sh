@@ -17,12 +17,10 @@ fi
 
 for file in ${input_files}; do
   echo "--------------- [${file}] ---------------"
-  # ./parser < ${input_folder}/"${file%.*}".p > ${output_folder}/"${file%.*}".txt
-  touch ${output_folder}/"${file%.*}".txt
+  ./parser < ${input_folder}/"${file%.*}".p > ${output_folder}/"${file%.*}".txt
 done
 
 for file in ${input_error_files}; do
   echo "--------------- [${file}] ---------------"
-  # ./parser < ${input_folder}/${no_error_folder}/"${file%.*}".p > ${output_folder}/${no_error_folder}/"${file%.*}".txt
-  touch ${output_folder}/${error_folder}/"${file%.*}".txt
+  ./parser < ${input_folder}/${error_folder}/"${file%.*}".p > ${output_folder}/${error_folder}/"${file%.*}".txt
 done
