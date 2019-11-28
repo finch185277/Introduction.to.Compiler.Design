@@ -121,6 +121,11 @@ NQUOTE [^']
                                         token_content = strdup(yytext);
                                         return(REAL);
                                       }
+{S}{T}{R}{I}{N}{G}                    {
+                                        printf("[  Shift  ] | STRING\n");
+                                        token_content = strdup(yytext);
+                                        return(STRING);
+                                      }
 {T}{H}{E}{N}                          {
                                         printf("[  Shift  ] | THEN\n");
                                         token_content = strdup(yytext);
