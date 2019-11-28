@@ -31,7 +31,7 @@ void add_child(struct Node *node, struct Node *child) {
 
 void print_tree(struct Node *node, int ident) {
   for (int i = 0; i < ident; i++)
-    printf("  ");
+    printf(" ");
   printf("%s\n", node->name);
   ident++;
   struct Node *child = node->child;
