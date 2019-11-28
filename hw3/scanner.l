@@ -238,23 +238,28 @@ NQUOTE [^']
                                         return(STAR);
                                       }
 
-[a-zA-Z]([a-zA-Z0-9_])*               { printf("[  Shift  ] | IDENTIFIER\n");
+[a-zA-Z]([a-zA-Z0-9_])*               {
+                                        printf("[  Shift  ] | IDENTIFIER\n");
                                         token_content = strdup(yytext);
                                         return(IDENTIFIER);
                                       }
-[0-9]+                                { printf("[  Shift  ] | NUM\n");
+[0-9]+                                {
+                                        printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
                                         return(NUM);
                                       }
-[0-9]+\.[0-9]+                        { printf("[  Shift  ] | NUM\n");
+[0-9]+\.[0-9]+                        {
+                                        printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
                                         return(NUM);
                                       }
-[0-9]+(\.[0-9]+)?E[+-]?[0-9]+         { printf("[  Shift  ] | NUM\n");
+[0-9]+(\.[0-9]+)?E[+-]?[0-9]+         {
+                                        printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
                                         return(NUM);
                                       }
-\"((\\.)|[^\\\"\n])*\"                { printf("[  Shift  ] | STRING\n");
+\"((\\.)|[^\\\"\n])*\"                {
+                                        printf("[  Shift  ] | STRING\n");
                                         token_content = strdup(yytext);
                                         return(STRING);
                                       }
