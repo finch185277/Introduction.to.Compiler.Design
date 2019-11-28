@@ -9,6 +9,7 @@ YACC_FILE = parser.y
 MID_FILE = lex.yy.c y.tab.c y.tab.h
 C_FILE = node.c
 EXEC_FILE = parser
+OUTPUT_FOLDER = output
 
 all: $(LEX_FILE) $(YACC_FILE)
 	$(LEX) $(LEX_FILE)
@@ -21,4 +22,4 @@ test: all
 	./test.sh
 
 clean:
-	rm -rf $(MID_FILE) $(EXEC_FILE)
+	rm -rf $(MID_FILE) $(EXEC_FILE) $(OUTPUT_FOLDER)
