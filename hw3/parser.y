@@ -451,22 +451,26 @@ factor : IDENTIFIER tail
 addop : PLUS
   {
     $$ = new_node(ADDOP);
+    add_child($$, $1);
     printf("[Reduction] | addop: +\n");
   }
 	| MINUS
   {
     $$ = new_node(ADDOP);
+    add_child($$, $1);
     printf("[Reduction] | addop: -\n");
   };
 
 mulop : STAR
   {
     $$ = new_node(MULOP);
+    add_child($$, $1);
     printf("[Reduction] | mulop: *\n");
   }
 	| SLASH
   {
     $$ = new_node(MULOP);
+    add_child($$, $1);
     printf("[Reduction] | mulop: /\n");
   };
 
