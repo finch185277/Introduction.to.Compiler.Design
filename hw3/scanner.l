@@ -211,11 +211,13 @@ NQUOTE [^']
 "-"                                   {
                                         printf("[  Shift  ] | MINUS\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_MINUS);
                                         return(MINUS);
                                       }
 "+"                                   {
                                         printf("[  Shift  ] | PLUS\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_PLUS);
                                         return(PLUS);
                                       }
 "]"                                   {
@@ -236,11 +238,13 @@ NQUOTE [^']
 "/"                                   {
                                         printf("[  Shift  ] | SLASH\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_SLASH);
                                         return(SLASH);
                                       }
 "*"                                   {
                                         printf("[  Shift  ] | STAR\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_STAR);
                                         return(STAR);
                                       }
 
@@ -248,8 +252,7 @@ NQUOTE [^']
                                         printf("[  Shift  ] | IDENTIFIER\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_IDENTIFIER);
-                                        yylval.node->content = (char*)malloc(yyleng+1);
-                                        strcpy(yylval.node->content, yytext);
+                                        yylval.node->content = strdup(yytext);
                                         return(IDENTIFIER);
                                       }
 [0-9]+                                {
@@ -277,8 +280,7 @@ NQUOTE [^']
                                         printf("[  Shift  ] | STRING\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_STRING);
-                                        yylval.node->content = (char*)malloc(yyleng+1);
-                                        strcpy(yylval.node->content, yytext);
+                                        yylval.node->content = strdup(yytext);
                                         return(STRING);
                                       }
 
