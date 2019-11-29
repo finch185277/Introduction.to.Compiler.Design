@@ -106,20 +106,17 @@ type : standard_type
 
 standard_type : INTEGER
   {
-    $$ = new_node(STD_TYPE);
-    add_child($$, $1);
+    $$ = new_node(TYPE_INT);
     printf("[Reduction] | standard_type: INTEGER\n");
   }
 	| REAL
   {
-    $$ = new_node(STD_TYPE);
-    add_child($$, $1);
+    $$ = new_node(TYPE_REAL);
     printf("[Reduction] | standard_type: REAL\n");
   }
 	| STRING
   {
-    $$ = new_node(STD_TYPE);
-    add_child($$, $1);
+    $$ = new_node(TYPE_STRING);
     printf("[Reduction] | standard_type: STRING\n");
   };
 
