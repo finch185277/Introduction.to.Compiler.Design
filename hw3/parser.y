@@ -49,6 +49,8 @@ prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	compound_statement DOT
   {
     $$ = new_node(PROG);
+    add_child($$, $2);
+    add_child($$, $4);
     add_child($$, $7);
     add_child($$, $8);
     add_child($$, $9);
@@ -195,11 +197,10 @@ parameter_list : optional_var identifier_list COLON type
   }
 	| optional_var identifier_list COLON type SEMICOLON parameter_list
   {
-    $$ = new_node(PARA_LIST);
+    $$ = $6;
     add_child($$, $1);
     add_child($$, $2);
     add_child($$, $4);
-    add_child($$, $6);
     printf("[Reduction] | parameter_list: ");
     printf("optional_var identifier_list : type ; parameter_list\n");
   };
@@ -265,6 +266,7 @@ statement : variable ASSIGNMENT expression
   {
     $$ = $4;
     add_child($$, $2);
+    add_child($$, $6);
     printf("[Reduction] | statement: ");
     printf("IF expression THEN statement ELSE statement\n");
   }
@@ -295,7 +297,8 @@ tail : LBRAC expression RBRAC tail
     add_child($$, $2);
     printf("[Reduction] | tail: [ expression ] tail\n");
   }
-	| lambda {
+	| lambda
+  {
     $$ = new_node(TAIL);
     add_child($$, $1);
     printf("[Reduction] | tail: lambda\n");
@@ -304,11 +307,13 @@ tail : LBRAC expression RBRAC tail
 procedure_statement : IDENTIFIER
   {
     $$ = new_node(PROC_STMT);
+    add_child($$, $1);
     printf("[Reduction] | procedure_statement: id\n");
   }
 	| IDENTIFIER LPAREN expression_list RPAREN
   {
     $$ = new_node(PROC_STMT);
+    add_child($$, $1);
     add_child($$, $3);
     printf("[Reduction] | procedure_statement: id ( expression_list )\n");
   };
@@ -396,12 +401,14 @@ term : factor
 factor : IDENTIFIER tail
   {
     $$ = new_node(FACTOR);
+    add_child($$, $1);
     add_child($$, $2);
     printf("[Reduction] | factor: id tail\n");
   }
 	| IDENTIFIER LPAREN expression_list RPAREN
   {
     $$ = new_node(FACTOR);
+    add_child($$, $1);
     add_child($$, $3);
     printf("[Reduction] | factor: id ( expression_list )\n");
   }
@@ -508,10 +515,14 @@ lambda :
 int main(int argc, char **argv) {
   int flag = yyparse();
   if(flag == 0) {
-    printf("OK\n");
-    printf("------------------------- AST -------------------------\n");
+    printf("SUCCESS\n");
     print_tree(ASTROOT, 0);
-    printf("------------------------- END -------------------------\n");
+    printf("***********************************\n");
+    printf("*         No syntax error!        *\n");
+    printf("***********************************\n");
+    printf("***********************************\n");
+    printf("*        No semantic error!       *\n");
+    printf("***********************************\n");
   } else {
     printf("ERROR\n");
   }
