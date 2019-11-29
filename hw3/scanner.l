@@ -248,8 +248,8 @@ NQUOTE [^']
                                         printf("[  Shift  ] | IDENTIFIER\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_IDENTIFIER);
-                                        yylval.node->node_str = (char*)malloc(yyleng+1);
-                                        strcpy(yylval.node->node_str, yytext);
+                                        yylval.node->content = (char*)malloc(yyleng+1);
+                                        strcpy(yylval.node->content, yytext);
                                         return(IDENTIFIER);
                                       }
 [0-9]+                                {
@@ -277,8 +277,8 @@ NQUOTE [^']
                                         printf("[  Shift  ] | STRING\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_STRING);
-                                        yylval.node->node_str = (char*)malloc(yyleng+1);
-                                        strcpy(yylval.node->node_str, yytext);
+                                        yylval.node->content = (char*)malloc(yyleng+1);
+                                        strcpy(yylval.node->content, yytext);
                                         return(STRING);
                                       }
 
