@@ -13,9 +13,8 @@
 #define TAIL 2006
 #define TERM 2007
 #define TYPE 2008
-#define STD_TYPE 2009
-#define VARIABLE 2010
-#define LAMBDA 2011
+#define VARIABLE 2009
+#define LAMBDA 2010
 
 #define ADDOP 2021
 #define MULOP 2022
@@ -51,7 +50,7 @@ struct Node {
 
   int integer_value;
   double real_value;
-  char *node_str;
+  char *content;
 };
 
 struct Node *new_node(int type);

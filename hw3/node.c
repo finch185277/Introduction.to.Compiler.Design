@@ -5,7 +5,7 @@
 struct Node *new_node(int type) {
   struct Node *node = (struct Node *)malloc(sizeof(struct Node));
   node->node_type = type;
-  node->node_str = NULL;
+  node->content = NULL;
   node->parent = NULL;
   node->child = NULL;
   node->lsibling = node;
@@ -14,8 +14,8 @@ struct Node *new_node(int type) {
 }
 
 void delete_node(struct Node *node) {
-  if (node->node_str != NULL)
-    free(node->node_str);
+  if (node->content != NULL)
+    free(node->content);
   free(node);
 }
 
@@ -41,7 +41,9 @@ void print_tree(struct Node *node, int ident) {
   // case TYPE_REAL:
   //   printf("%f\n", node->real_value);
   // case TYPE_STRING:
-  //   printf("%s\n", node->node_str);
+  //   printf("%s\n", node->content);
+  // default:
+  //   printf("%d\n", node->node_type);
   // }
 
   printf("%d\n", node->node_type);
