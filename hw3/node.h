@@ -1,13 +1,14 @@
 #ifndef __NODE_H__
 #define __NODE_H__
 
-#define TOKEN_NUM 1001
-#define TOKEN_STRING 1002
-#define TOKEN_IDENTIFIER 1003
-#define TOKEN_PLUS 1004
-#define TOKEN_MINUS 1005
-#define TOKEN_SLASH 1006
-#define TOKEN_STAR 1007
+#define TOKEN_INT 1001
+#define TOKEN_REAL 1002
+#define TOKEN_STRING 1003
+#define TOKEN_IDENTIFIER 1004
+#define TOKEN_PLUS 1005
+#define TOKEN_MINUS 1006
+#define TOKEN_SLASH 1007
+#define TOKEN_STAR 1008
 
 #define ARGS 2001
 #define DECLS 2002
