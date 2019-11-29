@@ -258,21 +258,21 @@ NQUOTE [^']
 [0-9]+                                {
                                         printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
-                                        yylval.node = new_node(TOKEN_NUM);
+                                        yylval.node = new_node(TOKEN_INT);
                                         yylval.node->integer_value = atoi(yytext);
                                         return(NUM);
                                       }
 [0-9]+\.[0-9]+                        {
                                         printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
-                                        yylval.node = new_node(TOKEN_NUM);
+                                        yylval.node = new_node(TOKEN_REAL);
                                         yylval.node->real_value = atof(yytext);
                                         return(NUM);
                                       }
 [0-9]+(\.[0-9]+)?E[+-]?[0-9]+         {
                                         printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
-                                        yylval.node = new_node(TOKEN_NUM);
+                                        yylval.node = new_node(TOKEN_REAL);
                                         yylval.node->real_value = atof(yytext);
                                         return(NUM);
                                       }
