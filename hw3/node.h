@@ -85,7 +85,7 @@ struct Node {
   char *node_str;
 };
 
-struct Node *new_node(char *str);
+struct Node *new_node(int type);
 void delete_node(struct Node *node);
 void add_child(struct Node *node, struct Node *child);
 void print_tree(struct Node *node, int ident);
