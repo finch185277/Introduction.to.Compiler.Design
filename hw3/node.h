@@ -4,6 +4,10 @@
 #define TOKEN_NUM 1001
 #define TOKEN_STRING 1002
 #define TOKEN_IDENTIFIER 1003
+#define TOKEN_PLUS 1004
+#define TOKEN_MINUS 1005
+#define TOKEN_SLASH 1006
+#define TOKEN_STAR 1007
 
 #define ARGS 2001
 #define DECLS 2002
@@ -37,7 +41,7 @@
 
 #define TYPE_INT 2051
 #define TYPE_REAL 2052
-#define TYPE_STRING 2043
+#define TYPE_STRING 2053
 #define TYPE_ARRAY 2054
 #define VAR_DECL 2055
 
