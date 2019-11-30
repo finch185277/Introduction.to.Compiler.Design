@@ -50,8 +50,6 @@ prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	compound_statement DOT
   {
     $$ = new_node(PROG);
-    add_child($$, $2);
-    add_child($$, $4);
     add_child($$, $7);
     add_child($$, $8);
     add_child($$, $9);
