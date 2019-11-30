@@ -48,236 +48,192 @@ NQUOTE [^']
 %%
 
 {A}{N}{D}                             {
-                                        printf("[  Shift  ] | AND\n");
                                         token_content = strdup(yytext);
                                         return(AND);
                                       }
 {A}{R}{R}{A}{Y}                       {
-                                        printf("[  Shift  ] | ARRAY\n");
                                         token_content = strdup(yytext);
                                         return(ARRAY);
                                       }
 {D}{O}                                {
-                                        printf("[  Shift  ] | DO\n");
                                         token_content = strdup(yytext);
                                         return(DO);
                                       }
 {E}{L}{S}{E}                          {
-                                        printf("[  Shift  ] | ELSE\n");
                                         token_content = strdup(yytext);
                                         return(ELSE);
                                       }
 {E}{N}{D}                             {
-                                        printf("[  Shift  ] | END\n");
                                         token_content = strdup(yytext);
                                         return(END);
                                       }
 {F}{U}{N}{C}{T}{I}{O}{N}              {
-                                        printf("[  Shift  ] | FUNCTION\n");
                                         token_content = strdup(yytext);
                                         return(FUNCTION);
                                       }
 {I}{F}                                {
-                                        printf("[  Shift  ] | IF\n");
                                         token_content = strdup(yytext);
                                         return(IF);
                                       }
 {I}{N}{T}{E}{G}{E}{R}                 {
-                                        printf("[  Shift  ] | INTEGER\n");
                                         token_content = strdup(yytext);
                                         return(INTEGER);
                                       }
 {N}{O}{T}                             {
-                                        printf("[  Shift  ] | NOT\n");
                                         token_content = strdup(yytext);
                                         return(NOT);
                                       }
 {O}{F}                                {
-                                        printf("[  Shift  ] | OF\n");
                                         token_content = strdup(yytext);
                                         return(OF);
                                       }
 {O}{R}                                {
-                                        printf("[  Shift  ] | OR\n");
                                         token_content = strdup(yytext);
                                         return(OR);
                                       }
 {B}{E}{G}{I}{N}                       {
-                                        printf("[  Shift  ] | PBEGIN\n");
                                         token_content = strdup(yytext);
                                         return(PBEGIN);
                                       }
 {P}{R}{O}{C}{E}{D}{U}{R}{E}           {
-                                        printf("[  Shift  ] | PROCEDURE\n");
                                         token_content = strdup(yytext);
                                         return(PROCEDURE);
                                       }
 {P}{R}{O}{G}{R}{A}{M}                 {
-                                        printf("[  Shift  ] | PROGRAM\n");
                                         token_content = strdup(yytext);
                                         return(PROGRAM);
                                       }
 {R}{E}{A}{L}                          {
-                                        printf("[  Shift  ] | REAL\n");
                                         token_content = strdup(yytext);
                                         return(REAL);
                                       }
 {S}{T}{R}{I}{N}{G}                    {
-                                        printf("[  Shift  ] | STRING\n");
                                         token_content = strdup(yytext);
                                         return(STRING);
                                       }
 {T}{H}{E}{N}                          {
-                                        printf("[  Shift  ] | THEN\n");
                                         token_content = strdup(yytext);
                                         return(THEN);
                                       }
 {V}{A}{R}                             {
-                                        printf("[  Shift  ] | VAR\n");
                                         token_content = strdup(yytext);
                                         return(VAR);
                                       }
 {W}{H}{I}{L}{E}                       {
-                                        printf("[  Shift  ] | WHILE\n");
                                         token_content = strdup(yytext);
                                         return(WHILE);
                                       }
 
 ":="                                  {
-                                        printf("[  Shift  ] | ASSIGNMENT\n");
                                         token_content = strdup(yytext);
                                         return(ASSIGNMENT);
                                       }
 ":"                                   {
-                                        printf("[  Shift  ] | COLON\n");
                                         token_content = strdup(yytext);
                                         return(COLON);
                                       }
 ","                                   {
-                                        printf("[  Shift  ] | COMMA\n");
                                         token_content = strdup(yytext);
                                         return(COMMA);
                                       }
 "."                                   {
-                                        printf("[  Shift  ] | DOT\n");
                                         token_content = strdup(yytext);
                                         return(DOT);
                                       }
 ".."                                  {
-                                        printf("[  Shift  ] | DOTDOT\n");
                                         token_content = strdup(yytext);
                                         return(DOTDOT);
                                       }
 "="                                   {
-                                        printf("[  Shift  ] | EQUAL\n");
                                         token_content = strdup(yytext);
                                         return(EQUAL);
                                       }
 "!="                                  {
-                                        printf("[  Shift  ] | notEQUAL\n");
                                         token_content = strdup(yytext);
                                         return(notEQUAL);
                                       }
 ">="                                  {
-                                        printf("[  Shift  ] | GE\n");
                                         token_content = strdup(yytext);
                                         return(GE);
                                       }
 ">"                                   {
-                                        printf("[  Shift  ] | GT\n");
                                         token_content = strdup(yytext);
                                         return(GT);
                                       }
 "["                                   {
-                                        printf("[  Shift  ] | LBRAC\n");
                                         token_content = strdup(yytext);
                                         return(LBRAC);
                                       }
 "<="                                  {
-                                        printf("[  Shift  ] | LE\n");
                                         token_content = strdup(yytext);
                                         return(LE);
                                       }
 "("                                   {
-                                        printf("[  Shift  ] | LPAREN\n");
                                         token_content = strdup(yytext);
                                         return(LPAREN);
                                       }
 "<"                                   {
-                                        printf("[  Shift  ] | LT\n");
                                         token_content = strdup(yytext);
                                         return(LT);
                                       }
 "-"                                   {
-                                        printf("[  Shift  ] | MINUS\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_MINUS);
                                         return(MINUS);
                                       }
 "+"                                   {
-                                        printf("[  Shift  ] | PLUS\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_PLUS);
                                         return(PLUS);
                                       }
 "]"                                   {
-                                        printf("[  Shift  ] | RBRAC\n");
                                         token_content = strdup(yytext);
                                         return(RBRAC);
                                       }
 ")"                                   {
-                                        printf("[  Shift  ] | RPAREN\n");
                                         token_content = strdup(yytext);
                                         return(RPAREN);
                                       }
 ";"                                   {
-                                        printf("[  Shift  ] | SEMICOLON\n");
                                         token_content = strdup(yytext);
                                         return(SEMICOLON);
                                       }
 "/"                                   {
-                                        printf("[  Shift  ] | SLASH\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_SLASH);
                                         return(SLASH);
                                       }
 "*"                                   {
-                                        printf("[  Shift  ] | STAR\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_STAR);
                                         return(STAR);
                                       }
 
 [a-zA-Z]([a-zA-Z0-9_])*               {
-                                        printf("[  Shift  ] | IDENTIFIER\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_IDENTIFIER);
                                         yylval.node->content = strdup(yytext);
                                         return(IDENTIFIER);
                                       }
 [0-9]+                                {
-                                        printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_INT);
                                         yylval.node->integer_value = atoi(yytext);
                                         return(NUM);
                                       }
 [0-9]+\.[0-9]+                        {
-                                        printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_REAL);
                                         yylval.node->real_value = atof(yytext);
                                         return(NUM);
                                       }
 [0-9]+(\.[0-9]+)?E[+-]?[0-9]+         {
-                                        printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_REAL);
                                         yylval.node->real_value = atof(yytext);
                                         return(NUM);
                                       }
 \"((\\.)|[^\\\"\n])*\"                {
-                                        printf("[  Shift  ] | STRINGCONST\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_STRING);
                                         yylval.node->content = strdup(yytext);
