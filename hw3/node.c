@@ -88,7 +88,7 @@ void print_tree(struct Node *node, int ident_len) {
   case TYPE_ARRAY:
     printf("%s ARRAY\n", ident);
     break;
-  case ID_LIST:
+  case DECLS:
     printf("%s VAR_DECL\n", ident);
     break;
   case STMT_LIST:

@@ -57,6 +57,7 @@ struct Node {
   int integer_value;
   double real_value;
   char *content;
+  int visited;
 };
 
 struct Node *new_node(int type);
