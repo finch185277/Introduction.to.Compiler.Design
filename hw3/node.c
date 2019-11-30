@@ -62,66 +62,18 @@ void print_tree(struct Node *node, int ident_len) {
   case TOKEN_STAR:
     printf("%s *\n", ident);
     break;
-
-  // case ARGS:
-  //   printf("%s ARGS\n", ident);
-  // case DECLS:
-  //   printf("%s DECLS\n", ident);
-  // case FACTOR:
-  //   printf("%s FACTOR\n", ident);
   case PROG:
     printf("%s PROGRAM\n", ident);
-    break;
-  // case STMT:
-  //   printf("%s STMT\n", ident);
-  // case TAIL:
-  //   printf("%s TAIL\n", ident);
-  // case TERM:
-  //   printf("%s TERM\n", ident);
-  // case TYPE:
-  //   printf("%s TYPE\n", ident);
-  // case VARIABLE:
-  //   printf("%s VARIABLE\n", ident);
-  // case ADDOP:
-  //   printf("%s ADDOP\n", ident);
-  // case MULOP:
-  //   printf("%s MULOP\n", ident);
-  // case RELOP:
-  //   printf("%s RELOP\n", ident);
-  // case OPT_VAR:
-  //   printf("%s OPT_VAR\n", ident);
-  // case OPT_STMTS:
-  //   printf("%s OPT_STMTS\n", ident);
-  case ID_LIST:
-    printf("%s VAR_DECL\n", ident);
-    break;
-  // case EXPR_LIST:
-  //   printf("%s EXPR_LIST\n", ident);
-  case STMT_LIST:
-    printf("%s STMT_LIST\n", ident);
-    break;
-  case PARA_LIST:
-    printf("%s PARA_LIST\n", ident);
     break;
   case SUBPROG_DECL:
     printf("%s SUBPROG_DECL\n", ident);
     break;
-  // case SUBPROG_DECLS:
-  //   printf("%s SUBPROG_DECLS\n", ident);
   case SUBPROG_HEAD:
     printf("%s SUBPROG_HEAD\n", ident);
     break;
-  case COMPOUND_STMT:
-    printf("%s COMPOUND_STMT\n", ident);
+  case PARA_LIST:
+    printf("%s PARA_LIST\n", ident);
     break;
-  // case PROC_STMT:
-  //   printf("%s PROC_STMT\n", ident);
-  // case EXPR:
-  //   printf("%s EXPR\n", ident);
-  // case SIMPLE_EXPR:
-  //   printf("%s SIMPLE_EXPR\n", ident);
-  // case BOOL_EXPR:
-  //   printf("%s BOOL_EXPR\n", ident);
   case TYPE_INT:
     printf("%s TYPE_INT\n", ident);
     break;
@@ -134,8 +86,14 @@ void print_tree(struct Node *node, int ident_len) {
   case TYPE_ARRAY:
     printf("%s TYPE_ARRAY\n", ident);
     break;
-  case VAR_DECL:
+  case ID_LIST:
     printf("%s VAR_DECL\n", ident);
+    break;
+  case STMT_LIST:
+    printf("%s STMT_LIST\n", ident);
+    break;
+  case COMPOUND_STMT:
+    printf("%s COMPOUND_STMT\n", ident);
     break;
   }
 

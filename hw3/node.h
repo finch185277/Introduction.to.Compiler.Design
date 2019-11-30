@@ -44,7 +44,6 @@
 #define TYPE_REAL 2052
 #define TYPE_STRING 2053
 #define TYPE_ARRAY 2054
-#define VAR_DECL 2055
 
 struct Node {
   int node_type;
