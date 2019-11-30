@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include "node.h"
+#include "symtab.h"
 
 int yylex(void);
 int yywrap() { return 1; }
@@ -24,7 +25,7 @@ struct Node *ASTROOT;
   struct Node *node;
 }
 
-%token <node> ARRAY INTEGER REAL NUM STRING
+%token <node> ARRAY INTEGER REAL NUM STRING STRINGCONST
 %token <node> COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
 %token <node> PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token <node> ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
@@ -48,17 +49,12 @@ prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 	subprogram_declarations
 	compound_statement DOT
   {
-    $$ = new_node("prog");
-    add_child($$, new_node("PROGRAM"));
-    add_child($$, new_node("IDENTIFIER"));
-    add_child($$, new_node("LPAREN"));
+    $$ = new_node(PROG);
+    add_child($$, $2);
     add_child($$, $4);
-    add_child($$, new_node("RPAREN"));
-    add_child($$, new_node("SEMICOLON"));
     add_child($$, $7);
     add_child($$, $8);
     add_child($$, $9);
-    add_child($$, new_node("DOT"));
     ASTROOT = $$;
     printf("[Reduction] | prog: PROGRAM id ( identifier_list ) ; ");
     printf("declarations subprogram_declarations compound_statement .\n");
@@ -67,34 +63,28 @@ prog : PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON
 
 identifier_list : IDENTIFIER
   {
-    $$ = new_node("identifier_list");
-    add_child($$, new_node("IDENTIFIER"));
+    $$ = new_node(ID_LIST);
+    add_child($$, $1);
     printf("[Reduction] | identifier_list: id\n");
   }
 	| identifier_list COMMA IDENTIFIER
   {
-    $$ = new_node("identifier_list");
-    add_child($$, $1);
-    add_child($$, new_node("COMMA"));
-    add_child($$, new_node("IDENTIFIER"));
+    $$ = $1;
+    add_child($$, $3);
     printf("[Reduction] | identifier_list: identifier_list , id\n");
   };
 
 declarations : declarations VAR identifier_list COLON type SEMICOLON
   {
-    $$ = new_node("declarations");
-    add_child($$, $1);
-    add_child($$, new_node("VAR"));
+    $$ = $1;
     add_child($$, $3);
-    add_child($$, new_node("COLON"));
     add_child($$, $5);
-    add_child($$, new_node("SEMICOLON"));
     printf("[Reduction] | declarations: ");
     printf("declarations VAR identifier_list : type ;\n");
   }
 	| lambda
   {
-    $$ = new_node("declarations");
+    $$ = new_node(DECLS);
     add_child($$, $1);
     printf("[Reduction] | declarations: lambda\n");
   };
@@ -102,56 +92,46 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON
 
 type : standard_type
   {
-    $$ = new_node("type");
+    $$ = new_node(TYPE);
     add_child($$, $1);
     printf("[Reduction] | type: standard_type\n");
   }
 	| ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type
   {
-    $$ = new_node("type");
-    add_child($$, new_node("ARRAY"));
-    add_child($$, new_node("LBRAC"));
-    add_child($$, new_node("NUM"));
-    add_child($$, new_node("DOTDOT"));
-    add_child($$, new_node("NUM"));
-    add_child($$, new_node("RBRAC"));
-    add_child($$, new_node("OF"));
-    add_child($$, $8);
+    $$ = $8;
+    add_child($$, new_node(TYPE_ARRAY));
+    add_child($$, $3);
+    add_child($$, $5);
     printf("[Reduction] | type: ARRAY [ num .. num ] OF type\n");
   };
 
 standard_type : INTEGER
   {
-    $$ = new_node("standard_type");
-    add_child($$, new_node("INTEGER"));
+    $$ = new_node(TYPE_INT);
     printf("[Reduction] | standard_type: INTEGER\n");
   }
 	| REAL
   {
-    $$ = new_node("standard_type");
-    add_child($$, new_node("REAL"));
+    $$ = new_node(TYPE_REAL);
     printf("[Reduction] | standard_type: REAL\n");
   }
 	| STRING
   {
-    $$ = new_node("standard_type");
-    add_child($$, new_node("STRING"));
+    $$ = new_node(TYPE_STRING);
     printf("[Reduction] | standard_type: STRING\n");
   };
 
 subprogram_declarations :
 	subprogram_declarations subprogram_declaration SEMICOLON
   {
-    $$ = new_node("subprogram_declarations");
-    add_child($$, $1);
+    $$ = $1;
     add_child($$, $2);
-    add_child($$, new_node("SEMICOLON"));
     printf("[Reduction] | subprogram_declarations: ");
     printf("subprogram_declarations subprogram_declaration ;\n");
   }
 	| lambda
   {
-    $$ = new_node("subprogram_declarations");
+    $$ = new_node(SUBPROG_DECLS);
     add_child($$, $1);
     printf("[Reduction] | subprogram_declarations: lambda\n");
   };
@@ -162,7 +142,7 @@ subprogram_declaration :
 	subprogram_declarations
 	compound_statement
   {
-    $$ = new_node("subprogram_declaration");
+    $$ = new_node(SUBPROG_DECL);
     add_child($$, $1);
     add_child($$, $2);
     add_child($$, $3);
@@ -174,39 +154,34 @@ subprogram_declaration :
 
 subprogram_head : FUNCTION IDENTIFIER arguments COLON standard_type SEMICOLON
   {
-    $$ = new_node("subprogram_head");
-    add_child($$, new_node("FUNCTION"));
-    add_child($$, new_node("IDENTIFIER"));
+    $$ = new_node(SUBPROG_HEAD);
+    add_child($$, new_node(HEAD_FUNCTION));
+    add_child($$, $2);
     add_child($$, $3);
-    add_child($$, new_node("COLON"));
     add_child($$, $5);
-    add_child($$, new_node("SEMICOLON"));
     printf("[Reduction] | subprogram_head: ");
     printf("FUNCTION id arguments : standard_type ;\n");
 
   }
 	| PROCEDURE IDENTIFIER arguments SEMICOLON
   {
-    $$ = new_node("subprogram_head");
-    add_child($$, new_node("PROCEDURE"));
-    add_child($$, new_node("IDENTIFIER"));
+    $$ = new_node(SUBPROG_HEAD);
+    add_child($$, new_node(HEAD_PROCEDURE));
+    add_child($$, $2);
     add_child($$, $3);
-    add_child($$, new_node("SEMICOLON"));
     printf("[Reduction] | subprogram_head: PROCEDURE id arguments ;\n");
   };
 
 
 arguments : LPAREN parameter_list RPAREN
   {
-    $$ = new_node("arguments");
-    add_child($$, new_node("LPAREN"));
+    $$ = new_node(ARGS);
     add_child($$, $2);
-    add_child($$, new_node("RPAREN"));
     printf("[Reduction] | arguments: ( parameter_list )\n");
   }
 	| lambda
   {
-    $$ = new_node("arguments");
+    $$ = new_node(ARGS);
     add_child($$, $1);
     printf("[Reduction] | arguments: lambda\n");
   };
@@ -214,192 +189,166 @@ arguments : LPAREN parameter_list RPAREN
 
 parameter_list : optional_var identifier_list COLON type
   {
-    $$ = new_node("parameter_list");
+    $$ = new_node(PARA_LIST);
     add_child($$, $1);
     add_child($$, $2);
-    add_child($$, new_node("COLON"));
     add_child($$, $4);
     printf("[Reduction] | parameter_list: optional_var identifier_list : type\n");
   }
 	| optional_var identifier_list COLON type SEMICOLON parameter_list
   {
-    $$ = new_node("parameter_list");
+    $$ = $6;
     add_child($$, $1);
     add_child($$, $2);
-    add_child($$, new_node("COLON"));
     add_child($$, $4);
-    add_child($$, new_node("SEMICOLON"));
-    add_child($$, $6);
     printf("[Reduction] | parameter_list: ");
     printf("optional_var identifier_list : type ; parameter_list\n");
   };
 
 optional_var : VAR
   {
-    $$ = new_node("optional_var");
-    add_child($$, new_node("VAR"));
+    $$ = new_node(OPT_VAR);
     printf("[Reduction] | optional_var: VAR\n");
   }
 	| lambda
   {
-    $$ = new_node("optional_var");
-    add_child($$, $1);
+    $$ = new_node(OPT_VAR);
     printf("[Reduction] | optional_var: lambda\n");
   };
 
 compound_statement : PBEGIN optional_statements END
   {
-    $$ = new_node("compound_statement");
-    add_child($$, new_node("PBEGIN"));
+    $$ = new_node(COMPOUND_STMT);
     add_child($$, $2);
-    add_child($$, new_node("END"));
     printf("[Reduction] | compound_statement: begin optional_statements end\n");
   };
 
 optional_statements : statement_list
   {
-    $$ = new_node("optional_statements");
+    $$ = new_node(OPT_STMTS);
     add_child($$, $1);
     printf("[Reduction] | optional_statements: statement_list\n");
   };
 
 statement_list : statement
   {
-    $$ = new_node("statement_list");
+    $$ = new_node(STMT_LIST);
     add_child($$, $1);
     printf("[Reduction] | statement_list: statement\n");
   }
 	| statement_list SEMICOLON statement
   {
-    $$ = new_node("statement_list");
-    add_child($$, $1);
-    add_child($$, new_node("SEMICOLON"));
+    $$ = $1;
     add_child($$, $3);
     printf("[Reduction] | statement_list: statement_list ; statement\n");
   };
 
 statement : variable ASSIGNMENT expression
   {
-    $$ = new_node("statement");
+    $$ = new_node(STMT);
     add_child($$, $1);
-    add_child($$, new_node("ASSIGNMENT"));
     add_child($$, $3);
     printf("[Reduction] | statement: variable := expression\n");
   }
 	| procedure_statement
   {
-    $$ = new_node("statement");
+    $$ = new_node(STMT);
     add_child($$, $1);
     printf("[Reduction] | statement: procedure_statement\n");
   }
 	| compound_statement
   {
-    $$ = new_node("statement");
+    $$ = new_node(STMT);
     add_child($$, $1);
     printf("[Reduction] | statement: compound_statement\n");
   }
 	| IF expression THEN statement ELSE statement
   {
-    $$ = new_node("statement");
-    add_child($$, new_node("IF"));
+    $$ = $4;
     add_child($$, $2);
-    add_child($$, new_node("THEN"));
-    add_child($$, $4);
-    add_child($$, new_node("ELSE"));
     add_child($$, $6);
     printf("[Reduction] | statement: ");
     printf("IF expression THEN statement ELSE statement\n");
   }
 	| WHILE expression DO statement
   {
-    $$ = new_node("statement");
-    add_child($$, new_node("WHILE"));
+    $$ = $4;
     add_child($$, $2);
-    add_child($$, new_node("DO"));
-    add_child($$, $4);
     printf("[Reduction] | statement: WHILE expression DO statement\n");
   }
 	| lambda
   {
-    $$ = new_node("statement");
+    $$ = new_node(STMT);
     add_child($$, $1);
     printf("[Reduction] | statement: lambda\n");
   };
 
 variable : IDENTIFIER tail
   {
-    $$ = new_node("variable");
-    add_child($$, new_node("IDENTIFIER"));
+    $$ = new_node(VARIABLE);
+    add_child($$, $1);
     add_child($$, $2);
     printf("[Reduction] | variable: id tail\n");
   };
 
 tail : LBRAC expression RBRAC tail
   {
-    $$ = new_node("tail");
-    add_child($$, new_node("LBRAC"));
+    $$ = $4;
     add_child($$, $2);
-    add_child($$, new_node("RBRAC"));
-    add_child($$, $4);
     printf("[Reduction] | tail: [ expression ] tail\n");
   }
-	| lambda {
-    $$ = new_node("tail");
+	| lambda
+  {
+    $$ = new_node(TAIL);
     add_child($$, $1);
     printf("[Reduction] | tail: lambda\n");
   };
 
 procedure_statement : IDENTIFIER
   {
-    $$ = new_node("procedure_statement");
-    add_child($$, new_node("IDENTIFIER"));
+    $$ = new_node(PROC_STMT);
+    add_child($$, $1);
     printf("[Reduction] | procedure_statement: id\n");
   }
 	| IDENTIFIER LPAREN expression_list RPAREN
   {
-    $$ = new_node("procedure_statement");
-    add_child($$, new_node("IDENTIFIER"));
-    add_child($$, new_node("LBRAC"));
+    $$ = new_node(PROC_STMT);
+    add_child($$, $1);
     add_child($$, $3);
-    add_child($$, new_node("RPAREN"));
     printf("[Reduction] | procedure_statement: id ( expression_list )\n");
   };
 
 expression_list : expression
   {
-    $$ = new_node("expression_list");
+    $$ = new_node(EXPR_LIST);
     add_child($$, $1);
     printf("[Reduction] | expression_list: expression\n");
   }
 	| expression_list COMMA expression
   {
-    $$ = new_node("expression_list");
-    add_child($$, $1);
-    add_child($$, new_node("COMMA"));
+    $$ = $1;
     add_child($$, $3);
     printf("[Reduction] | expression_list: expression_list , expression\n");
   };
 
   expression : boolexpression
   {
-    $$ = new_node("expression");
+    $$ = new_node(EXPR);
     add_child($$, $1);
     printf("[Reduction] | expression: boolexpression\n");
   }
 	| boolexpression AND boolexpression
   {
-    $$ = new_node("expression");
+    $$ = new_node(EXPR);
     add_child($$, $1);
-    add_child($$, new_node("AND"));
     add_child($$, $3);
     printf("[Reduction] | expression: ");
     printf("boolexpression AND boolexpression\n");
   }
 	| boolexpression OR boolexpression
   {
-    $$ = new_node("expression");
+    $$ = new_node(EXPR);
     add_child($$, $1);
-    add_child($$, new_node("OR"));
     add_child($$, $3);
     printf("[Reduction] | expression: ");
     printf("boolexpression OR boolexpression\n");
@@ -407,13 +356,13 @@ expression_list : expression
 
   boolexpression : simple_expression
   {
-    $$ = new_node("boolexpression");
+    $$ = new_node(BOOL_EXPR);
     add_child($$, $1);
     printf("[Reduction] | boolexpression: simple_expression\n");
   }
 	| simple_expression relop simple_expression
   {
-    $$ = new_node("boolexpression");
+    $$ = new_node(BOOL_EXPR);
     add_child($$, $1);
     add_child($$, $2);
     add_child($$, $3);
@@ -423,14 +372,13 @@ expression_list : expression
 
 simple_expression : term
   {
-    $$ = new_node("simple_expression");
+    $$ = new_node(SIMPLE_EXPR);
     add_child($$, $1);
     printf("[Reduction] | simple_expression: term\n");
   }
 	| simple_expression addop term
   {
-    $$ = new_node("simple_expression");
-    add_child($$, $1);
+    $$ = $1;
     add_child($$, $2);
     add_child($$, $3);
     printf("[Reduction] | simple_expression: simple_expression addop term\n");
@@ -438,14 +386,13 @@ simple_expression : term
 
 term : factor
   {
-    $$ = new_node("term");
+    $$ = new_node(TERM);
     add_child($$, $1);
     printf("[Reduction] | term: factor\n");
   }
 	| term mulop factor
   {
-    $$ = new_node("term");
-    add_child($$, $1);
+    $$ = $1;
     add_child($$, $2);
     add_child($$, $3);
     printf("[Reduction] | term: term mulop factor\n");
@@ -453,126 +400,117 @@ term : factor
 
 factor : IDENTIFIER tail
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("IDENTIFIER"));
+    $$ = new_node(FACTOR);
+    add_child($$, $1);
     add_child($$, $2);
     printf("[Reduction] | factor: id tail\n");
   }
 	| IDENTIFIER LPAREN expression_list RPAREN
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("IDENTIFIER"));
-    add_child($$, new_node("LPAREN"));
+    $$ = new_node(FACTOR);
+    add_child($$, $1);
     add_child($$, $3);
-    add_child($$, new_node("RPAREN"));
     printf("[Reduction] | factor: id ( expression_list )\n");
   }
 	| NUM
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("NUM"));
+    $$ = new_node(FACTOR);
+    add_child($$, $1);
     printf("[Reduction] | factor: num\n");
   }
   | PLUS NUM
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("NUM"));
+    $$ = new_node(FACTOR);
+    add_child($$, $2);
     printf("[Reduction] | factor: positive num\n");
   }
   | MINUS NUM
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("NUM"));
+    $$ = new_node(FACTOR);
+    $2->integer_value = -$2->integer_value;
+    $2->real_value = -$2->real_value;
+    add_child($$, $2);
     printf("[Reduction] | factor: negative num\n");
   }
-	| STRING
+	| STRINGCONST
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("STRING"));
+    $$ = new_node(FACTOR);
+    add_child($$, $1);
     printf("[Reduction] | factor: stringconstant\n");
   }
 	| LPAREN expression RPAREN
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("LPAREN"));
+    $$ = new_node(FACTOR);
     add_child($$, $2);
-    add_child($$, new_node("RPAREN"));
     printf("[Reduction] | factor: ( expression )\n");
   }
 	| NOT factor
   {
-    $$ = new_node("factor");
-    add_child($$, new_node("NOT"));
+    $$ = new_node(FACTOR);
     add_child($$, $2);
     printf("[Reduction] | factor: not factor\n");
   };
 
 addop : PLUS
   {
-    $$ = new_node("addop");
-    add_child($$, new_node("PLUS"));
+    $$ = new_node(ADDOP);
+    add_child($$, $1);
     printf("[Reduction] | addop: +\n");
   }
 	| MINUS
   {
-    $$ = new_node("addop");
-    add_child($$, new_node("MINUS"));
+    $$ = new_node(ADDOP);
+    add_child($$, $1);
     printf("[Reduction] | addop: -\n");
   };
 
 mulop : STAR
   {
-    $$ = new_node("mulop");
-    add_child($$, new_node("STAR"));
+    $$ = new_node(MULOP);
+    add_child($$, $1);
     printf("[Reduction] | mulop: *\n");
   }
 	| SLASH
   {
-    $$ = new_node("mulop");
-    add_child($$, new_node("SLASH"));
+    $$ = new_node(MULOP);
+    add_child($$, $1);
     printf("[Reduction] | mulop: /\n");
   };
 
 relop : LT
   {
-    $$ = new_node("relop");
-    add_child($$, new_node("LT"));
+    $$ = new_node(RELOP);
     printf("[Reduction] | relop: <\n");
   }
 	| GT
   {
-    $$ = new_node("relop");
-    add_child($$, new_node("GT"));
+    $$ = new_node(RELOP);
     printf("[Reduction] | relop: >\n");
   }
 	| EQUAL
   {
-    $$ = new_node("relop");
-    add_child($$, new_node("EQUAL"));
+    $$ = new_node(RELOP);
     printf("[Reduction] | relop: =\n");
   }
 	| LE
   {
-    $$ = new_node("relop");
-    add_child($$, new_node("LE"));
+    $$ = new_node(RELOP);
     printf("[Reduction] | relop: <=\n");
   }
 	| GE
   {
-    $$ = new_node("relop");
-    add_child($$, new_node("GE"));
+    $$ = new_node(RELOP);
     printf("[Reduction] | relop: >=\n");
   }
 	| notEQUAL
   {
-    $$ = new_node("relop");
-    add_child($$, new_node("notEQUAL"));
+    $$ = new_node(RELOP);
     printf("[Reduction] | relop: !=\n");
   };
 
 lambda :
   {
-    $$ = new_node("lambda");
+    $$ = new_node(LAMBDA);
     printf("[Reduction] | lambda:\n");
   };
 
@@ -581,10 +519,13 @@ lambda :
 int main(int argc, char **argv) {
   int flag = yyparse();
   if(flag == 0) {
-    printf("OK\n");
-    printf("------------------------- AST -------------------------\n");
+    printf("***********************************\n");
+    printf("*         No parse error!         *\n");
+    printf("***********************************\n");
     print_tree(ASTROOT, 0);
-    printf("------------------------- END -------------------------\n");
+    printf("***********************************\n");
+    printf("*         No syntax error!        *\n");
+    printf("***********************************\n");
   } else {
     printf("ERROR\n");
   }

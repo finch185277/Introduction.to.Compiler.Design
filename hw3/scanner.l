@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "y.tab.h"
+#include "node.h"
 
 char* token_content;
 
@@ -121,6 +122,11 @@ NQUOTE [^']
                                         token_content = strdup(yytext);
                                         return(REAL);
                                       }
+{S}{T}{R}{I}{N}{G}                    {
+                                        printf("[  Shift  ] | STRING\n");
+                                        token_content = strdup(yytext);
+                                        return(STRING);
+                                      }
 {T}{H}{E}{N}                          {
                                         printf("[  Shift  ] | THEN\n");
                                         token_content = strdup(yytext);
@@ -205,11 +211,13 @@ NQUOTE [^']
 "-"                                   {
                                         printf("[  Shift  ] | MINUS\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_MINUS);
                                         return(MINUS);
                                       }
 "+"                                   {
                                         printf("[  Shift  ] | PLUS\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_PLUS);
                                         return(PLUS);
                                       }
 "]"                                   {
@@ -230,38 +238,50 @@ NQUOTE [^']
 "/"                                   {
                                         printf("[  Shift  ] | SLASH\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_SLASH);
                                         return(SLASH);
                                       }
 "*"                                   {
                                         printf("[  Shift  ] | STAR\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_STAR);
                                         return(STAR);
                                       }
 
 [a-zA-Z]([a-zA-Z0-9_])*               {
                                         printf("[  Shift  ] | IDENTIFIER\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_IDENTIFIER);
+                                        yylval.node->content = strdup(yytext);
                                         return(IDENTIFIER);
                                       }
 [0-9]+                                {
                                         printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_INT);
+                                        yylval.node->integer_value = atoi(yytext);
                                         return(NUM);
                                       }
 [0-9]+\.[0-9]+                        {
                                         printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_REAL);
+                                        yylval.node->real_value = atof(yytext);
                                         return(NUM);
                                       }
 [0-9]+(\.[0-9]+)?E[+-]?[0-9]+         {
                                         printf("[  Shift  ] | NUM\n");
                                         token_content = strdup(yytext);
+                                        yylval.node = new_node(TOKEN_REAL);
+                                        yylval.node->real_value = atof(yytext);
                                         return(NUM);
                                       }
 \"((\\.)|[^\\\"\n])*\"                {
-                                        printf("[  Shift  ] | STRING\n");
+                                        printf("[  Shift  ] | STRINGCONST\n");
                                         token_content = strdup(yytext);
-                                        return(STRING);
+                                        yylval.node = new_node(TOKEN_STRING);
+                                        yylval.node->content = strdup(yytext);
+                                        return(STRINGCONST);
                                       }
 
 \/\/.*$                               ;
