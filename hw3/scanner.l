@@ -277,11 +277,11 @@ NQUOTE [^']
                                         return(NUM);
                                       }
 \"((\\.)|[^\\\"\n])*\"                {
-                                        printf("[  Shift  ] | STRING\n");
+                                        printf("[  Shift  ] | STRINGCONST\n");
                                         token_content = strdup(yytext);
                                         yylval.node = new_node(TOKEN_STRING);
                                         yylval.node->content = strdup(yytext);
-                                        return(STRING);
+                                        return(STRINGCONST);
                                       }
 
 \/\/.*$                               ;
