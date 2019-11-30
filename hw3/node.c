@@ -6,11 +6,11 @@
 struct Node *new_node(int type) {
   struct Node *node = (struct Node *)malloc(sizeof(struct Node));
   node->node_type = type;
-  node->content = NULL;
   node->parent = NULL;
   node->child = NULL;
   node->lsibling = node;
   node->rsibling = node;
+  node->content = NULL;
   return node;
 }
 
