@@ -3,17 +3,14 @@
 
 #include "node.h"
 
-struct symbol_table_entry {
-  char name[100];
+#define NAME_SIZE 100
+#define TAB_SIZE 100
+#define LIST_SIZE 100
+
+struct entry {
+  char name[NAME_SIZE];
   int scope;
   int type;
-};
-
-struct symbol_table_list {
-  int max_idx;
-  struct symbol_table_entry symbol_table[100];
-  // first element of symbol is ID entry
-  // idx means the table scope
 };
 
 int semantic_check(struct Node *node);
