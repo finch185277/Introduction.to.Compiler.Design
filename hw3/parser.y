@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include "node.h"
+#include "symtab.h"
 
 int yylex(void);
 int yywrap() { return 1; }
@@ -24,7 +25,7 @@ struct Node *ASTROOT;
   struct Node *node;
 }
 
-%token <node> ARRAY INTEGER REAL NUM STRING
+%token <node> ARRAY INTEGER REAL NUM STRING STRINGCONST
 %token <node> COMMENT DO ELSE END FUNCTION IDENTIFIER IF NOT OF
 %token <node> PBEGIN PROCEDURE PROGRAM THEN VAR WHILE
 %token <node> ASSIGNMENT COLON COMMA DOT DOTDOT EQUAL GE GT
@@ -429,7 +430,7 @@ factor : IDENTIFIER tail
     add_child($$, $2);
     printf("[Reduction] | factor: negative num\n");
   }
-	| STRING
+	| STRINGCONST
   {
     $$ = new_node(FACTOR);
     add_child($$, $1);
@@ -523,9 +524,14 @@ int main(int argc, char **argv) {
     printf("***********************************\n");
     printf("*         No syntax error!        *\n");
     printf("***********************************\n");
-    printf("***********************************\n");
-    printf("*        No semantic error!       *\n");
-    printf("***********************************\n");
+    flag = semantic_check(ASTROOT);
+    if(flag == 0) {
+      printf("***********************************\n");
+      printf("*        No semantic error!       *\n");
+      printf("***********************************\n");
+    } else {
+      printf("ERROR\n");
+    }
   } else {
     printf("ERROR\n");
   }
