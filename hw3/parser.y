@@ -155,6 +155,7 @@ subprogram_declaration :
 subprogram_head : FUNCTION IDENTIFIER arguments COLON standard_type SEMICOLON
   {
     $$ = new_node(SUBPROG_HEAD);
+    add_child($$, new_node(HEAD_FUNCTION));
     add_child($$, $2);
     add_child($$, $3);
     add_child($$, $5);
@@ -165,6 +166,7 @@ subprogram_head : FUNCTION IDENTIFIER arguments COLON standard_type SEMICOLON
 	| PROCEDURE IDENTIFIER arguments SEMICOLON
   {
     $$ = new_node(SUBPROG_HEAD);
+    add_child($$, new_node(HEAD_PROCEDURE));
     add_child($$, $2);
     add_child($$, $3);
     printf("[Reduction] | subprogram_head: PROCEDURE id arguments ;\n");
