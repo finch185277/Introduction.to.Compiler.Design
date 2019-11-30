@@ -4,7 +4,7 @@ input_folder="input"
 error_folder="error"
 output_folder="output"
 
-input_files=$(ls ${input_folder} | grep -v ${error_folder})
+input_files=$(ls ${input_folder} | grep -vE "^${error_folder}$")
 input_error_files=$(ls ${input_folder}/${error_folder})
 
 if [ ! -d ${output_folder} ]; then
