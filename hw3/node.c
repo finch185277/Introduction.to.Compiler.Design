@@ -25,6 +25,8 @@ void add_child(struct Node *node, struct Node *child) {
   if (node->child == NULL) {
     node->child = child;
   } else {
+    // right-most node would point to new node, and new node would point back to
+    // the child, so new node will be right sibling of original right-most node
     child->lsibling = node->child->lsibling;
     child->rsibling = node->child;
     node->child->lsibling->rsibling = child;
