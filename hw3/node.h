@@ -44,6 +44,8 @@
 #define TYPE_REAL 2052
 #define TYPE_STRING 2053
 #define TYPE_ARRAY 2054
+#define HEAD_FUNCTION 2055
+#define HEAD_PROCEDURE 2056
 
 struct Node {
   int node_type;
