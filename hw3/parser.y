@@ -418,14 +418,14 @@ factor : IDENTIFIER tail
   | PLUS NUM
   {
     $$ = new_node(FACTOR);
-    add_child($$, $1);
     add_child($$, $2);
     printf("[Reduction] | factor: positive num\n");
   }
   | MINUS NUM
   {
     $$ = new_node(FACTOR);
-    add_child($$, $1);
+    $2->integer_value = -$2->integer_value;
+    $2->real_value = -$2->real_value;
     add_child($$, $2);
     printf("[Reduction] | factor: negative num\n");
   }
@@ -516,7 +516,9 @@ lambda :
 int main(int argc, char **argv) {
   int flag = yyparse();
   if(flag == 0) {
-    printf("SUCCESS\n");
+    printf("***********************************\n");
+    printf("*         No parse error!         *\n");
+    printf("***********************************\n");
     print_tree(ASTROOT, 0);
     printf("***********************************\n");
     printf("*         No syntax error!        *\n");
