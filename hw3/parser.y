@@ -91,9 +91,10 @@ type : standard_type
 	| ARRAY LBRAC NUM DOTDOT NUM RBRAC OF type
   {
     $$ = $8;
-    add_child($$, new_node(TYPE_ARRAY));
-    add_child($$, $3);
-    add_child($$, $5);
+    struct Node *ptr = new_node(TYPE_ARRAY);
+    add_child(ptr, $3);
+    add_child(ptr, $5);
+    add_child($$, ptr);
   };
 
 standard_type : INTEGER
@@ -229,14 +230,16 @@ statement : variable ASSIGNMENT expression
   }
 	| IF expression THEN statement ELSE statement
   {
-    $$ = $4;
+    $$ = new_node(STMT);
     add_child($$, $2);
+    add_child($$, $4);
     add_child($$, $6);
   }
 	| WHILE expression DO statement
   {
-    $$ = $4;
+    $$ = new_node(STMT);
     add_child($$, $2);
+    add_child($$, $4);
   }
 	| lambda
   {
