@@ -138,6 +138,29 @@ void traverse_decls(struct Node *node) {
   }
 }
 
+int calculate_dim(struct Range *range) {
+  int dim = 0;
+  for (; dim < RANGE_SIZE; dim++) {
+    if (range[dim].is_valid == 0) {
+      break;
+    }
+  }
+  return dim;
+}
+
+struct Range *traverse_array(struct Node *node) {
+  int dim = 0;
+  struct Range *range = malloc(RANGE_SIZE * sizeof(struct Range));
+  do {
+    range[dim].is_valid = 1;
+    range[dim].lower_bound = node->child->integer_value;
+    range[dim].upper_bound = node->child->rsibling->integer_value;
+    dim++;
+    node = node->rsibling;
+  } while (node->node_type == TYPE_ARRAY);
+  return range;
+}
+
 void traverse_para_list(struct Node *node) {
   if (node->node_type == LAMBDA)
     return;
@@ -156,30 +179,21 @@ void traverse_para_list(struct Node *node) {
       break;
     }
     int is_array = 0;
-    int dim = 0;
-    struct Range *range = malloc(RANGE_SIZE * sizeof(struct Range));
+    struct Range *range = NULL;
     if (child->rsibling->rsibling->child->rsibling !=
         child->rsibling->rsibling->child) {
       is_array = 1;
-      struct Node *arr_ptr = child->rsibling->rsibling->child->rsibling;
-      do {
-        print_type(arr_ptr);
-        printf("(%d, %d)\n", arr_ptr->child->integer_value,
-               arr_ptr->child->rsibling->integer_value);
-        range[dim].lower_bound = arr_ptr->child->integer_value;
-        range[dim].upper_bound = arr_ptr->child->rsibling->integer_value;
-        dim++;
-        arr_ptr = arr_ptr->rsibling;
-      } while (arr_ptr->node_type == TYPE_ARRAY);
+      range = traverse_array(child->rsibling->rsibling->child->rsibling);
     }
     struct Node *grand_child = child->rsibling->child;
     do {
       switch (grand_child->node_type) {
       case TOKEN_IDENTIFIER:
-        if (is_array)
+        if (is_array) {
+          int dim = calculate_dim(range);
           add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, dim,
                     range);
-        else
+        } else
           add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, 0, NULL);
         break;
       }

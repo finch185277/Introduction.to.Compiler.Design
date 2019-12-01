@@ -25,6 +25,7 @@ struct Table {
 };
 
 struct Range {
+  int is_valid;
   int lower_bound;
   int upper_bound;
 };
@@ -35,6 +36,8 @@ void add_entry(char *name, int scope, int type, int return_type,
 void delete_table();
 void print_entry_type(int type);
 void print_table();
+int calculate_dim(struct Range *range);
+struct Range *traverse_array(struct Node *node);
 void traverse_decls(struct Node *node);
 void traverse_para_list(struct Node *node);
 void traverse_prog(struct Node *node);
