@@ -5,6 +5,7 @@
 
 struct Table symtab[LIST_SIZE];
 int cur_tab_idx;
+int is_error;
 
 struct Entry *find_entry(char *name) {
   for (int j = 0; j < symtab[cur_tab_idx].next_entry_idx; j++) {
@@ -19,6 +20,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range) {
   if (find_entry(name) != NULL) {
     printf("[ ERROR ] Redefined error: %s\n", name);
+    is_error = 1;
     print_table();
     exit(0);
   }
@@ -26,6 +28,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   int entry_idx = symtab[cur_tab_idx].next_entry_idx;
   if (entry_idx == TAB_SIZE) {
     printf("[ ERROR ] Table size overflow: %s\n", name);
+    is_error = 1;
     print_table();
     exit(0);
   }
@@ -262,6 +265,75 @@ void traverse_subprog_head(struct Node *node) {
   }
 }
 
+int check_type(struct Node *node, int type) {
+  struct Node *child = node->child;
+  if (child != NULL) {
+    do {
+      if (child->node_type == TOKEN_INT) {
+        if (type != TYPE_INT) {
+          printf("[ ERROR ] Type error: "
+                 "type should be TOKEN_INT, not TOKEN_REAL\n");
+          is_error = 1;
+          return 1;
+        }
+      } else if (child->node_type == TOKEN_REAL) {
+        if (type != TYPE_REAL) {
+          printf("[ ERROR ] Type error: "
+                 "type should be TOKEN_REAL, not TOKEN_INT\n");
+          is_error = 1;
+          return 1;
+        }
+      }
+      if (check_type(child, type) == 1)
+        return 1;
+      else
+        child = child->rsibling;
+    } while (child != node->child);
+  }
+  return 0;
+}
+
+void traverse_stmt(struct Node *node) {
+  // variable := expression
+  if (node->child->node_type == ASMT) {
+    struct Node *var = node->child->rsibling;            // variable
+    struct Node *expr = node->child->rsibling->rsibling; // expression
+
+    struct Entry *var_entry = find_entry(var->child->content);
+    if (var_entry == NULL) {
+      printf("[ ERROR ] Undeclared error: %s\n", var->child->content);
+      is_error = 1;
+    } else {
+      int dim = 0;
+      struct Node *tail = var->child->rsibling;
+      struct Node *dim_counter = tail->child->rsibling;
+      while (dim_counter->node_type != LAMBDA) {
+        dim++;
+        dim_counter = dim_counter->rsibling;
+      }
+      if (dim != var_entry->dim) {
+        printf("[ ERROR ] Array dimension error: ");
+        printf("declare %d dim, but access %d dim\n", var_entry->dim, dim);
+        is_error = 1;
+      } else {
+        if (expr->child->child->rsibling->node_type == RELOP) {
+          printf("[ ERROR ] Variable should not assign to RELOP: %s\n",
+                 var->child->content);
+          is_error = 1;
+        } else {
+          struct Node *simple_expr = expr->child->child;
+          if (dim == 0) { // assign value
+            check_type(simple_expr, var_entry->type);
+          } else { // check type
+            check_type(simple_expr, var_entry->type);
+          }
+        }
+      }
+    }
+  }
+  return;
+}
+
 int semantic_check(struct Node *node) {
   if (node->visited == 1)
     return 0;
@@ -277,6 +349,9 @@ int semantic_check(struct Node *node) {
     break;
   case DECLS:
     traverse_decls(node);
+    break;
+  case STMT:
+    traverse_stmt(node);
     break;
   case COMPOUND_STMT:
     if (node->parent->node_type != PROG) {
@@ -300,5 +375,5 @@ int semantic_check(struct Node *node) {
     } while (child != node->child);
   }
 
-  return 0;
+  return is_error;
 }

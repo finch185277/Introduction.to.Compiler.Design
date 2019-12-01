@@ -17,6 +17,9 @@ struct Entry {
   char parameter[PARA_SIZE];
   int dim;
   struct Range *range;
+  int int_value;
+  int double_value;
+  int assigned;
 };
 
 struct Table {
