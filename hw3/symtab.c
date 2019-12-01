@@ -20,7 +20,7 @@ struct Entry *find_entry(char *name) {
 }
 
 void add_entry(char *name, int scope, int type, int return_type,
-               struct Node *parameter, int dim, struct Node *range) {
+               struct Node *parameter, int dim, struct Range *range) {
   if (0) {
     printf("Error: duplicate declaration of variable %s\n", name);
     exit(0);
@@ -28,7 +28,7 @@ void add_entry(char *name, int scope, int type, int return_type,
 
   int entry_idx = symtab[cur_tab_idx].next_entry_idx;
   if (entry_idx == TAB_SIZE) {
-    printf("Error: duplicate declaration of variable %s\n", name);
+    printf("Error: Size full, name: %s\n", name);
     exit(0);
   }
 
@@ -36,6 +36,8 @@ void add_entry(char *name, int scope, int type, int return_type,
   symtab[cur_tab_idx].table[entry_idx].scope = scope;
   symtab[cur_tab_idx].table[entry_idx].type = type;
   symtab[cur_tab_idx].table[entry_idx].return_type = return_type;
+  symtab[cur_tab_idx].table[entry_idx].dim = dim;
+  symtab[cur_tab_idx].table[entry_idx].range = range;
 
   if (entry_idx == 0)
     symtab[cur_tab_idx].is_valid = 1;
@@ -84,20 +86,24 @@ void print_table() {
     } else {
       printf(" |");
     }
-    if (symtab[cur_tab_idx].table[i].parameter != NULL) {
-      printf(" |");
-    } else {
-      printf(" |");
-    }
+    // if (symtab[cur_tab_idx].table[i].parameter != NULL) {
+    //   if(symtab[cur_tab_idx].table[i].parameter.node_type == LAMBDA){
+    //     printf(" () |");
+    //   }else{
+    //
+    //   }
+    // } else {
+    printf(" |");
+    // }
     if (symtab[cur_tab_idx].table[i].dim != 0) {
+      printf(" %d | ", symtab[cur_tab_idx].table[i].dim);
+      for (int rid = symtab[cur_tab_idx].table[i].dim - 1; rid >= 0; rid--) {
+        printf("(%d, %d) ", symtab[cur_tab_idx].table[i].range[rid].lower_bound,
+               symtab[cur_tab_idx].table[i].range[rid].upper_bound);
+      }
       printf(" |");
     } else {
-      printf(" |");
-    }
-    if (symtab[cur_tab_idx].table[i].range != NULL) {
-      printf(" |");
-    } else {
-      printf(" |");
+      printf(" | |");
     }
     printf(
         "\n----------------------------------------------------------------\n");
@@ -132,6 +138,57 @@ void traverse_decls(struct Node *node) {
   }
 }
 
+void traverse_para_list(struct Node *node) {
+  if (node->node_type == LAMBDA)
+    return;
+  struct Node *child = node->child;
+  do {
+    int type;
+    switch (child->rsibling->rsibling->child->node_type) {
+    case TYPE_INT:
+      type = TYPE_INT;
+      break;
+    case TYPE_REAL:
+      type = TYPE_REAL;
+      break;
+    case TYPE_STRING:
+      type = TYPE_STRING;
+      break;
+    }
+    int is_array = 0;
+    int dim = 0;
+    struct Range *range = malloc(RANGE_SIZE * sizeof(struct Range));
+    if (child->rsibling->rsibling->child->rsibling !=
+        child->rsibling->rsibling->child) {
+      is_array = 1;
+      struct Node *arr_ptr = child->rsibling->rsibling->child->rsibling;
+      do {
+        print_type(arr_ptr);
+        printf("(%d, %d)\n", arr_ptr->child->integer_value,
+               arr_ptr->child->rsibling->integer_value);
+        range[dim].lower_bound = arr_ptr->child->integer_value;
+        range[dim].upper_bound = arr_ptr->child->rsibling->integer_value;
+        dim++;
+        arr_ptr = arr_ptr->rsibling;
+      } while (arr_ptr->node_type == TYPE_ARRAY);
+    }
+    struct Node *grand_child = child->rsibling->child;
+    do {
+      switch (grand_child->node_type) {
+      case TOKEN_IDENTIFIER:
+        if (is_array)
+          add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, dim,
+                    range);
+        else
+          add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, 0, NULL);
+        break;
+      }
+      grand_child = grand_child->rsibling;
+    } while (grand_child != child->rsibling->child);
+    child = child->rsibling->rsibling->rsibling;
+  } while (child != node->child);
+}
+
 void traverse_prog(struct Node *node) {
   traverse_decls(node);
   print_table();
@@ -142,15 +199,23 @@ void traverse_subprog_head(struct Node *node) {
   printf("*              Open Scope              *\n");
   printf("****************************************\n");
   cur_tab_idx++;
+  traverse_para_list(node->child->rsibling->rsibling->child);
+  int scope;
+  if (node->parent->parent->parent->node_type == PROG) {
+    scope = 0;
+  } else {
+    scope = find_entry(node->parent->parent->parent->child->rsibling->content)
+                ->scope;
+  }
   switch (node->child->node_type) {
   case HEAD_FUNCTION:;
     int return_type = node->child->lsibling->node_type;
-    add_entry(node->child->rsibling->content, cur_tab_idx, HEAD_FUNCTION,
-              return_type, NULL, 0, NULL);
+    add_entry(node->child->rsibling->content, scope, HEAD_FUNCTION, return_type,
+              NULL, 0, NULL);
     break;
   case HEAD_PROCEDURE:
-    add_entry(node->child->rsibling->content, cur_tab_idx, HEAD_PROCEDURE, 0,
-              NULL, 0, NULL);
+    add_entry(node->child->rsibling->content, scope, HEAD_PROCEDURE, 0, NULL, 0,
+              NULL);
     break;
   }
 }
