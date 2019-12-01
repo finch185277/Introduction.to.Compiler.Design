@@ -19,8 +19,8 @@ struct Entry *find_entry(char *name) {
   return NULL;
 }
 
-void add_entry(char *name, int scope, int type, int return_type,
-               struct Node *parameter, int dim, struct Range *range) {
+void add_entry(char *name, int scope, int type, int return_type, int dim,
+               struct Range *range) {
   if (0) {
     printf("Error: duplicate declaration of variable %s\n", name);
     exit(0);
@@ -39,6 +39,18 @@ void add_entry(char *name, int scope, int type, int return_type,
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
   symtab[cur_tab_idx].table[entry_idx].range = range;
 
+  if (type == HEAD_FUNCTION || type == HEAD_PROCEDURE) {
+    if (entry_idx == 0) {
+      strcat(symtab[cur_tab_idx].table[entry_idx].parameter, "()");
+    } else {
+      for (int para_id = 0; para_id < entry_idx; para_id++) {
+        char para[200];
+        sprintf(para, "(%s)", symtab[cur_tab_idx].table[para_id].name);
+        strcat(symtab[cur_tab_idx].table[entry_idx].parameter, para);
+      }
+    }
+  }
+
   if (entry_idx == 0)
     symtab[cur_tab_idx].is_valid = 1;
 
@@ -51,67 +63,67 @@ void delete_table() {
 }
 
 void print_entry_type(int type) {
+  char type_name[20];
   switch (type) {
   case TYPE_INT:
-    printf("int");
+    sprintf(type_name, "int");
     break;
   case TYPE_REAL:
-    printf("real");
+    sprintf(type_name, "real");
     break;
   case TYPE_STRING:
-    printf("string");
+    sprintf(type_name, "string");
     break;
   case HEAD_FUNCTION:
-    printf("function");
+    sprintf(type_name, "function");
     break;
   case HEAD_PROCEDURE:
-    printf("procedure");
+    sprintf(type_name, "procedure");
+    break;
+  default:
+    sprintf(type_name, " ");
     break;
   }
+  printf("| %-9s ", type_name);
   return;
 }
 
 void print_table() {
-  printf("----------------------------------------------------------------\n");
-  printf("| Name | Scope | Type | Return | Parameter | Dim | Array Range |\n");
-  printf("----------------------------------------------------------------\n");
+  printf("---------------------------------------------------------------------"
+         "------------------------\n");
+  printf(
+      "|    Name    | Scope |   Type    |  Return   |    Parameter    | Dim | "
+      "     Array Range     |\n");
+  printf("---------------------------------------------------------------------"
+         "------------------------\n");
   for (int i = 0; i < symtab[cur_tab_idx].next_entry_idx; i++) {
-    printf("| %s | %d | ", symtab[cur_tab_idx].table[i].name,
-           symtab[cur_tab_idx].table[i].scope);
+    printf("| %-10s ", symtab[cur_tab_idx].table[i].name);
+    printf("| %-5d ", symtab[cur_tab_idx].table[i].scope);
     print_entry_type(symtab[cur_tab_idx].table[i].type);
-    printf(" | ");
-    if (symtab[cur_tab_idx].table[i].return_type != 0) {
-      print_entry_type(symtab[cur_tab_idx].table[i].return_type);
-      printf(" |");
-    } else {
-      printf(" |");
-    }
-    if (symtab[cur_tab_idx].table[i].type == HEAD_FUNCTION ||
-        symtab[cur_tab_idx].table[i].type == HEAD_PROCEDURE) {
-      if (i == 0) {
-        printf(" () |");
-      } else {
-        printf(" ");
-        for (int para_id = 0; para_id < i; para_id++) {
-          printf("(%s) ", symtab[cur_tab_idx].table[para_id].name);
-        }
-      }
-    } else {
-      printf(" |");
-    }
+    print_entry_type(symtab[cur_tab_idx].table[i].return_type);
+    printf("| %-15s ", symtab[cur_tab_idx].table[i].parameter);
+
     if (symtab[cur_tab_idx].table[i].dim != 0) {
-      printf(" %d | ", symtab[cur_tab_idx].table[i].dim);
+      printf("| %-3d ", symtab[cur_tab_idx].table[i].dim);
+      char array_range[100];
+      memset(&array_range, 0, sizeof(array_range));
       for (int rid = symtab[cur_tab_idx].table[i].dim - 1; rid >= 0; rid--) {
-        printf("(%d, %d) ", symtab[cur_tab_idx].table[i].range[rid].lower_bound,
-               symtab[cur_tab_idx].table[i].range[rid].upper_bound);
+        char single_range[20];
+        sprintf(single_range, "(%d, %d) ",
+                symtab[cur_tab_idx].table[i].range[rid].lower_bound,
+                symtab[cur_tab_idx].table[i].range[rid].upper_bound);
+        strcat(array_range, single_range);
       }
-      printf(" |");
+      printf("| %-20s |", array_range);
     } else {
-      printf(" | |");
+      printf("| %-3s ", "");
+      printf("| %-20s |", "");
     }
-    printf(
-        "\n----------------------------------------------------------------\n");
+
+    printf("\n-----------------------------------------------------------------"
+           "----------------------------\n");
   }
+  return;
 }
 
 void traverse_decls(struct Node *node) {
@@ -133,7 +145,7 @@ void traverse_decls(struct Node *node) {
     do {
       switch (grand_child->node_type) {
       case TOKEN_IDENTIFIER:
-        add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, 0, NULL);
+        add_entry(grand_child->content, cur_tab_idx, type, 0, 0, NULL);
         break;
       }
       grand_child = grand_child->rsibling;
@@ -195,10 +207,9 @@ void traverse_para_list(struct Node *node) {
       case TOKEN_IDENTIFIER:
         if (is_array) {
           int dim = calculate_dim(range);
-          add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, dim,
-                    range);
+          add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range);
         } else
-          add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, 0, NULL);
+          add_entry(grand_child->content, cur_tab_idx, type, 0, 0, NULL);
         break;
       }
       grand_child = grand_child->rsibling;
@@ -229,10 +240,10 @@ void traverse_subprog_head(struct Node *node) {
   case HEAD_FUNCTION:;
     int return_type = node->child->lsibling->node_type;
     add_entry(node->child->rsibling->content, scope, HEAD_FUNCTION, return_type,
-              NULL, 0, NULL);
+              0, NULL);
     break;
   case HEAD_PROCEDURE:
-    add_entry(node->child->rsibling->content, scope, HEAD_PROCEDURE, 0, NULL, 0,
+    add_entry(node->child->rsibling->content, scope, HEAD_PROCEDURE, 0, 0,
               NULL);
     break;
   }
