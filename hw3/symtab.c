@@ -7,13 +7,9 @@ struct Table symtab[LIST_SIZE];
 int cur_tab_idx;
 
 struct Entry *find_entry(char *name) {
-  for (int i = 0; i <= cur_tab_idx; i++) {
-    if (symtab[i].is_valid) {
-      for (int j = 0; j < symtab[i].next_entry_idx; j++) {
-        if (strcmp(name, symtab[i].table[j].name) == 0) {
-          return &symtab[i].table[j];
-        }
-      }
+  for (int j = 0; j < symtab[cur_tab_idx].next_entry_idx; j++) {
+    if (strcmp(name, symtab[cur_tab_idx].table[j].name) == 0) {
+      return &symtab[cur_tab_idx].table[j];
     }
   }
   return NULL;
@@ -21,14 +17,16 @@ struct Entry *find_entry(char *name) {
 
 void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range) {
-  if (0) {
-    printf("Error: duplicate declaration of variable %s\n", name);
+  if (find_entry(name) != NULL) {
+    printf("[ ERROR ] Redefined error: %s\n", name);
+    print_table();
     exit(0);
   }
 
   int entry_idx = symtab[cur_tab_idx].next_entry_idx;
   if (entry_idx == TAB_SIZE) {
-    printf("Error: Size full, name: %s\n", name);
+    printf("[ ERROR ] Table size overflow: %s\n", name);
+    print_table();
     exit(0);
   }
 
@@ -50,6 +48,8 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
       }
     }
   }
+
+  printf("[SUCCESS] Load to symbol table: %s\n", name);
 
   if (entry_idx == 0)
     symtab[cur_tab_idx].is_valid = 1;
@@ -150,6 +150,7 @@ struct Range *traverse_array(struct Node *node) {
 }
 
 void traverse_decls(struct Node *node) {
+  node->visited = 1;
   struct Node *child = node->child->rsibling;
   while (child->node_type != LAMBDA) {
     int type;
@@ -190,6 +191,7 @@ void traverse_decls(struct Node *node) {
 }
 
 void traverse_para_list(struct Node *node) {
+  node->visited = 1;
   if (node->node_type == LAMBDA)
     return;
   struct Node *child = node->child;
@@ -263,6 +265,7 @@ void traverse_subprog_head(struct Node *node) {
 int semantic_check(struct Node *node) {
   if (node->visited == 1)
     return 0;
+
   switch (node->node_type) {
   case PROG:
     traverse_prog(node->child);
