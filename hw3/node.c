@@ -204,6 +204,9 @@ void print_tree(struct Node *node, int ident_len) {
   case PARA_LIST:
     printf("%s PARA_LIST\n", ident);
     break;
+  case OPT_VAR:
+    printf("%s PARA\n", ident);
+    break;
   case TYPE_INT:
     printf("%s TYPE_INT\n", ident);
     break;
@@ -216,8 +219,9 @@ void print_tree(struct Node *node, int ident_len) {
   case TYPE_ARRAY:
     printf("%s ARRAY\n", ident);
     break;
-  case DECLS:
-    printf("%s VAR_DECL\n", ident);
+  case ID_LIST:
+    if (node->parent->node_type != PARA_LIST)
+      printf("%s VAR_DECL\n", ident);
     break;
   case STMT_LIST:
     printf("%s STMT_LIST\n", ident);
