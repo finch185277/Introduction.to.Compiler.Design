@@ -7,13 +7,14 @@
 #define TAB_SIZE 100
 #define LIST_SIZE 100
 #define RANGE_SIZE 10
+#define PARA_SIZE 100
 
 struct Entry {
   char name[NAME_SIZE];
   int scope;
   int type;
   int return_type;
-  struct Node *parameter;
+  char parameter[PARA_SIZE];
   int dim;
   struct Range *range;
 };
@@ -31,8 +32,8 @@ struct Range {
 };
 
 struct Entry *find_entry(char *name);
-void add_entry(char *name, int scope, int type, int return_type,
-               struct Node *parameter, int dim, struct Range *range);
+void add_entry(char *name, int scope, int type, int return_type, int dim,
+               struct Range *range);
 void delete_table();
 void print_entry_type(int type);
 void print_table();
