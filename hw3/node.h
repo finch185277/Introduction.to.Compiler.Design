@@ -46,6 +46,7 @@
 #define TYPE_ARRAY 2054
 #define HEAD_FUNCTION 2055
 #define HEAD_PROCEDURE 2056
+#define ASMT 2057
 
 struct Node {
   int node_type;
