@@ -105,14 +105,7 @@ void traverse_decls(struct Node *node) {
 }
 
 void traverse_prog(struct Node *node) {
-  struct Node *ptr = node->child->child;
-  if (ptr != NULL) {
-    do {
-      if (ptr->node_type == ID_LIST)
-        traverse_decls(ptr);
-      ptr = ptr->rsibling;
-    } while (ptr != node->child->child);
-  }
+  traverse_decls(node);
   print_table();
 }
 
@@ -121,10 +114,9 @@ int semantic_check(struct Node *node) {
     return 0;
   switch (node->node_type) {
   case PROG:
-    // traverse_prog(node);
+    traverse_prog(node->child);
     break;
   case SUBPROG_DECL:
-    printf("SUBPROG_DECL\n");
     break;
   case SUBPROG_HEAD:
     printf("****************************************\n");
@@ -136,12 +128,14 @@ int semantic_check(struct Node *node) {
     traverse_decls(node);
     break;
   case COMPOUND_STMT:
+    if (node->parent->node_type != PROG) {
+      print_table();
+      printf("****************************************\n");
+      printf("*              Close Scope             *\n");
+      printf("****************************************\n");
+    }
     break;
   case STMT_LIST:
-    print_table();
-    printf("****************************************\n");
-    printf("*              Close Scope             *\n");
-    printf("****************************************\n");
     break;
   }
 
