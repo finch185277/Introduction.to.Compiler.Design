@@ -269,9 +269,8 @@ int check_type(struct Node *node, int type) {
   struct Node *child = node->child;
   if (child != NULL) {
     do {
-      if (child->node_type == TOKEN_INT || child->node_type == TOKEN_REAL ||
-          child->node_type == TOKEN_STRING) {
-        switch (child->node_type) {
+      if (child->node_type == FACTOR) {
+        switch (child->child->node_type) {
         case TOKEN_INT:
           if (type != TYPE_INT) {
             printf("[ ERROR ] Type error: type should not be INT: %d\n",
@@ -296,8 +295,77 @@ int check_type(struct Node *node, int type) {
             return 1;
           }
           break;
-        }
-      }
+        case TOKEN_IDENTIFIER:;
+          struct Entry *entry = find_entry(child->child->content);
+          if (entry == NULL) {
+            printf("[ ERROR ] Undeclared error: %s\n", child->child->content);
+            is_error = 1;
+            return 1;
+          } else {
+            switch (entry->type) {
+            case TYPE_INT:
+              if (type != TYPE_INT) {
+                printf("[ ERROR ] Type error: type should not be INT: %s\n",
+                       entry->name);
+                is_error = 1;
+                return 1;
+              }
+              break;
+            case TYPE_REAL:
+              if (type != TYPE_REAL) {
+                printf("[ ERROR ] Type error: type should not be REAL: %s\n",
+                       entry->name);
+                is_error = 1;
+                return 1;
+              }
+              break;
+            case TYPE_STRING:
+              if (type != TYPE_STRING) {
+                printf("[ ERROR ] Type error: type should not be STRING: %s\n",
+                       entry->name);
+                is_error = 1;
+                return 1;
+              }
+              break;
+            case HEAD_FUNCTION:
+              switch (entry->return_type) {
+              case TYPE_INT:
+                if (type != TYPE_INT) {
+                  printf("[ ERROR ] Type error: "
+                         "function return type should not be INT: %s\n",
+                         entry->name);
+                  is_error = 1;
+                  return 1;
+                }
+                break;
+              case TYPE_REAL:
+                if (type != TYPE_REAL) {
+                  printf("[ ERROR ] Type error: "
+                         "function return type should not be REAL: %s\n",
+                         entry->name);
+                  is_error = 1;
+                  return 1;
+                }
+                break;
+              case TYPE_STRING:
+                if (type != TYPE_STRING) {
+                  printf("[ ERROR ] Type error:"
+                         " function return type should not be STRING: %s\n",
+                         entry->name);
+                  is_error = 1;
+                  return 1;
+                }
+                break;
+              }      // switch (entry->return_type)
+              break; // case HEAD_FUNCTION
+            default:
+              is_error = 1;
+              return 1;
+            }    // switch (entry->type)
+          }      // if (entry != NULL)
+          break; // case TOKEN_IDENTIFIER
+        }        // switch (child->child->node_type)
+      }          // if (child->node_type == FACTOR)
       if (check_type(child, type) == 1)
         return 1;
       else
