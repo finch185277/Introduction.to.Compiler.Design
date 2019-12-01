@@ -6,21 +6,22 @@
 struct Table symtab[LIST_SIZE];
 int cur_tab_idx;
 
-int find_symbol(char *name) {
+struct Entry *find_entry(char *name) {
   for (int i = 0; i <= cur_tab_idx; i++) {
     if (symtab[i].is_valid) {
       for (int j = 0; j < symtab[i].next_entry_idx; j++) {
         if (strcmp(name, symtab[i].table[j].name) == 0) {
-          return 0;
+          return &symtab[i].table[j];
         }
       }
     }
   }
-  return 0;
+  return NULL;
 }
 
-void add_symbol(char *name, int type) {
-  if (find_symbol(name) == 1) {
+void add_entry(char *name, int scope, int type, int return_type,
+               struct Node *parameter, int dim, struct Node *range) {
+  if (0) {
     printf("Error: duplicate declaration of variable %s\n", name);
     exit(0);
   }
@@ -32,8 +33,9 @@ void add_symbol(char *name, int type) {
   }
 
   strcpy(symtab[cur_tab_idx].table[entry_idx].name, name);
-  symtab[cur_tab_idx].table[entry_idx].scope = cur_tab_idx;
+  symtab[cur_tab_idx].table[entry_idx].scope = scope;
   symtab[cur_tab_idx].table[entry_idx].type = type;
+  symtab[cur_tab_idx].table[entry_idx].return_type = return_type;
 
   if (entry_idx == 0)
     symtab[cur_tab_idx].is_valid = 1;
@@ -46,33 +48,59 @@ void delete_table() {
   cur_tab_idx--;
 }
 
-void print_table() {
-  printf("-------------------\n");
-  printf("Name | Scope | Type\n");
-  printf("-------------------\n");
-  for (int i = 0; i < symtab[cur_tab_idx].next_entry_idx; i++) {
-    char type_name[10];
-    switch (symtab[cur_tab_idx].table[i].type) {
-    case TYPE_INT:
-      strcpy(type_name, "int");
-      break;
-    case TYPE_REAL:
-      strcpy(type_name, "real");
-      break;
-    case TYPE_STRING:
-      strcpy(type_name, "string");
-      break;
-    case HEAD_FUNCTION:
-      strcpy(type_name, "function");
-      break;
-    case HEAD_PROCEDURE:
-      strcpy(type_name, "procedure");
-      break;
-    }
+void print_entry_type(int type) {
+  switch (type) {
+  case TYPE_INT:
+    printf("int");
+    break;
+  case TYPE_REAL:
+    printf("real");
+    break;
+  case TYPE_STRING:
+    printf("string");
+    break;
+  case HEAD_FUNCTION:
+    printf("function");
+    break;
+  case HEAD_PROCEDURE:
+    printf("procedure");
+    break;
+  }
+  return;
+}
 
-    printf("%s | %d | %s\n", symtab[cur_tab_idx].table[i].name,
-           symtab[cur_tab_idx].table[i].scope, type_name);
-    printf("-------------------\n");
+void print_table() {
+  printf("----------------------------------------------------------------\n");
+  printf("| Name | Scope | Type | Return | Parameter | Dim | Array Range |\n");
+  printf("----------------------------------------------------------------\n");
+  for (int i = 0; i < symtab[cur_tab_idx].next_entry_idx; i++) {
+    printf("| %s | %d | ", symtab[cur_tab_idx].table[i].name,
+           symtab[cur_tab_idx].table[i].scope);
+    print_entry_type(symtab[cur_tab_idx].table[i].type);
+    printf(" | ");
+    if (symtab[cur_tab_idx].table[i].return_type != 0) {
+      print_entry_type(symtab[cur_tab_idx].table[i].return_type);
+      printf(" |");
+    } else {
+      printf(" |");
+    }
+    if (symtab[cur_tab_idx].table[i].parameter != NULL) {
+      printf(" |");
+    } else {
+      printf(" |");
+    }
+    if (symtab[cur_tab_idx].table[i].dim != 0) {
+      printf(" |");
+    } else {
+      printf(" |");
+    }
+    if (symtab[cur_tab_idx].table[i].range != NULL) {
+      printf(" |");
+    } else {
+      printf(" |");
+    }
+    printf(
+        "\n----------------------------------------------------------------\n");
   }
 }
 
@@ -95,7 +123,7 @@ void traverse_decls(struct Node *node) {
     do {
       switch (grand_child->node_type) {
       case TOKEN_IDENTIFIER:
-        add_symbol(grand_child->content, type);
+        add_entry(grand_child->content, cur_tab_idx, type, 0, NULL, 0, NULL);
         break;
       }
       grand_child = grand_child->rsibling;
@@ -109,6 +137,24 @@ void traverse_prog(struct Node *node) {
   print_table();
 }
 
+void traverse_subprog_head(struct Node *node) {
+  printf("****************************************\n");
+  printf("*              Open Scope              *\n");
+  printf("****************************************\n");
+  cur_tab_idx++;
+  switch (node->child->node_type) {
+  case HEAD_FUNCTION:;
+    int return_type = node->child->lsibling->node_type;
+    add_entry(node->child->rsibling->content, cur_tab_idx, HEAD_FUNCTION,
+              return_type, NULL, 0, NULL);
+    break;
+  case HEAD_PROCEDURE:
+    add_entry(node->child->rsibling->content, cur_tab_idx, HEAD_PROCEDURE, 0,
+              NULL, 0, NULL);
+    break;
+  }
+}
+
 int semantic_check(struct Node *node) {
   if (node->visited == 1)
     return 0;
@@ -119,10 +165,7 @@ int semantic_check(struct Node *node) {
   case SUBPROG_DECL:
     break;
   case SUBPROG_HEAD:
-    printf("****************************************\n");
-    printf("*              Open Scope              *\n");
-    printf("****************************************\n");
-    cur_tab_idx++;
+    traverse_subprog_head(node);
     break;
   case DECLS:
     traverse_decls(node);
