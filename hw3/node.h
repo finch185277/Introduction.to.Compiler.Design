@@ -63,6 +63,7 @@ struct Node {
 struct Node *new_node(int type);
 void delete_node(struct Node *node);
 void add_child(struct Node *node, struct Node *child);
+void print_type(struct Node *node);
 void print_tree(struct Node *node, int ident);
 
 #endif
