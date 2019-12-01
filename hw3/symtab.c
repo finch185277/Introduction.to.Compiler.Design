@@ -126,34 +126,6 @@ void print_table() {
   return;
 }
 
-void traverse_decls(struct Node *node) {
-  struct Node *child = node->child->rsibling;
-  while (child->node_type != LAMBDA) {
-    int type;
-    switch (child->rsibling->child->node_type) {
-    case TYPE_INT:
-      type = TYPE_INT;
-      break;
-    case TYPE_REAL:
-      type = TYPE_REAL;
-      break;
-    case TYPE_STRING:
-      type = TYPE_STRING;
-      break;
-    }
-    struct Node *grand_child = child->child;
-    do {
-      switch (grand_child->node_type) {
-      case TOKEN_IDENTIFIER:
-        add_entry(grand_child->content, cur_tab_idx, type, 0, 0, NULL);
-        break;
-      }
-      grand_child = grand_child->rsibling;
-    } while (grand_child != child->child);
-    child = child->rsibling->rsibling;
-  }
-}
-
 int calculate_dim(struct Range *range) {
   int dim = 0;
   for (; dim < RANGE_SIZE; dim++) {
@@ -177,13 +149,12 @@ struct Range *traverse_array(struct Node *node) {
   return range;
 }
 
-void traverse_para_list(struct Node *node) {
-  if (node->node_type == LAMBDA)
-    return;
-  struct Node *child = node->child;
-  do {
+void traverse_decls(struct Node *node) {
+  struct Node *child = node->child->rsibling;
+  while (child->node_type != LAMBDA) {
     int type;
-    switch (child->rsibling->rsibling->child->node_type) {
+    struct Node *type_node = child->rsibling;
+    switch (type_node->child->node_type) {
     case TYPE_INT:
       type = TYPE_INT;
       break;
@@ -196,10 +167,51 @@ void traverse_para_list(struct Node *node) {
     }
     int is_array = 0;
     struct Range *range = NULL;
-    if (child->rsibling->rsibling->child->rsibling !=
-        child->rsibling->rsibling->child) {
+    if (type_node->child->rsibling != type_node->child) {
       is_array = 1;
-      range = traverse_array(child->rsibling->rsibling->child->rsibling);
+      range = traverse_array(type_node->child->rsibling);
+    }
+    struct Node *grand_child = child->child;
+    do {
+      switch (grand_child->node_type) {
+      case TOKEN_IDENTIFIER:
+        if (is_array) {
+          int dim = calculate_dim(range);
+          add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range);
+        } else
+          add_entry(grand_child->content, cur_tab_idx, type, 0, 0, NULL);
+        break;
+      }
+      grand_child = grand_child->rsibling;
+    } while (grand_child != child->child);
+    child = child->rsibling->rsibling;
+  }
+  return;
+}
+
+void traverse_para_list(struct Node *node) {
+  if (node->node_type == LAMBDA)
+    return;
+  struct Node *child = node->child;
+  do {
+    int type;
+    struct Node *type_node = child->rsibling->rsibling;
+    switch (type_node->child->node_type) {
+    case TYPE_INT:
+      type = TYPE_INT;
+      break;
+    case TYPE_REAL:
+      type = TYPE_REAL;
+      break;
+    case TYPE_STRING:
+      type = TYPE_STRING;
+      break;
+    }
+    int is_array = 0;
+    struct Range *range = NULL;
+    if (type_node->child->rsibling != type_node->child) {
+      is_array = 1;
+      range = traverse_array(type_node->child->rsibling);
     }
     struct Node *grand_child = child->rsibling->child;
     do {
@@ -233,18 +245,17 @@ void traverse_subprog_head(struct Node *node) {
   if (node->parent->parent->parent->node_type == PROG) {
     scope = 0;
   } else {
-    scope = find_entry(node->parent->parent->parent->child->rsibling->content)
-                ->scope;
+    struct Node *upper_node = node->parent->parent->parent;
+    scope = find_entry(upper_node->child->rsibling->content)->scope;
   }
+  struct Node *id_node = node->child->rsibling;
   switch (node->child->node_type) {
   case HEAD_FUNCTION:;
     int return_type = node->child->lsibling->node_type;
-    add_entry(node->child->rsibling->content, scope, HEAD_FUNCTION, return_type,
-              0, NULL);
+    add_entry(id_node->content, scope, HEAD_FUNCTION, return_type, 0, NULL);
     break;
   case HEAD_PROCEDURE:
-    add_entry(node->child->rsibling->content, scope, HEAD_PROCEDURE, 0, 0,
-              NULL);
+    add_entry(id_node->content, scope, HEAD_PROCEDURE, 0, 0, NULL);
     break;
   }
 }
