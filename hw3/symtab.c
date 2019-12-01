@@ -34,8 +34,6 @@ void add_symbol(char *name, int type) {
   strcpy(symtab[cur_tab_idx].table[entry_idx].name, name);
   symtab[cur_tab_idx].table[entry_idx].scope = cur_tab_idx;
   symtab[cur_tab_idx].table[entry_idx].type = type;
-  printf("---- %d %d %d ----\n", entry_idx, type,
-         symtab[cur_tab_idx].table[entry_idx].type);
 
   if (entry_idx == 0)
     symtab[cur_tab_idx].is_valid = 1;
@@ -78,39 +76,31 @@ void print_table() {
   }
 }
 
-void traverse_id_list(struct Node *node) {
-  int type;
-  struct Node *child = node->child;
-  if (child != NULL) {
-    child = child->lsibling;
-    printf(" type : %d", child->node_type);
-    switch (child->node_type) {
+void traverse_decls(struct Node *node) {
+  struct Node *child = node->child->rsibling;
+  while (child->node_type != LAMBDA) {
+    int type;
+    switch (child->rsibling->child->node_type) {
     case TYPE_INT:
-      printf(" type int ");
       type = TYPE_INT;
       break;
     case TYPE_REAL:
-      printf(" type real ");
       type = TYPE_REAL;
       break;
     case TYPE_STRING:
-      printf(" type string ");
       type = TYPE_STRING;
       break;
     }
-    child->visited = 1;
-    child = child->rsibling;
-    // printf("before do type: %d", type);
+    struct Node *grand_child = child->child;
     do {
-      switch (child->node_type) {
+      switch (grand_child->node_type) {
       case TOKEN_IDENTIFIER:
-        printf("add type: %d", type);
-        add_symbol(child->content, type);
+        add_symbol(grand_child->content, type);
         break;
       }
-      child->visited = 1;
-      child = child->rsibling;
-    } while (child != node->child);
+      grand_child = grand_child->rsibling;
+    } while (grand_child != child->child);
+    child = child->rsibling->rsibling;
   }
 }
 
@@ -119,7 +109,7 @@ void traverse_prog(struct Node *node) {
   if (ptr != NULL) {
     do {
       if (ptr->node_type == ID_LIST)
-        traverse_id_list(ptr);
+        traverse_decls(ptr);
       ptr = ptr->rsibling;
     } while (ptr != node->child->child);
   }
@@ -131,7 +121,7 @@ int semantic_check(struct Node *node) {
     return 0;
   switch (node->node_type) {
   case PROG:
-    traverse_prog(node);
+    // traverse_prog(node);
     break;
   case SUBPROG_DECL:
     printf("SUBPROG_DECL\n");
@@ -142,8 +132,8 @@ int semantic_check(struct Node *node) {
     printf("****************************************\n");
     cur_tab_idx++;
     break;
-  case ID_LIST:
-    traverse_id_list(node);
+  case DECLS:
+    traverse_decls(node);
     break;
   case COMPOUND_STMT:
     break;
