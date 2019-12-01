@@ -185,6 +185,7 @@ optional_var : VAR
 	| lambda
   {
     $$ = new_node(OPT_VAR);
+    add_child($$, $1);
   };
 
 compound_statement : PBEGIN optional_statements END
