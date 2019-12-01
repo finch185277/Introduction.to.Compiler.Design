@@ -214,6 +214,7 @@ statement_list : statement
 statement : variable ASSIGNMENT expression
   {
     $$ = new_node(STMT);
+    add_child($$, new_node(ASMT));
     add_child($$, $1);
     add_child($$, $3);
   }
@@ -457,10 +458,10 @@ int main(int argc, char **argv) {
       printf("*        No semantic error!       *\n");
       printf("***********************************\n");
     } else {
-      printf("ERROR\n");
+      printf("SEMANTIC ERROR\n");
     }
   } else {
-    printf("ERROR\n");
+    printf("PARSE ERROR\n");
   }
   return 0;
 }
