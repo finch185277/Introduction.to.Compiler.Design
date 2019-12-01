@@ -86,15 +86,19 @@ void print_table() {
     } else {
       printf(" |");
     }
-    // if (symtab[cur_tab_idx].table[i].parameter != NULL) {
-    //   if(symtab[cur_tab_idx].table[i].parameter.node_type == LAMBDA){
-    //     printf(" () |");
-    //   }else{
-    //
-    //   }
-    // } else {
-    printf(" |");
-    // }
+    if (symtab[cur_tab_idx].table[i].type == HEAD_FUNCTION ||
+        symtab[cur_tab_idx].table[i].type == HEAD_PROCEDURE) {
+      if (i == 0) {
+        printf(" () |");
+      } else {
+        printf(" ");
+        for (int para_id = 0; para_id < i; para_id++) {
+          printf("(%s) ", symtab[cur_tab_idx].table[para_id].name);
+        }
+      }
+    } else {
+      printf(" |");
+    }
     if (symtab[cur_tab_idx].table[i].dim != 0) {
       printf(" %d | ", symtab[cur_tab_idx].table[i].dim);
       for (int rid = symtab[cur_tab_idx].table[i].dim - 1; rid >= 0; rid--) {
