@@ -287,7 +287,7 @@ expression_list : expression
     add_child($$, $3);
   };
 
-  expression : boolexpression
+expression : boolexpression
   {
     $$ = new_node(EXPR);
     add_child($$, $1);
@@ -305,7 +305,7 @@ expression_list : expression
     add_child($$, $3);
   };
 
-  boolexpression : simple_expression
+boolexpression : simple_expression
   {
     $$ = new_node(BOOL_EXPR);
     add_child($$, $1);
