@@ -269,19 +269,33 @@ int check_type(struct Node *node, int type) {
   struct Node *child = node->child;
   if (child != NULL) {
     do {
-      if (child->node_type == TOKEN_INT) {
-        if (type != TYPE_INT) {
-          printf("[ ERROR ] Type error: "
-                 "type should be TOKEN_INT, not TOKEN_REAL\n");
-          is_error = 1;
-          return 1;
-        }
-      } else if (child->node_type == TOKEN_REAL) {
-        if (type != TYPE_REAL) {
-          printf("[ ERROR ] Type error: "
-                 "type should be TOKEN_REAL, not TOKEN_INT\n");
-          is_error = 1;
-          return 1;
+      if (child->node_type == TOKEN_INT || child->node_type == TOKEN_REAL ||
+          child->node_type == TOKEN_STRING) {
+        switch (child->node_type) {
+        case TOKEN_INT:
+          if (type != TYPE_INT) {
+            printf("[ ERROR ] Type error: type should not be INT: %d\n",
+                   child->integer_value);
+            is_error = 1;
+            return 1;
+          }
+          break;
+        case TOKEN_REAL:
+          if (type != TYPE_REAL) {
+            printf("[ ERROR ] Type error: type should not be REAL: %lf\n",
+                   child->real_value);
+            is_error = 1;
+            return 1;
+          }
+          break;
+        case TOKEN_STRING:
+          if (type != TYPE_STRING) {
+            printf("[ ERROR ] Type error: type should not be STRING: %s\n",
+                   child->content);
+            is_error = 1;
+            return 1;
+          }
+          break;
         }
       }
       if (check_type(child, type) == 1)
