@@ -34,6 +34,134 @@ void add_child(struct Node *node, struct Node *child) {
   }
 };
 
+void print_type(struct Node *node) {
+  switch (node->node_type) {
+  case TOKEN_INT:
+    printf("TOKEN_INT\n");
+    break;
+  case TOKEN_REAL:
+    printf("TOKEN_REAL\n");
+    break;
+  case TOKEN_STRING:
+    printf("TOKEN_STRING\n");
+    break;
+  case TOKEN_IDENTIFIER:
+    printf("TOKEN_IDENTIFIER\n");
+    break;
+  case TOKEN_PLUS:
+    printf("TOKEN_PLUS\n");
+    break;
+  case TOKEN_MINUS:
+    printf("TOKEN_MINUS\n");
+    break;
+  case TOKEN_SLASH:
+    printf("TOKEN_SLASH\n");
+    break;
+  case TOKEN_STAR:
+    printf("TOKEN_STAR\n");
+    break;
+  case ARGS:
+    printf("ARGS\n");
+    break;
+  case DECLS:
+    printf("DECLS\n");
+    break;
+  case FACTOR:
+    printf("FACTOR\n");
+    break;
+  case PROG:
+    printf("PROG\n");
+    break;
+  case STMT:
+    printf("STMT\n");
+    break;
+  case TAIL:
+    printf("TAIL\n");
+    break;
+  case TERM:
+    printf("TERM\n");
+    break;
+  case TYPE:
+    printf("TYPE\n");
+    break;
+  case VARIABLE:
+    printf("VARIABLE\n");
+    break;
+  case LAMBDA:
+    printf("LAMBDA\n");
+    break;
+  case ADDOP:
+    printf("ADDOP\n");
+    break;
+  case MULOP:
+    printf("MULOP\n");
+    break;
+  case RELOP:
+    printf("RELOP\n");
+    break;
+  case OPT_VAR:
+    printf("OPT_VAR\n");
+    break;
+  case OPT_STMTS:
+    printf("OPT_STMTS\n");
+    break;
+  case ID_LIST:
+    printf("ID_LIST\n");
+    break;
+  case EXPR_LIST:
+    printf("EXPR_LIST\n");
+    break;
+  case STMT_LIST:
+    printf("STMT_LIST\n");
+    break;
+  case PARA_LIST:
+    printf("PARA_LIST\n");
+    break;
+  case SUBPROG_DECL:
+    printf("SUBPROG_DECL\n");
+    break;
+  case SUBPROG_DECLS:
+    printf("SUBPROG_DECLS\n");
+    break;
+  case SUBPROG_HEAD:
+    printf("SUBPROG_HEAD\n");
+    break;
+  case COMPOUND_STMT:
+    printf("COMPOUND_STMT\n");
+    break;
+  case PROC_STMT:
+    printf("PROC_STMT\n");
+    break;
+  case EXPR:
+    printf("EXPR\n");
+    break;
+  case SIMPLE_EXPR:
+    printf("SIMPLE_EXPR\n");
+    break;
+  case BOOL_EXPR:
+    printf("BOOL_EXPR\n");
+    break;
+  case TYPE_INT:
+    printf("TYPE_INT\n");
+    break;
+  case TYPE_REAL:
+    printf("TYPE_REAL\n");
+    break;
+  case TYPE_STRING:
+    printf("TYPE_STRING\n");
+    break;
+  case TYPE_ARRAY:
+    printf("TYPE_ARRAY\n");
+    break;
+  case HEAD_FUNCTION:
+    printf("HEAD_FUNCTION\n");
+    break;
+  case HEAD_PROCEDURE:
+    printf("HEAD_PROCEDURE\n");
+    break;
+  }
+}
+
 void print_tree(struct Node *node, int ident_len) {
   char *ident = malloc(1000 * sizeof(char));
   for (int i = 0; i < ident_len; i++)
