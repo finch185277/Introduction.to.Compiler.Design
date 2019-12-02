@@ -275,7 +275,6 @@ int check_type(struct Node *node, int type) {
           if (type != TYPE_INT) {
             printf("[ ERROR ] Type error: type should not be INT: %d\n",
                    child->integer_value);
-            is_error = 1;
             return 1;
           }
           break;
@@ -283,7 +282,6 @@ int check_type(struct Node *node, int type) {
           if (type != TYPE_REAL) {
             printf("[ ERROR ] Type error: type should not be REAL: %lf\n",
                    child->real_value);
-            is_error = 1;
             return 1;
           }
           break;
@@ -291,7 +289,6 @@ int check_type(struct Node *node, int type) {
           if (type != TYPE_STRING) {
             printf("[ ERROR ] Type error: type should not be STRING: %s\n",
                    child->content);
-            is_error = 1;
             return 1;
           }
           break;
@@ -299,7 +296,6 @@ int check_type(struct Node *node, int type) {
           struct Entry *entry = find_entry(child->child->content);
           if (entry == NULL) {
             printf("[ ERROR ] Undeclared error: %s\n", child->child->content);
-            is_error = 1;
             return 1;
           } else {
             switch (entry->type) {
@@ -307,12 +303,10 @@ int check_type(struct Node *node, int type) {
               if (type != TYPE_INT) {
                 printf("[ ERROR ] Type error: type should not be INT: %s\n",
                        entry->name);
-                is_error = 1;
                 return 1;
               }
               if (entry->inited == 0) {
                 printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-                is_error = 1;
                 return 1;
               }
               break;
@@ -320,12 +314,10 @@ int check_type(struct Node *node, int type) {
               if (type != TYPE_REAL) {
                 printf("[ ERROR ] Type error: type should not be REAL: %s\n",
                        entry->name);
-                is_error = 1;
                 return 1;
               }
               if (entry->inited == 0) {
                 printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-                is_error = 1;
                 return 1;
               }
               break;
@@ -333,12 +325,10 @@ int check_type(struct Node *node, int type) {
               if (type != TYPE_STRING) {
                 printf("[ ERROR ] Type error: type should not be STRING: %s\n",
                        entry->name);
-                is_error = 1;
                 return 1;
               }
               if (entry->inited == 0) {
                 printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-                is_error = 1;
                 return 1;
               }
               break;
@@ -349,7 +339,6 @@ int check_type(struct Node *node, int type) {
                   printf("[ ERROR ] Type error: "
                          "function return type should not be INT: %s\n",
                          entry->name);
-                  is_error = 1;
                   return 1;
                 }
                 break;
@@ -358,7 +347,6 @@ int check_type(struct Node *node, int type) {
                   printf("[ ERROR ] Type error: "
                          "function return type should not be REAL: %s\n",
                          entry->name);
-                  is_error = 1;
                   return 1;
                 }
                 break;
@@ -367,14 +355,12 @@ int check_type(struct Node *node, int type) {
                   printf("[ ERROR ] Type error:"
                          " function return type should not be STRING: %s\n",
                          entry->name);
-                  is_error = 1;
                   return 1;
                 }
                 break;
               }      // switch (entry->return_type)
               break; // case HEAD_FUNCTION
             default:
-              is_error = 1;
               return 1;
             }    // switch (entry->type)
           }      // if (entry != NULL)
@@ -387,6 +373,15 @@ int check_type(struct Node *node, int type) {
         child = child->rsibling;
     } while (child != node->child);
   }
+  return 0;
+}
+
+void traverse_simple_expr(struct Node *node) {
+  struct Node *child = node->child;
+}
+
+int check_tail(struct Node *node) {
+  struct Node *child = node->child;
   return 0;
 }
 
@@ -419,16 +414,24 @@ void traverse_stmt(struct Node *node) {
           is_error = 1;
         } else {
           struct Node *simple_expr = expr->child->child;
-          if (dim == 0) { // assign value
-            check_type(simple_expr, var_entry->type);
-          } else { // check type
-            check_type(simple_expr, var_entry->type);
+          if (check_type(simple_expr, var_entry->type) != 0) { // check type
+            is_error = 1;
+          } else {
+            if (dim == 0) { // real or int or string: assign value
+              var_entry->inited = 1;
+            } else { // array: check index
+              struct Node *tail = var->child->rsibling;
+              if (check_tail(tail) == 1) {
+                printf("[ ERROR ] Array index error: %s", var_entry->name);
+              }
+            }
           }
         }
       }
     }
   }
-  return;
+}
+return;
 }
 
 int semantic_check(struct Node *node) {
