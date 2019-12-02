@@ -18,7 +18,7 @@ struct Entry {
   int dim;
   struct Range *range;
   int int_value;
-  int double_value;
+  double double_value;
   int inited;
   struct Array_node *array_content;
 };

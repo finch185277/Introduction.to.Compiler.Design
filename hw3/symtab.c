@@ -400,15 +400,15 @@ void traverse_factor(struct Node *node, int type) {
     } else {
       traverse_simple_expr(simple_expr, type);
       switch (type) {
-      case TOKEN_INT:
+      case TYPE_INT:
         child->integer_value = simple_expr->integer_value;
         node->integer_value = child->integer_value;
         break;
-      case TOKEN_REAL:
+      case TYPE_REAL:
         child->real_value = simple_expr->real_value;
         node->real_value = child->real_value;
         break;
-      case TOKEN_STRING:
+      case TYPE_STRING:
         child->content = simple_expr->content;
         node->content = child->content;
         break;
@@ -421,8 +421,47 @@ void traverse_factor(struct Node *node, int type) {
 
 void traverse_term(struct Node *node, int type) {
   struct Node *child = node->child;
+  int op = 0;
   do {
+    switch (child->node_type) {
+    case FACTOR:
+      traverse_factor(child, type);
+      switch (type) {
+      case TYPE_INT:
+        switch (op) {
+        case TOKEN_STAR:
+          node->integer_value *= child->integer_value;
+          break;
+        case TOKEN_SLASH:
+          node->integer_value /= child->integer_value;
+          break;
+        default: // op not declared
+          node->integer_value = child->integer_value;
+        } // switch (op)
+        break;
+      case TYPE_REAL:
+        switch (op) {
+        case TOKEN_STAR:
+          node->real_value *= child->real_value;
+          break;
+        case TOKEN_SLASH:
+          node->real_value /= child->real_value;
+          break;
+        default: // op not declared
+          node->real_value = child->real_value;
+        } // switch (op)
+        break;
+      case TYPE_STRING:
+        node->content = child->content;
+        break;
+      } // switch (type)
 
+      op = 0; // reset op
+      break;
+    case MULOP:
+      op = child->child->node_type;
+      break;
+    } // switch (child->node_type)
     child = child->rsibling;
   } while (child != node->child);
   return;
@@ -430,12 +469,47 @@ void traverse_term(struct Node *node, int type) {
 
 void traverse_simple_expr(struct Node *node, int type) {
   struct Node *child = node->child;
+  int op = 0;
   do {
-    if (type == TYPE_INT) {
-      node->integer_value += child->integer_value;
-    } else if (type == TYPE_REAL) {
-      node->real_value += child->real_value;
-    }
+    switch (child->node_type) {
+    case TERM:
+      traverse_term(child, type);
+      switch (type) {
+      case TYPE_INT:
+        switch (op) {
+        case TOKEN_PLUS:
+          node->integer_value += child->integer_value;
+          break;
+        case TOKEN_MINUS:
+          node->integer_value -= child->integer_value;
+          break;
+        default: // op not declared
+          node->integer_value = child->integer_value;
+        } // switch (op)
+        break;
+      case TYPE_REAL:
+        switch (op) {
+        case TOKEN_PLUS:
+          node->real_value += child->real_value;
+          break;
+        case TOKEN_MINUS:
+          node->real_value -= child->real_value;
+          break;
+        default: // op not declared
+          node->real_value = child->real_value;
+        } // switch (op)
+        break;
+      case TYPE_STRING:
+        node->content = child->content;
+        break;
+      } // switch (type)
+
+      op = 0; // reset op
+      break;
+    case ADDOP:
+      op = child->child->node_type;
+      break;
+    } // switch (child->node_type)
     child = child->rsibling;
   } while (child != node->child);
   return;
@@ -480,12 +554,18 @@ void traverse_stmt(struct Node *node) {
             is_error = 1;
           } else {
             if (dim == 0) { // real or int or string: assign value
-              if (var_entry->type == TYPE_INT) {
+              switch (var_entry->type) {
+              case TYPE_INT:
                 traverse_simple_expr(simple_expr, TYPE_INT);
                 var_entry->int_value = simple_expr->integer_value;
-              } else if (var_entry->type == TYPE_REAL) {
+                break;
+              case TYPE_REAL:
                 traverse_simple_expr(simple_expr, TYPE_REAL);
                 var_entry->double_value = simple_expr->real_value;
+                break;
+              case TYPE_STRING:
+                traverse_simple_expr(simple_expr, TYPE_REAL);
+                break;
               }
               var_entry->inited = 1;
             } else { // array: check index
