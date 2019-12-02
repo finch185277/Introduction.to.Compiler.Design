@@ -386,7 +386,7 @@ int check_tail(struct Node *node) {
 }
 
 void traverse_stmt(struct Node *node) {
-  // variable := expression
+  // statement: variable := expression
   if (node->child->node_type == ASMT) {
     struct Node *var = node->child->rsibling;            // variable
     struct Node *expr = node->child->rsibling->rsibling; // expression
@@ -425,11 +425,11 @@ void traverse_stmt(struct Node *node) {
                 printf("[ ERROR ] Array index error: %s", var_entry->name);
               }
             }
-          }
-        }
-      }
-    }
-  }
+          } // pass type check
+        }   // expression: simple expression
+      }     // pass dimension check
+    }       // variable declared
+  }         // statement: assignment
 }
 return;
 }
