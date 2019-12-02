@@ -265,7 +265,7 @@ void traverse_subprog_head(struct Node *node) {
   }
 }
 
-int check_type(struct Node *node, int type) {
+int check_assignment_type(struct Node *node, int type) {
   struct Node *child = node->child;
   if (child != NULL) {
     do {
@@ -367,7 +367,7 @@ int check_type(struct Node *node, int type) {
           break; // case TOKEN_IDENTIFIER
         }        // switch (child->child->node_type)
       }          // if (child->node_type == FACTOR)
-      if (check_type(child, type) == 1)
+      if (check_assignment_type(child, type) == 1)
         return 1;
       else
         child = child->rsibling;
@@ -414,7 +414,8 @@ void traverse_stmt(struct Node *node) {
           is_error = 1;
         } else {
           struct Node *simple_expr = expr->child->child;
-          if (check_type(simple_expr, var_entry->type) != 0) { // check type
+          // check type
+          if (check_assignment_type(simple_expr, var_entry->type) != 0) {
             is_error = 1;
           } else {
             if (dim == 0) { // real or int or string: assign value
