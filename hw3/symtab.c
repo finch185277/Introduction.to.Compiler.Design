@@ -39,6 +39,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   symtab[cur_tab_idx].table[entry_idx].return_type = return_type;
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
   symtab[cur_tab_idx].table[entry_idx].range = range;
+  symtab[cur_tab_idx].table[entry_idx].array_content = NULL;
 
   if (type == HEAD_FUNCTION || type == HEAD_PROCEDURE) {
     if (entry_idx == 0) {
@@ -131,7 +132,7 @@ void print_table() {
 
 int calculate_dim(struct Range *range) {
   int dim = 0;
-  for (; dim < RANGE_SIZE; dim++) {
+  for (; dim < MAX_DIMENSION; dim++) {
     if (range[dim].is_valid == 0) {
       break;
     }
@@ -141,7 +142,7 @@ int calculate_dim(struct Range *range) {
 
 struct Range *traverse_array(struct Node *node) {
   int dim = 0;
-  struct Range *range = malloc(RANGE_SIZE * sizeof(struct Range));
+  struct Range *range = malloc(MAX_DIMENSION * sizeof(struct Range));
   do {
     range[dim].is_valid = 1;
     range[dim].lower_bound = node->child->integer_value;

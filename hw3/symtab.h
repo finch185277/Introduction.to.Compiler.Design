@@ -6,7 +6,7 @@
 #define NAME_SIZE 100
 #define TAB_SIZE 100
 #define LIST_SIZE 100
-#define RANGE_SIZE 10
+#define MAX_DIMENSION 10
 #define PARA_SIZE 100
 
 struct Entry {
@@ -20,6 +20,7 @@ struct Entry {
   int int_value;
   int double_value;
   int inited;
+  struct Array_node *array_content;
 };
 
 struct Table {
@@ -32,6 +33,13 @@ struct Range {
   int is_valid;
   int lower_bound;
   int upper_bound;
+};
+
+struct Array_node {
+  int is_valid;
+  int address[MAX_DIMENSION];
+  struct Array_node *prev;
+  struct Array_node *next;
 };
 
 struct Entry *find_entry(char *name);
