@@ -10,6 +10,10 @@
 #define TOKEN_SLASH 1007
 #define TOKEN_STAR 1008
 
+#define TOKEN_ARRAY 1009
+#define TOKEN_FUNC 1010
+#define TOKEN_EXPR 1011
+
 #define ARGS 2001
 #define DECLS 2002
 #define FACTOR 2003
