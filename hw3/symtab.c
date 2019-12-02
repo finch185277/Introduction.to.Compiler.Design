@@ -380,7 +380,7 @@ void traverse_simple_expr(struct Node *node) {
   struct Node *child = node->child;
 }
 
-int check_tail(struct Node *node) {
+int check_array_index(struct Node *node) {
   struct Node *child = node->child;
   return 0;
 }
@@ -422,7 +422,7 @@ void traverse_stmt(struct Node *node) {
               var_entry->inited = 1;
             } else { // array: check index
               struct Node *tail = var->child->rsibling;
-              if (check_tail(tail) == 1) {
+              if (check_array_index(tail) == 1) {
                 printf("[ ERROR ] Array index error: %s", var_entry->name);
               }
             }

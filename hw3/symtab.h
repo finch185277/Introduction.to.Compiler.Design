@@ -41,7 +41,7 @@ void delete_table();
 void print_entry_type(int type);
 void print_table();
 int calculate_dim(struct Range *range);
-int check_tail(struct Node *node);
+int check_array_index(struct Node *node);
 int check_assignment_type(struct Node *node, int type);
 struct Range *traverse_array(struct Node *node);
 void traverse_stmt(struct Node *node);
