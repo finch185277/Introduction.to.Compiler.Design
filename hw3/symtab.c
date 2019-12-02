@@ -379,10 +379,43 @@ int check_assignment_type(struct Node *node, int type) {
 
 void traverse_factor(struct Node *node, int type) {
   struct Node *child = node->child;
-  do {
-
-    child = child->rsibling;
-  } while (child != node->child);
+  switch (child->node_type) {
+  case TOKEN_INT:
+    node->integer_value = child->integer_value;
+    break;
+  case TOKEN_REAL:
+    node->real_value = child->real_value;
+    break;
+  case TOKEN_STRING:
+    node->content = child->content;
+    break;
+  // case TOKEN_ARRAY:
+  //   break;
+  // case TOKEN_FUNC:
+  //   break;
+  case TOKEN_EXPR:;
+    struct Node *simple_expr = child->rsibling->child->child;
+    if (simple_expr->rsibling->node_type == RELOP) {
+      printf("[ ERROR ] Variable should not assign to (RELOP)\n");
+    } else {
+      traverse_simple_expr(simple_expr, type);
+      switch (type) {
+      case TOKEN_INT:
+        child->integer_value = simple_expr->integer_value;
+        node->integer_value = child->integer_value;
+        break;
+      case TOKEN_REAL:
+        child->real_value = simple_expr->real_value;
+        node->real_value = child->real_value;
+        break;
+      case TOKEN_STRING:
+        child->content = simple_expr->content;
+        node->content = child->content;
+        break;
+      }
+    }
+    break;
+  }
   return;
 }
 
