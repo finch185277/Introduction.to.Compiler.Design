@@ -20,7 +20,7 @@ struct Entry {
   int int_value;
   double double_value;
   int inited;
-  struct Array_node *array_content;
+  struct Array_node *array_head;
 };
 
 struct Table {
@@ -36,7 +36,6 @@ struct Range {
 };
 
 struct Array_node {
-  int is_valid;
   int address[MAX_DIMENSION];
   struct Array_node *prev;
   struct Array_node *next;
@@ -45,18 +44,25 @@ struct Array_node {
 struct Entry *find_entry(char *name);
 void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range);
-void delete_table();
 void print_entry_type(int type);
+
+void delete_table();
 void print_table();
-int calculate_dim(struct Range *range);
-int check_array_index(struct Node *node);
+
+int check_array_index(struct Node *node, struct Entry *entry);
 int check_assignment_type(struct Node *node, int type);
+
+int calculate_dim(struct Range *range);
 struct Range *traverse_array(struct Node *node);
-void traverse_stmt(struct Node *node);
+
+void traverse_factor(struct Node *node, int type);
+void traverse_term(struct Node *node, int type);
 void traverse_simple_expr(struct Node *node, int type);
+void traverse_asmt(struct Node *node);
 void traverse_decls(struct Node *node);
 void traverse_para_list(struct Node *node);
 void traverse_prog(struct Node *node);
+
 int semantic_check(struct Node *node);
 
 #endif

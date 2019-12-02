@@ -39,7 +39,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   symtab[cur_tab_idx].table[entry_idx].return_type = return_type;
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
   symtab[cur_tab_idx].table[entry_idx].range = range;
-  symtab[cur_tab_idx].table[entry_idx].array_content = NULL;
+  symtab[cur_tab_idx].table[entry_idx].array_head = NULL;
 
   if (type == HEAD_FUNCTION || type == HEAD_PROCEDURE) {
     if (entry_idx == 0) {
@@ -515,70 +515,79 @@ void traverse_simple_expr(struct Node *node, int type) {
   return;
 }
 
-int check_array_index(struct Node *node) {
-  struct Node *child = node->child;
+int check_array_index(struct Node *node, struct Entry *entry) {
+  // struct Node *child = node->child;
+  // struct Node *tail = var->child->rsibling;
+  // if (entry->array_head == NULL) {
+  //   entry->array_head = malloc(sizeof(struct Array_node));
+  // }
+  // struct Array_node *arr_ptr = entry->array_head;
+  // while (arr_ptr->next != NULL) {
+  //   arr_ptr = arr_ptr->next;
+  // }
+  // for (int i = 0; i < entry->dim; i++) {
+  //   arr_ptr.address
+  // }
   return 0;
 }
 
-void traverse_stmt(struct Node *node) {
-  // statement: variable := expression
-  if (node->child->node_type == ASMT) {
-    struct Node *var = node->child->rsibling;            // variable
-    struct Node *expr = node->child->rsibling->rsibling; // expression
+void traverse_asmt(struct Node *node) {
+  // assignment: variable := expression
+  struct Node *var = node->rsibling;            // variable
+  struct Node *expr = node->rsibling->rsibling; // expression
 
-    struct Entry *var_entry = find_entry(var->child->content);
-    if (var_entry == NULL) {
-      printf("[ ERROR ] Undeclared error: %s\n", var->child->content);
+  struct Entry *var_entry = find_entry(var->child->content);
+  if (var_entry == NULL) {
+    printf("[ ERROR ] Undeclared error: %s\n", var->child->content);
+    is_error = 1;
+    return;
+  }
+  int dim = 0;
+  struct Node *tail = var->child->rsibling;
+  struct Node *dim_counter = tail->child->rsibling;
+  while (dim_counter->node_type != LAMBDA) {
+    dim++;
+    dim_counter = dim_counter->rsibling;
+  }
+  if (dim != var_entry->dim) {
+    printf("[ ERROR ] Array dimension error: ");
+    printf("declare %d dim, but access %d dim\n", var_entry->dim, dim);
+    is_error = 1;
+    return;
+  }
+  if (expr->child->child->rsibling->node_type == RELOP) {
+    printf("[ ERROR ] Variable should not assign to RELOP: %s\n",
+           var->child->content);
+    is_error = 1;
+    return;
+  }
+  struct Node *simple_expr = expr->child->child;
+  // check type
+  if (check_assignment_type(simple_expr, var_entry->type) != 0) {
+    is_error = 1;
+    return;
+  }
+  if (dim == 0) { // real or int or string: assign value
+    switch (var_entry->type) {
+    case TYPE_INT:
+      traverse_simple_expr(simple_expr, TYPE_INT);
+      var_entry->int_value = simple_expr->integer_value;
+      break;
+    case TYPE_REAL:
+      traverse_simple_expr(simple_expr, TYPE_REAL);
+      var_entry->double_value = simple_expr->real_value;
+      break;
+    case TYPE_STRING:
+      traverse_simple_expr(simple_expr, TYPE_REAL);
+      break;
+    }
+    var_entry->inited = 1;
+  } else { // array: check index
+    if (check_array_index(tail, var_entry) == 1) {
+      printf("[ ERROR ] Array index error: %s", var_entry->name);
       is_error = 1;
-    } else {
-      int dim = 0;
-      struct Node *tail = var->child->rsibling;
-      struct Node *dim_counter = tail->child->rsibling;
-      while (dim_counter->node_type != LAMBDA) {
-        dim++;
-        dim_counter = dim_counter->rsibling;
-      }
-      if (dim != var_entry->dim) {
-        printf("[ ERROR ] Array dimension error: ");
-        printf("declare %d dim, but access %d dim\n", var_entry->dim, dim);
-        is_error = 1;
-      } else {
-        if (expr->child->child->rsibling->node_type == RELOP) {
-          printf("[ ERROR ] Variable should not assign to RELOP: %s\n",
-                 var->child->content);
-          is_error = 1;
-        } else {
-          struct Node *simple_expr = expr->child->child;
-          // check type
-          if (check_assignment_type(simple_expr, var_entry->type) != 0) {
-            is_error = 1;
-          } else {
-            if (dim == 0) { // real or int or string: assign value
-              switch (var_entry->type) {
-              case TYPE_INT:
-                traverse_simple_expr(simple_expr, TYPE_INT);
-                var_entry->int_value = simple_expr->integer_value;
-                break;
-              case TYPE_REAL:
-                traverse_simple_expr(simple_expr, TYPE_REAL);
-                var_entry->double_value = simple_expr->real_value;
-                break;
-              case TYPE_STRING:
-                traverse_simple_expr(simple_expr, TYPE_REAL);
-                break;
-              }
-              var_entry->inited = 1;
-            } else { // array: check index
-              struct Node *tail = var->child->rsibling;
-              if (check_array_index(tail) == 1) {
-                printf("[ ERROR ] Array index error: %s", var_entry->name);
-              }
-            }
-          } // pass type check
-        }   // expression: simple expression
-      }     // pass dimension check
-    }       // variable declared
-  }         // statement: assignment
+    }
+  }
   return;
 }
 
@@ -599,7 +608,8 @@ int semantic_check(struct Node *node) {
     traverse_decls(node);
     break;
   case STMT:
-    traverse_stmt(node);
+    if (node->child->node_type == ASMT)
+      traverse_asmt(node->child);
     break;
   case COMPOUND_STMT:
     if (node->parent->node_type != PROG) {
