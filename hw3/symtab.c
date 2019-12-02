@@ -93,12 +93,12 @@ void print_entry_type(int type) {
 
 void print_table() {
   printf("---------------------------------------------------------------------"
-         "------------------------\n");
+         "--------------------------------\n");
   printf(
       "|    Name    | Scope |   Type    |  Return   |    Parameter    | Dim | "
-      "     Array Range     |\n");
+      "         Array Range         |\n");
   printf("---------------------------------------------------------------------"
-         "------------------------\n");
+         "--------------------------------\n");
   for (int i = 0; i < symtab[cur_tab_idx].next_entry_idx; i++) {
     printf("| %-10s ", symtab[cur_tab_idx].table[i].name);
     printf("| %-5d ", symtab[cur_tab_idx].table[i].scope);
@@ -117,14 +117,14 @@ void print_table() {
                 symtab[cur_tab_idx].table[i].range[rid].upper_bound);
         strcat(array_range, single_range);
       }
-      printf("| %-20s |", array_range);
+      printf("| %-28s |", array_range);
     } else {
       printf("| %-3s ", "");
-      printf("| %-20s |", "");
+      printf("| %-28s |", "");
     }
 
     printf("\n-----------------------------------------------------------------"
-           "----------------------------\n");
+           "------------------------------------\n");
   }
   return;
 }
@@ -431,8 +431,7 @@ void traverse_stmt(struct Node *node) {
       }     // pass dimension check
     }       // variable declared
   }         // statement: assignment
-}
-return;
+  return;
 }
 
 int semantic_check(struct Node *node) {
