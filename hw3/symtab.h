@@ -53,7 +53,7 @@ int check_array_index(struct Node *node);
 int check_assignment_type(struct Node *node, int type);
 struct Range *traverse_array(struct Node *node);
 void traverse_stmt(struct Node *node);
-void traverse_simple_expr(struct Node *node);
+void traverse_simple_expr(struct Node *node, int type);
 void traverse_decls(struct Node *node);
 void traverse_para_list(struct Node *node);
 void traverse_prog(struct Node *node);

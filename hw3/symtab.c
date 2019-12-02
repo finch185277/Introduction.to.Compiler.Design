@@ -377,8 +377,35 @@ int check_assignment_type(struct Node *node, int type) {
   return 0;
 }
 
-void traverse_simple_expr(struct Node *node) {
+void traverse_factor(struct Node *node, int type) {
   struct Node *child = node->child;
+  do {
+
+    child = child->rsibling;
+  } while (child != node->child);
+  return;
+}
+
+void traverse_term(struct Node *node, int type) {
+  struct Node *child = node->child;
+  do {
+
+    child = child->rsibling;
+  } while (child != node->child);
+  return;
+}
+
+void traverse_simple_expr(struct Node *node, int type) {
+  struct Node *child = node->child;
+  do {
+    if (type == TYPE_INT) {
+      node->integer_value += child->integer_value;
+    } else if (type == TYPE_REAL) {
+      node->real_value += child->real_value;
+    }
+    child = child->rsibling;
+  } while (child != node->child);
+  return;
 }
 
 int check_array_index(struct Node *node) {
@@ -420,6 +447,13 @@ void traverse_stmt(struct Node *node) {
             is_error = 1;
           } else {
             if (dim == 0) { // real or int or string: assign value
+              if (var_entry->type == TYPE_INT) {
+                traverse_simple_expr(simple_expr, TYPE_INT);
+                var_entry->int_value = simple_expr->integer_value;
+              } else if (var_entry->type == TYPE_REAL) {
+                traverse_simple_expr(simple_expr, TYPE_REAL);
+                var_entry->double_value = simple_expr->real_value;
+              }
               var_entry->inited = 1;
             } else { // array: check index
               struct Node *tail = var->child->rsibling;
