@@ -19,7 +19,7 @@ struct Entry {
   struct Range *range;
   int int_value;
   int double_value;
-  int assigned;
+  int inited;
 };
 
 struct Table {

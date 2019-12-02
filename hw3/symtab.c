@@ -310,6 +310,11 @@ int check_type(struct Node *node, int type) {
                 is_error = 1;
                 return 1;
               }
+              if (entry->inited == 0) {
+                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                is_error = 1;
+                return 1;
+              }
               break;
             case TYPE_REAL:
               if (type != TYPE_REAL) {
@@ -318,11 +323,21 @@ int check_type(struct Node *node, int type) {
                 is_error = 1;
                 return 1;
               }
+              if (entry->inited == 0) {
+                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                is_error = 1;
+                return 1;
+              }
               break;
             case TYPE_STRING:
               if (type != TYPE_STRING) {
                 printf("[ ERROR ] Type error: type should not be STRING: %s\n",
                        entry->name);
+                is_error = 1;
+                return 1;
+              }
+              if (entry->inited == 0) {
+                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
                 is_error = 1;
                 return 1;
               }
