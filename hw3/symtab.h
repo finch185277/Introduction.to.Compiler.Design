@@ -51,13 +51,13 @@ void print_table();
 
 int check_array_index(struct Node *node, struct Entry *entry);
 int check_assignment_type(struct Node *node, int type);
+int check_factor(struct Node *node, int type);
+int check_term(struct Node *node, int type);
+int check_simple_expr(struct Node *node, int type);
 
 int calculate_dim(struct Range *range);
 struct Range *traverse_array(struct Node *node);
 
-void traverse_factor(struct Node *node, int type);
-void traverse_term(struct Node *node, int type);
-void traverse_simple_expr(struct Node *node, int type);
 void traverse_asmt(struct Node *node);
 void traverse_decls(struct Node *node);
 void traverse_para_list(struct Node *node);

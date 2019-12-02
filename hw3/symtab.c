@@ -377,7 +377,7 @@ int check_assignment_type(struct Node *node, int type) {
   return 0;
 }
 
-void traverse_factor(struct Node *node, int type) {
+int check_factor(struct Node *node, int type) {
   struct Node *child = node->child;
   switch (child->node_type) {
   case TOKEN_INT:
@@ -389,16 +389,35 @@ void traverse_factor(struct Node *node, int type) {
   case TOKEN_STRING:
     node->content = child->content;
     break;
-  // case TOKEN_ARRAY:
-  //   break;
-  // case TOKEN_FUNC:
-  //   break;
+  case TOKEN_VAR:;
+    struct Entry *entry = find_entry(child->rsibling->content);
+    if (entry == NULL) {
+      printf("[ ERROR ] Undeclared error: %s\n", child->rsibling->content);
+      return 1;
+    }
+    if (entry->inited == 0) {
+      printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+      return 1;
+    }
+    switch (entry->type) {
+    case TYPE_INT:
+      node->integer_value = entry->int_value;
+      break;
+    case TYPE_REAL:
+      node->real_value = entry->double_value;
+      break;
+    }
+    break;
+    // case TOKEN_FUNC:
+    //   break;
   case TOKEN_EXPR:;
     struct Node *simple_expr = child->rsibling->child->child;
     if (simple_expr->rsibling->node_type == RELOP) {
       printf("[ ERROR ] Variable should not assign to (RELOP)\n");
     } else {
-      traverse_simple_expr(simple_expr, type);
+      if (check_simple_expr(simple_expr, type) == 1) {
+        return 1;
+      }
       switch (type) {
       case TYPE_INT:
         child->integer_value = simple_expr->integer_value;
@@ -416,16 +435,17 @@ void traverse_factor(struct Node *node, int type) {
     }
     break;
   }
-  return;
+  return 0;
 }
 
-void traverse_term(struct Node *node, int type) {
+int check_term(struct Node *node, int type) {
   struct Node *child = node->child;
   int op = 0;
   do {
     switch (child->node_type) {
     case FACTOR:
-      traverse_factor(child, type);
+      if (check_factor(child, type) == 1)
+        return 1;
       switch (type) {
       case TYPE_INT:
         switch (op) {
@@ -464,16 +484,17 @@ void traverse_term(struct Node *node, int type) {
     } // switch (child->node_type)
     child = child->rsibling;
   } while (child != node->child);
-  return;
+  return 0;
 }
 
-void traverse_simple_expr(struct Node *node, int type) {
+int check_simple_expr(struct Node *node, int type) {
   struct Node *child = node->child;
   int op = 0;
   do {
     switch (child->node_type) {
     case TERM:
-      traverse_term(child, type);
+      if (check_term(child, type) == 1)
+        return 1;
       switch (type) {
       case TYPE_INT:
         switch (op) {
@@ -512,7 +533,7 @@ void traverse_simple_expr(struct Node *node, int type) {
     } // switch (child->node_type)
     child = child->rsibling;
   } while (child != node->child);
-  return;
+  return 0;
 }
 
 int check_array_index(struct Node *node, struct Entry *entry) {
@@ -570,22 +591,31 @@ void traverse_asmt(struct Node *node) {
   if (dim == 0) { // real or int or string: assign value
     switch (var_entry->type) {
     case TYPE_INT:
-      traverse_simple_expr(simple_expr, TYPE_INT);
-      var_entry->int_value = simple_expr->integer_value;
+      if (check_simple_expr(simple_expr, TYPE_INT) == 1) {
+        is_error = 1;
+      } else {
+        var_entry->int_value = simple_expr->integer_value;
+        var_entry->inited = 1;
+      }
       break;
     case TYPE_REAL:
-      traverse_simple_expr(simple_expr, TYPE_REAL);
-      var_entry->double_value = simple_expr->real_value;
+      if (check_simple_expr(simple_expr, TYPE_REAL) == 1) {
+        is_error = 1;
+      } else {
+        var_entry->double_value = simple_expr->real_value;
+        var_entry->inited = 1;
+      }
       break;
     case TYPE_STRING:
-      traverse_simple_expr(simple_expr, TYPE_REAL);
+      if (check_simple_expr(simple_expr, TYPE_STRING) == 1)
+        is_error = 1;
       break;
     }
-    var_entry->inited = 1;
   } else { // array: check index
     if (check_array_index(tail, var_entry) == 1) {
       printf("[ ERROR ] Array index error: %s", var_entry->name);
       is_error = 1;
+      return;
     }
   }
   return;
