@@ -50,6 +50,9 @@
 #define HEAD_PROCEDURE 2056
 #define ASMT 2057
 
+#define BEGIN_FLAG 2058
+#define END_FLAG 2059
+
 struct Node {
   int node_type;
   struct Node *parent;
