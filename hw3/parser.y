@@ -191,7 +191,9 @@ optional_var : VAR
 compound_statement : PBEGIN optional_statements END
   {
     $$ = new_node(COMPOUND_STMT);
+    add_child($$, new_node(BEGIN_FLAG));
     add_child($$, $2);
+    add_child($$, new_node(END_FLAG));
   };
 
 optional_statements : statement_list
