@@ -266,7 +266,7 @@ void traverse_subprog_head(struct Node *node) {
   }
 }
 
-int check_assignment_type(struct Node *node, int type) {
+int check_simple_expr_type(struct Node *node, int type) {
   struct Node *child = node->child;
   if (child != NULL) {
     do {
@@ -368,7 +368,7 @@ int check_assignment_type(struct Node *node, int type) {
           break; // case TOKEN_IDENTIFIER
         }        // switch (child->child->node_type)
       }          // if (child->node_type == FACTOR)
-      if (check_assignment_type(child, type) == 1)
+      if (check_simple_expr_type(child, type) == 1)
         return 1;
       else
         child = child->rsibling;
@@ -389,33 +389,35 @@ int check_factor(struct Node *node, int type) {
   case TOKEN_STRING:
     node->content = child->content;
     break;
-  case TOKEN_VAR:;
+  case TOKEN_IDENTIFIER:;
     struct Entry *entry = find_entry(child->rsibling->content);
     if (entry == NULL) {
       printf("[ ERROR ] Undeclared error: %s\n", child->rsibling->content);
       return 1;
     }
-    if (entry->inited == 0) {
-      printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-      return 1;
+    if (entry->dim == 0) {
+      if (entry->inited == 0) {
+        printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+        return 1;
+      }
+      switch (entry->type) {
+      case TYPE_INT:
+        node->integer_value = entry->int_value;
+        break;
+      case TYPE_REAL:
+        node->real_value = entry->double_value;
+        break;
+      }
     }
-    switch (entry->type) {
-    case TYPE_INT:
-      node->integer_value = entry->int_value;
-      break;
-    case TYPE_REAL:
-      node->real_value = entry->double_value;
-      break;
-    }
+    // array
+    // ...
     break;
-    // case TOKEN_FUNC:
-    //   break;
   case TOKEN_EXPR:;
     struct Node *simple_expr = child->rsibling->child->child;
     if (simple_expr->rsibling->node_type == RELOP) {
       printf("[ ERROR ] Variable should not assign to (RELOP)\n");
     } else {
-      if (check_simple_expr(simple_expr, type) == 1) {
+      if (check_simple_expr_result(simple_expr, type) == 1) {
         return 1;
       }
       switch (type) {
@@ -487,7 +489,7 @@ int check_term(struct Node *node, int type) {
   return 0;
 }
 
-int check_simple_expr(struct Node *node, int type) {
+int check_simple_expr_result(struct Node *node, int type) {
   struct Node *child = node->child;
   int op = 0;
   do {
@@ -537,18 +539,24 @@ int check_simple_expr(struct Node *node, int type) {
 }
 
 int check_array_index(struct Node *node, struct Entry *entry) {
-  // struct Node *child = node->child;
-  // struct Node *tail = var->child->rsibling;
-  // if (entry->array_head == NULL) {
-  //   entry->array_head = malloc(sizeof(struct Array_node));
-  // }
-  // struct Array_node *arr_ptr = entry->array_head;
-  // while (arr_ptr->next != NULL) {
-  //   arr_ptr = arr_ptr->next;
-  // }
-  // for (int i = 0; i < entry->dim; i++) {
-  //   arr_ptr.address
-  // }
+  struct Node *index = node->child->rsibling;
+  for (int i = 0; i < entry->dim; i++) {
+    struct Node *simple_expr = index->child->child;
+    if (check_simple_expr_type(simple_expr, TYPE_INT) == 1) {
+      return 1;
+    }
+    if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
+      return 2;
+    }
+    if (simple_expr->integer_value < entry->range[i].lower_bound ||
+        simple_expr->integer_value > entry->range[i].upper_bound) {
+      return 3;
+    }
+    index = index->rsibling;
+    // if (entry->array_head == NULL) {
+    //   entry->array_head = malloc(sizeof(struct Array_node));
+    // }
+  }
   return 0;
 }
 
@@ -584,14 +592,14 @@ void traverse_asmt(struct Node *node) {
   }
   struct Node *simple_expr = expr->child->child;
   // check type
-  if (check_assignment_type(simple_expr, var_entry->type) != 0) {
+  if (check_simple_expr_type(simple_expr, var_entry->type) != 0) {
     is_error = 1;
     return;
   }
   if (dim == 0) { // real or int or string: assign value
     switch (var_entry->type) {
     case TYPE_INT:
-      if (check_simple_expr(simple_expr, TYPE_INT) == 1) {
+      if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
         is_error = 1;
       } else {
         var_entry->int_value = simple_expr->integer_value;
@@ -599,7 +607,7 @@ void traverse_asmt(struct Node *node) {
       }
       break;
     case TYPE_REAL:
-      if (check_simple_expr(simple_expr, TYPE_REAL) == 1) {
+      if (check_simple_expr_result(simple_expr, TYPE_REAL) == 1) {
         is_error = 1;
       } else {
         var_entry->double_value = simple_expr->real_value;
@@ -607,15 +615,49 @@ void traverse_asmt(struct Node *node) {
       }
       break;
     case TYPE_STRING:
-      if (check_simple_expr(simple_expr, TYPE_STRING) == 1)
+      if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1)
         is_error = 1;
       break;
     }
   } else { // array: check index
-    if (check_array_index(tail, var_entry) == 1) {
-      printf("[ ERROR ] Array index error: %s", var_entry->name);
+    switch (check_array_index(tail, var_entry)) {
+    case 0:
+      // switch (var_entry->type) {
+      // case TYPE_INT:
+      //   if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
+      //     is_error = 1;
+      //   } else {
+      //     var_entry->array_tail->int_value = simple_expr->integer_value;
+      //   }
+      //   break;
+      // case TYPE_REAL:
+      //   if (check_simple_expr_result(simple_expr, TYPE_REAL) == 1) {
+      //     is_error = 1;
+      //   } else {
+      //     var_entry->array_tail->double_value = simple_expr->real_value;
+      //   }
+      //   break;
+      // case TYPE_STRING:
+      //   if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1) {
+      //     is_error = 1;
+      //   } else {
+      //     var_entry->array_tail->string_value = simple_expr->content;
+      //   }
+      //   break;
+      // }
+      break;
+    case 1:
+      printf("          Array index type error: %s\n", var_entry->name);
       is_error = 1;
-      return;
+      break;
+    case 2:
+      printf("[ ERROR ] Array index calculate error: %s\n", var_entry->name);
+      is_error = 1;
+      break;
+    case 3:
+      printf("[ ERROR ] Array index range error: %s\n", var_entry->name);
+      is_error = 1;
+      break;
     }
   }
   return;
