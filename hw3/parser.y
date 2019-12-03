@@ -346,14 +346,12 @@ term : factor
 factor : IDENTIFIER tail
   {
     $$ = new_node(FACTOR);
-    add_child($$, new_node(TOKEN_VAR));
     add_child($$, $1);
     add_child($$, $2);
   }
 	| IDENTIFIER LPAREN expression_list RPAREN
   {
     $$ = new_node(FACTOR);
-    add_child($$, new_node(TOKEN_FUNC));
     add_child($$, $1);
     add_child($$, $3);
   }
