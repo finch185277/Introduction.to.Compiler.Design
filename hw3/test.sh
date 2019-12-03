@@ -21,6 +21,6 @@ for file in ${input_files}; do
 done
 
 for file in ${input_error_files}; do
-  echo "--------------- [${file}] ---------------"
+  echo "--------------- [${error_folder}/${file}] ---------------"
   ./parser < ${input_folder}/${error_folder}/"${file%.*}".p > ${output_folder}/${error_folder}/"${file%.*}".txt
 done
