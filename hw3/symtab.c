@@ -7,10 +7,10 @@ struct Table symtab[LIST_SIZE];
 int cur_tab_idx;
 int is_error;
 
-struct Entry *find_entry(char *name) {
-  for (int j = 0; j < symtab[cur_tab_idx].next_entry_idx; j++) {
-    if (strcmp(name, symtab[cur_tab_idx].table[j].name) == 0) {
-      return &symtab[cur_tab_idx].table[j];
+struct Entry *find_entry(int scope, char *name) {
+  for (int j = 0; j < symtab[scope].next_entry_idx; j++) {
+    if (strcmp(name, symtab[scope].table[j].name) == 0) {
+      return &symtab[scope].table[j];
     }
   }
   return NULL;
@@ -55,7 +55,7 @@ struct Array_node *find_array_node(struct Node *node, struct Entry *entry) {
 
 void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range) {
-  if (find_entry(name) != NULL) {
+  if (find_entry(cur_tab_idx, name) != NULL) {
     printf("[ ERROR ] Redefined error: %s\n", name);
     is_error = 1;
     print_table();
@@ -70,24 +70,28 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
     exit(0);
   }
 
+  symtab[cur_tab_idx].table[entry_idx].index = entry_idx;
   strcpy(symtab[cur_tab_idx].table[entry_idx].name, name);
   symtab[cur_tab_idx].table[entry_idx].scope = scope;
   symtab[cur_tab_idx].table[entry_idx].type = type;
   symtab[cur_tab_idx].table[entry_idx].return_type = return_type;
+  symtab[cur_tab_idx].table[entry_idx].parameter_list = NULL;
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
   symtab[cur_tab_idx].table[entry_idx].range = range;
   symtab[cur_tab_idx].table[entry_idx].array_head = NULL;
   symtab[cur_tab_idx].table[entry_idx].array_tail = NULL;
 
   if (type == HEAD_FUNCTION || type == HEAD_PROCEDURE) {
-    if (entry_idx == 0) {
-      strcat(symtab[cur_tab_idx].table[entry_idx].parameter, "()");
-    } else {
-      for (int para_id = 0; para_id < entry_idx; para_id++) {
-        char para[200];
-        sprintf(para, "(%s)", symtab[cur_tab_idx].table[para_id].name);
-        strcat(symtab[cur_tab_idx].table[entry_idx].parameter, para);
+    struct Para *tail;
+    for (int para_id = 0; para_id < entry_idx; para_id++) {
+      struct Para *para = malloc(sizeof(struct Para));
+      para->scope = cur_tab_idx;
+      para->name = symtab[cur_tab_idx].table[para_id].name;
+      tail = para;
+      if (symtab[cur_tab_idx].table[entry_idx].parameter_list == NULL) {
+        symtab[cur_tab_idx].table[entry_idx].parameter_list = tail;
       }
+      tail = tail->next;
     }
   }
 
@@ -130,6 +134,19 @@ void print_entry_type(int type) {
   return;
 }
 
+void print_para_list(struct Entry *entry) {
+  char para_list[200];
+  struct Para *tail = entry->parameter_list;
+  memset(&para_list, 0, sizeof(para_list));
+  while (tail != NULL) {
+    char para[20];
+    sprintf(para, "(%s)", tail->name);
+    strcat(para_list, para);
+    tail = tail->next;
+  }
+  printf("| %-15s ", para_list);
+}
+
 void print_table() {
   printf("---------------------------------------------------------------------"
          "--------------------------------\n");
@@ -142,7 +159,7 @@ void print_table() {
     printf("| %-5d ", symtab[cur_tab_idx].table[i].scope);
     print_entry_type(symtab[cur_tab_idx].table[i].type);
     print_entry_type(symtab[cur_tab_idx].table[i].return_type);
-    printf("| %-15s ", symtab[cur_tab_idx].table[i].parameter);
+    print_para_list(&symtab[cur_tab_idx].table[i]);
 
     if (symtab[cur_tab_idx].table[i].dim != 0) {
       printf("| %-3d ", symtab[cur_tab_idx].table[i].dim);
@@ -289,7 +306,8 @@ void traverse_subprog_head(struct Node *node) {
     scope = 0;
   } else {
     struct Node *upper_node = node->parent->parent->parent;
-    scope = find_entry(upper_node->child->rsibling->content)->scope;
+    scope =
+        find_entry(cur_tab_idx, upper_node->child->rsibling->content)->scope;
   }
   struct Node *id_node = node->child->rsibling;
   switch (node->child->node_type) {
@@ -331,7 +349,7 @@ int check_simple_expr_type(struct Node *node, int type) {
           }
           break;
         case TOKEN_IDENTIFIER:;
-          struct Entry *entry = find_entry(child->child->content);
+          struct Entry *entry = find_entry(cur_tab_idx, child->child->content);
           if (entry == NULL) {
             printf("[ ERROR ] Undeclared error: %s\n", child->child->content);
             return 1;
@@ -414,6 +432,25 @@ int check_simple_expr_type(struct Node *node, int type) {
   return 0;
 }
 
+int check_parameter_list(struct Node *node, struct Entry *entry) {
+  struct Node *para_node = node->child->rsibling;
+  struct Para *para_ptr = entry->parameter_list;
+  int index = entry->index;
+  while (para_node->node_type != EXPR_LIST) {
+    if (para_ptr == NULL) {
+      return 1;
+    }
+    struct Node *simple_expr = para_node->child->child;
+    int type = find_entry(para_ptr->scope, para_ptr->name)->type;
+    if (check_simple_expr_type(simple_expr, type) == 1) {
+      return 1;
+    }
+    para_ptr = para_ptr->next;
+    para_node = para_node->rsibling;
+  }
+  return 0;
+}
+
 int check_factor(struct Node *node, int type) {
   struct Node *child = node->child;
   switch (child->node_type) {
@@ -427,7 +464,7 @@ int check_factor(struct Node *node, int type) {
     node->content = child->content;
     break;
   case TOKEN_IDENTIFIER:;
-    struct Entry *entry = find_entry(child->content);
+    struct Entry *entry = find_entry(cur_tab_idx, child->content);
     if (entry == NULL) {
       printf("[ ERROR ] Undeclared error: %s\n", child->rsibling->content);
       return 1;
@@ -622,7 +659,7 @@ void traverse_asmt(struct Node *node) {
   struct Node *var = node->rsibling;            // variable
   struct Node *expr = node->rsibling->rsibling; // expression
 
-  struct Entry *var_entry = find_entry(var->child->content);
+  struct Entry *var_entry = find_entry(cur_tab_idx, var->child->content);
   if (var_entry == NULL) {
     printf("[ ERROR ] Undeclared error: %s\n", var->child->content);
     is_error = 1;
@@ -674,6 +711,22 @@ void traverse_asmt(struct Node *node) {
     case TYPE_STRING:
       if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1)
         is_error = 1;
+      break;
+    case HEAD_FUNCTION:
+      switch (var_entry->type) {
+      case TYPE_INT:
+        if (check_simple_expr_result(simple_expr, TYPE_INT) == 1)
+          is_error = 1;
+        break;
+      case TYPE_REAL:
+        if (check_simple_expr_result(simple_expr, TYPE_REAL) == 1)
+          is_error = 1;
+        break;
+      case TYPE_STRING:
+        if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1)
+          is_error = 1;
+        break;
+      }
       break;
     }
   } else { // array: check index

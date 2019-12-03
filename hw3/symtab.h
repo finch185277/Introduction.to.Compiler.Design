@@ -7,14 +7,14 @@
 #define TAB_SIZE 100
 #define LIST_SIZE 100
 #define MAX_DIMENSION 10
-#define PARA_SIZE 100
 
 struct Entry {
+  int index;
   char name[NAME_SIZE];
   int scope;
   int type;
   int return_type;
-  char parameter[PARA_SIZE];
+  struct Para *parameter_list;
   int dim;
   struct Range *range;
   int int_value;
@@ -30,6 +30,12 @@ struct Table {
   struct Entry table[TAB_SIZE];
 };
 
+struct Para {
+  int scope;
+  char *name;
+  struct Para *next;
+};
+
 struct Range {
   int is_valid;
   int lower_bound;
@@ -41,11 +47,10 @@ struct Array_node {
   int int_value;
   double double_value;
   char *string_value;
-  struct Array_node *prev;
   struct Array_node *next;
 };
 
-struct Entry *find_entry(char *name);
+struct Entry *find_entry(int scope, char *name);
 struct Array_node *find_array_node(struct Node *node, struct Entry *entry);
 void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range);
