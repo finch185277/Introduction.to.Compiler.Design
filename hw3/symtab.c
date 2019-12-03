@@ -427,7 +427,7 @@ int check_factor(struct Node *node, int type) {
     node->content = child->content;
     break;
   case TOKEN_IDENTIFIER:;
-    struct Entry *entry = find_entry(child->rsibling->content);
+    struct Entry *entry = find_entry(child->content);
     if (entry == NULL) {
       printf("[ ERROR ] Undeclared error: %s\n", child->rsibling->content);
       return 1;
