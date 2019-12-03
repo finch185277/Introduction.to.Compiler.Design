@@ -745,13 +745,17 @@ int semantic_check(struct Node *node) {
   case DECLS:
     traverse_decls(node);
     break;
+  case BEGIN_FLAG:
+    if (node->parent->parent->node_type != PROG) {
+      print_table();
+    }
+    break;
   case STMT:
     if (node->child->node_type == ASMT)
       traverse_asmt(node->child);
     break;
-  case COMPOUND_STMT:
-    if (node->parent->node_type != PROG) {
-      print_table();
+  case END_FLAG:
+    if (node->parent->parent->node_type != PROG) {
       printf("****************************************\n");
       printf("*              Close Scope             *\n");
       printf("****************************************\n");
