@@ -16,6 +16,43 @@ struct Entry *find_entry(char *name) {
   return NULL;
 }
 
+struct Array_node *find_array_node(struct Node *node, struct Entry *entry) {
+  struct Array_node *array_node = malloc(sizeof(struct Array_node));
+  struct Array_node *finder = entry->array_head;
+  switch (check_array_index(node, entry, array_node)) {
+  case 0:;
+    while (finder != NULL) {
+      int error_flag = 0;
+      for (int i = 0; i < entry->dim && error_flag != 1; i++) {
+        if (finder->address[i] != array_node->address[i]) {
+          error_flag = 1;
+        }
+      }
+      if (error_flag == 0) {
+        free(array_node);
+        return finder;
+      }
+      finder = finder->next;
+    }
+    free(array_node);
+    return NULL;
+    break;
+  case 1:
+    printf("          Array index type error: %s\n", entry->name);
+    free(array_node);
+    return NULL;
+  case 2:
+    printf("[ ERROR ] Array index calculate error: %s\n", entry->name);
+    free(array_node);
+    return NULL;
+  case 3:
+    printf("[ ERROR ] Array index range error: %s\n", entry->name);
+    free(array_node);
+    return NULL;
+  }
+  return NULL;
+}
+
 void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range) {
   if (find_entry(name) != NULL) {
@@ -40,6 +77,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
   symtab[cur_tab_idx].table[entry_idx].range = range;
   symtab[cur_tab_idx].table[entry_idx].array_head = NULL;
+  symtab[cur_tab_idx].table[entry_idx].array_tail = NULL;
 
   if (type == HEAD_FUNCTION || type == HEAD_PROCEDURE) {
     if (entry_idx == 0) {
@@ -95,9 +133,8 @@ void print_entry_type(int type) {
 void print_table() {
   printf("---------------------------------------------------------------------"
          "--------------------------------\n");
-  printf(
-      "|    Name    | Scope |   Type    |  Return   |    Parameter    | Dim | "
-      "         Array Range         |\n");
+  printf("|    Name    | Scope |   Type    |  Return   |    Parameter    | Dim "
+         "|          Array Range         |\n");
   printf("---------------------------------------------------------------------"
          "--------------------------------\n");
   for (int i = 0; i < symtab[cur_tab_idx].next_entry_idx; i++) {
@@ -396,6 +433,14 @@ int check_factor(struct Node *node, int type) {
       return 1;
     }
     if (entry->dim == 0) {
+      if (entry->type == HEAD_FUNCTION) {
+        break;
+      }
+      if (entry->type == HEAD_PROCEDURE) {
+        printf("[ ERROR ] Assign error (procedure no return value): %s\n",
+               entry->name);
+        return 1;
+      }
       if (entry->inited == 0) {
         printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
         return 1;
@@ -408,9 +453,22 @@ int check_factor(struct Node *node, int type) {
         node->real_value = entry->double_value;
         break;
       }
+    } else {
+      struct Node *tail = child->rsibling;
+      struct Array_node *finder = find_array_node(tail, entry);
+      if (finder == NULL) {
+        printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+        return 1;
+      }
+      switch (entry->type) {
+      case TYPE_INT:
+        node->integer_value = finder->int_value;
+        break;
+      case TYPE_REAL:
+        node->real_value = finder->double_value;
+        break;
+      }
     }
-    // array
-    // ...
     break;
   case TOKEN_EXPR:;
     struct Node *simple_expr = child->rsibling->child->child;
@@ -538,7 +596,8 @@ int check_simple_expr_result(struct Node *node, int type) {
   return 0;
 }
 
-int check_array_index(struct Node *node, struct Entry *entry) {
+int check_array_index(struct Node *node, struct Entry *entry,
+                      struct Array_node *array_node) {
   struct Node *index = node->child->rsibling;
   for (int i = 0; i < entry->dim; i++) {
     struct Node *simple_expr = index->child->child;
@@ -552,10 +611,8 @@ int check_array_index(struct Node *node, struct Entry *entry) {
         simple_expr->integer_value > entry->range[i].upper_bound) {
       return 3;
     }
+    array_node->address[i] = simple_expr->integer_value;
     index = index->rsibling;
-    // if (entry->array_head == NULL) {
-    //   entry->array_head = malloc(sizeof(struct Array_node));
-    // }
   }
   return 0;
 }
@@ -620,42 +677,51 @@ void traverse_asmt(struct Node *node) {
       break;
     }
   } else { // array: check index
-    switch (check_array_index(tail, var_entry)) {
+    struct Array_node *array_node = malloc(sizeof(struct Array_node));
+    switch (check_array_index(tail, var_entry, array_node)) {
     case 0:
-      // switch (var_entry->type) {
-      // case TYPE_INT:
-      //   if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
-      //     is_error = 1;
-      //   } else {
-      //     var_entry->array_tail->int_value = simple_expr->integer_value;
-      //   }
-      //   break;
-      // case TYPE_REAL:
-      //   if (check_simple_expr_result(simple_expr, TYPE_REAL) == 1) {
-      //     is_error = 1;
-      //   } else {
-      //     var_entry->array_tail->double_value = simple_expr->real_value;
-      //   }
-      //   break;
-      // case TYPE_STRING:
-      //   if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1) {
-      //     is_error = 1;
-      //   } else {
-      //     var_entry->array_tail->string_value = simple_expr->content;
-      //   }
-      //   break;
-      // }
+      var_entry->array_tail = array_node;
+      if (var_entry->array_head == NULL) {
+        var_entry->array_head = var_entry->array_tail;
+      }
+      switch (var_entry->type) {
+      case TYPE_INT:
+        if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
+          is_error = 1;
+        } else {
+          var_entry->array_tail->int_value = simple_expr->integer_value;
+        }
+        break;
+      case TYPE_REAL:
+        if (check_simple_expr_result(simple_expr, TYPE_REAL) == 1) {
+          is_error = 1;
+        } else {
+          var_entry->array_tail->double_value = simple_expr->real_value;
+        }
+        break;
+      case TYPE_STRING:
+        if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1) {
+          is_error = 1;
+        } else {
+          var_entry->array_tail->string_value = simple_expr->content;
+        }
+        break;
+      }
+      var_entry->array_tail = var_entry->array_tail->next;
       break;
     case 1:
       printf("          Array index type error: %s\n", var_entry->name);
+      free(array_node);
       is_error = 1;
       break;
     case 2:
       printf("[ ERROR ] Array index calculate error: %s\n", var_entry->name);
+      free(array_node);
       is_error = 1;
       break;
     case 3:
       printf("[ ERROR ] Array index range error: %s\n", var_entry->name);
+      free(array_node);
       is_error = 1;
       break;
     }

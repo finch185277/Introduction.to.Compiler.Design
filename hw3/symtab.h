@@ -40,11 +40,13 @@ struct Array_node {
   int address[MAX_DIMENSION];
   int int_value;
   double double_value;
+  char *string_value;
   struct Array_node *prev;
   struct Array_node *next;
 };
 
 struct Entry *find_entry(char *name);
+struct Array_node *find_array_node(struct Node *node, struct Entry *entry);
 void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range);
 void print_entry_type(int type);
@@ -52,7 +54,8 @@ void print_entry_type(int type);
 void delete_table();
 void print_table();
 
-int check_array_index(struct Node *node, struct Entry *entry);
+int check_array_index(struct Node *node, struct Entry *entry,
+                      struct Array_node *array_node);
 int check_simple_expr_type(struct Node *node, int type);
 int check_factor(struct Node *node, int type);
 int check_term(struct Node *node, int type);
