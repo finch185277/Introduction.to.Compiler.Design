@@ -123,6 +123,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
     }
     int eid = symtab[0].next_entry_idx;
     symtab[0].table[eid] = symtab[cur_tab_idx].table[entry_idx];
+    symtab[0].table[eid].scope = cur_tab_idx;
     symtab[0].next_entry_idx++;
   }
 
@@ -917,6 +918,11 @@ void traverse_asmt(struct Node *node) {
         is_error = 1;
       break;
     case HEAD_FUNCTION:
+      if (var_entry->scope != 0) {
+        printf("[ ERROR ] Function can not appear in LHS\n");
+        is_error = 1;
+        return;
+      }
       switch (var_entry->type) {
       case TYPE_INT:
         if (check_simple_expr_result(simple_expr, TYPE_INT) == 1)
@@ -930,6 +936,13 @@ void traverse_asmt(struct Node *node) {
         if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1)
           is_error = 1;
         break;
+      }
+      break;
+    case HEAD_PROCEDURE:
+      if (var_entry->scope != 0) {
+        printf("[ ERROR ] Procedure can not appear in LHS\n");
+        is_error = 1;
+        return;
       }
       break;
     }
