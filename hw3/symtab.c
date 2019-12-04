@@ -94,6 +94,10 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
       }
       tail = tail->next;
     }
+
+    int eid = symtab[0].next_entry_idx;
+    symtab[0].table[eid] = symtab[cur_tab_idx].table[entry_idx];
+    symtab[0].next_entry_idx++;
   }
 
   printf("[SUCCESS] Load to symbol table: %s\n", name);
@@ -854,6 +858,9 @@ int semantic_check(struct Node *node) {
     }
     break;
   case STMT:
+    if (node->parent->parent->parent->parent->node_type == PROG) {
+      cur_tab_idx = 0;
+    }
     switch (node->child->node_type) {
     case ASMT:
       traverse_asmt(node->child);
@@ -863,7 +870,8 @@ int semantic_check(struct Node *node) {
       break;
     }
   case END_FLAG:
-    if (node->parent->parent->node_type != PROG) {
+    if (node->parent->parent->node_type != PROG &&
+        node->parent->parent->node_type != OPT_STMTS) {
       printf("****************************************\n");
       printf("*              Close Scope             *\n");
       printf("****************************************\n");
