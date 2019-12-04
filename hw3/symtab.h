@@ -15,7 +15,7 @@ struct Entry {
   int return_type;
   struct Para *parameter_list;
   int dim;
-  struct Range *range;
+  struct Range *range_list;
   int int_value;
   double double_value;
   int inited;
@@ -37,9 +37,10 @@ struct Para {
 };
 
 struct Range {
-  int is_valid;
+  int dim;
   int lower_bound;
   int upper_bound;
+  struct Range *next;
 };
 
 struct Array_node {
@@ -53,7 +54,7 @@ struct Array_node {
 struct Entry *find_entry(int scope, char *name);
 struct Array_node *find_array_node(struct Node *node, struct Entry *entry);
 void add_entry(char *name, int scope, int type, int return_type, int dim,
-               struct Range *range);
+               struct Range *range_list);
 void print_entry_type(int type);
 
 void delete_table();
@@ -66,12 +67,10 @@ int check_factor(struct Node *node, int type);
 int check_term(struct Node *node, int type);
 int check_simple_expr_result(struct Node *node, int type);
 
-int calculate_dim(struct Range *range);
 struct Range *traverse_array(struct Node *node);
-
 void traverse_asmt(struct Node *node);
 void traverse_decls(struct Node *node);
-void traverse_para_list(struct Node *node);
+void traverse_args(struct Node *node);
 void traverse_prog(struct Node *node);
 
 int semantic_check(struct Node *node);

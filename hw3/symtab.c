@@ -54,7 +54,7 @@ struct Array_node *find_array_node(struct Node *node, struct Entry *entry) {
 }
 
 void add_entry(char *name, int scope, int type, int return_type, int dim,
-               struct Range *range) {
+               struct Range *range_list) {
   if (find_entry(cur_tab_idx, name) != NULL) {
     printf("[ ERROR ] Redefined error: %s\n", name);
     is_error = 1;
@@ -77,7 +77,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   symtab[cur_tab_idx].table[entry_idx].return_type = return_type;
   symtab[cur_tab_idx].table[entry_idx].parameter_list = NULL;
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
-  symtab[cur_tab_idx].table[entry_idx].range = range;
+  symtab[cur_tab_idx].table[entry_idx].range_list = range_list;
   symtab[cur_tab_idx].table[entry_idx].para_amount = entry_idx;
   symtab[cur_tab_idx].table[entry_idx].array_head = NULL;
   symtab[cur_tab_idx].table[entry_idx].array_tail = NULL;
@@ -166,12 +166,12 @@ void print_table() {
       printf("| %-3d ", symtab[cur_tab_idx].table[i].dim);
       char array_range[100];
       memset(&array_range, 0, sizeof(array_range));
-      for (int rid = symtab[cur_tab_idx].table[i].dim - 1; rid >= 0; rid--) {
-        char single_range[20];
-        sprintf(single_range, "(%d, %d) ",
-                symtab[cur_tab_idx].table[i].range[rid].lower_bound,
-                symtab[cur_tab_idx].table[i].range[rid].upper_bound);
-        strcat(array_range, single_range);
+      struct Range *tail = symtab[cur_tab_idx].table[i].range_list;
+      while (tail != NULL) {
+        char range_name[20];
+        sprintf(range_name, "(%d, %d) ", tail->lower_bound, tail->upper_bound);
+        strcat(array_range, range_name);
+        tail = tail->next;
       }
       printf("| %-28s |", array_range);
     } else {
@@ -185,27 +185,40 @@ void print_table() {
   return;
 }
 
-int calculate_dim(struct Range *range) {
+int calculate_tail_dim(struct Node *node) {
+  if (node->node_type != TAIL) {
+    return 0;
+  }
   int dim = 0;
-  for (; dim < MAX_DIMENSION; dim++) {
-    if (range[dim].is_valid == 0) {
-      break;
-    }
+  struct Node *dim_counter = node->child->rsibling;
+  while (dim_counter->node_type != LAMBDA) {
+    dim++;
+    dim_counter = dim_counter->rsibling;
   }
   return dim;
 }
 
 struct Range *traverse_array(struct Node *node) {
   int dim = 0;
-  struct Range *range = malloc(MAX_DIMENSION * sizeof(struct Range));
-  do {
-    range[dim].is_valid = 1;
-    range[dim].lower_bound = node->child->integer_value;
-    range[dim].upper_bound = node->child->rsibling->integer_value;
+  struct Node *child = node->child->rsibling;
+  struct Range *head = NULL;
+  while (child->node_type == TYPE_ARRAY) {
+    struct Range *range = malloc(sizeof(struct Range));
+    range->lower_bound = child->child->integer_value;
+    range->upper_bound = child->child->rsibling->integer_value;
+    if (head == NULL) {
+      head = range;
+    } else {
+      struct Range *tail = head;
+      while (tail->next != NULL)
+        tail = tail->next;
+      tail->next = range;
+    }
+    child = child->rsibling;
     dim++;
-    node = node->rsibling;
-  } while (node->node_type == TYPE_ARRAY);
-  return range;
+  }
+  head->dim = dim;
+  return head;
 }
 
 void traverse_decls(struct Node *node) {
@@ -225,23 +238,15 @@ void traverse_decls(struct Node *node) {
       type = TYPE_STRING;
       break;
     }
-    int is_array = 0;
-    struct Range *range = NULL;
+    int dim = 0;
+    struct Range *range_list = NULL;
     if (type_node->child->rsibling != type_node->child) {
-      is_array = 1;
-      range = traverse_array(type_node->child->rsibling);
+      range_list = traverse_array(type_node);
+      dim = range_list->dim;
     }
     struct Node *grand_child = child->child;
     do {
-      switch (grand_child->node_type) {
-      case TOKEN_IDENTIFIER:
-        if (is_array) {
-          int dim = calculate_dim(range);
-          add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range);
-        } else
-          add_entry(grand_child->content, cur_tab_idx, type, 0, 0, NULL);
-        break;
-      }
+      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list);
       grand_child = grand_child->rsibling;
     } while (grand_child != child->child);
     child = child->rsibling->rsibling;
@@ -249,14 +254,14 @@ void traverse_decls(struct Node *node) {
   return;
 }
 
-void traverse_para_list(struct Node *node) {
+void traverse_args(struct Node *node) {
   node->visited = 1;
-  if (node->node_type == LAMBDA)
+  if (node->child->node_type == LAMBDA)
     return;
-  struct Node *child = node->child;
+  struct Node *para = node->child->child;
   do {
     int type;
-    struct Node *type_node = child->rsibling->rsibling;
+    struct Node *type_node = para->rsibling->rsibling;
     switch (type_node->child->node_type) {
     case TYPE_INT:
       type = TYPE_INT;
@@ -268,27 +273,21 @@ void traverse_para_list(struct Node *node) {
       type = TYPE_STRING;
       break;
     }
-    int is_array = 0;
-    struct Range *range = NULL;
+    int dim = 0;
+    struct Range *range_list = NULL;
     if (type_node->child->rsibling != type_node->child) {
-      is_array = 1;
-      range = traverse_array(type_node->child->rsibling);
+      print_type(type_node);
+      range_list = traverse_array(type_node);
+      dim = range_list->dim;
     }
-    struct Node *grand_child = child->rsibling->child;
+    printf("after, dim: %d\n", dim);
+    struct Node *grand_child = para->rsibling->child;
     do {
-      switch (grand_child->node_type) {
-      case TOKEN_IDENTIFIER:
-        if (is_array) {
-          int dim = calculate_dim(range);
-          add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range);
-        } else
-          add_entry(grand_child->content, cur_tab_idx, type, 0, 0, NULL);
-        break;
-      }
+      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list);
       grand_child = grand_child->rsibling;
-    } while (grand_child != child->rsibling->child);
-    child = child->rsibling->rsibling->rsibling;
-  } while (child != node->child);
+    } while (grand_child != para->rsibling->child);
+    para = para->rsibling->rsibling->rsibling;
+  } while (para != node->child->child);
 }
 
 void traverse_prog(struct Node *node) {
@@ -301,7 +300,7 @@ void traverse_subprog_head(struct Node *node) {
   printf("*              Open Scope              *\n");
   printf("****************************************\n");
   cur_tab_idx++;
-  traverse_para_list(node->child->rsibling->rsibling->child);
+  traverse_args(node->child->rsibling->rsibling);
   int scope;
   if (node->parent->parent->parent->node_type == PROG) {
     scope = 0;
@@ -516,6 +515,11 @@ int check_factor(struct Node *node, int type) {
       }
     } else {
       struct Node *tail = child->rsibling;
+      int dim = calculate_tail_dim(tail);
+      if (dim != entry->dim) {
+        printf("[ ERROR ] Array index error (dim error): %s\n", entry->name);
+        return 1;
+      }
       struct Array_node *finder = find_array_node(tail, entry);
       if (finder == NULL) {
         printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
@@ -660,6 +664,7 @@ int check_simple_expr_result(struct Node *node, int type) {
 int check_array_index(struct Node *node, struct Entry *entry,
                       struct Array_node *array_node) {
   struct Node *index = node->child->rsibling;
+  struct Range *tail = entry->range_list;
   for (int i = 0; i < entry->dim; i++) {
     struct Node *simple_expr = index->child->child;
     if (check_simple_expr_type(simple_expr, TYPE_INT) == 1) {
@@ -668,11 +673,12 @@ int check_array_index(struct Node *node, struct Entry *entry,
     if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
       return 2;
     }
-    if (simple_expr->integer_value < entry->range[i].lower_bound ||
-        simple_expr->integer_value > entry->range[i].upper_bound) {
+    if (simple_expr->integer_value < tail->lower_bound ||
+        simple_expr->integer_value > tail->upper_bound) {
       return 3;
     }
     array_node->address[i] = simple_expr->integer_value;
+    tail = tail->next;
     index = index->rsibling;
   }
   return 0;
@@ -689,19 +695,6 @@ void traverse_asmt(struct Node *node) {
     is_error = 1;
     return;
   }
-  int dim = 0;
-  struct Node *tail = var->child->rsibling;
-  struct Node *dim_counter = tail->child->rsibling;
-  while (dim_counter->node_type != LAMBDA) {
-    dim++;
-    dim_counter = dim_counter->rsibling;
-  }
-  if (dim != var_entry->dim) {
-    printf("[ ERROR ] Array dimension error: ");
-    printf("declare %d dim, but access %d dim\n", var_entry->dim, dim);
-    is_error = 1;
-    return;
-  }
   if (expr->child->child->rsibling->node_type == RELOP) {
     printf("[ ERROR ] Variable should not assign to RELOP: %s\n",
            var->child->content);
@@ -714,7 +707,7 @@ void traverse_asmt(struct Node *node) {
     is_error = 1;
     return;
   }
-  if (dim == 0) { // real or int or string: assign value
+  if (var_entry->dim == 0) { // real or int or string: assign value
     switch (var_entry->type) {
     case TYPE_INT:
       if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
@@ -754,6 +747,15 @@ void traverse_asmt(struct Node *node) {
       break;
     }
   } else { // array: check index
+    int dim = 0;
+    struct Node *tail = var->child->rsibling;
+    dim = calculate_tail_dim(tail);
+    if (dim != var_entry->dim) {
+      printf("[ ERROR ] Array dimension error: ");
+      printf("declare %d dim, but access %d dim\n", var_entry->dim, dim);
+      is_error = 1;
+      return;
+    }
     struct Array_node *array_node = malloc(sizeof(struct Array_node));
     switch (check_array_index(tail, var_entry, array_node)) {
     case 0:
