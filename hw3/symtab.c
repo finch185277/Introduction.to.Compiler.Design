@@ -502,7 +502,9 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
                 break;
               }      // switch (entry->return_type)
               break; // case HEAD_FUNCTION
-            default:
+            case HEAD_PROCEDURE:
+              printf("[ ERROR ] Procedure can not appear in expression: %s\n",
+                     entry->name);
               return 1;
             }
           } else { // if (dim == 0)
@@ -586,7 +588,9 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
                 break;
               }      // switch (entry->return_type)
               break; // case HEAD_FUNCTION
-            default:
+            case HEAD_PROCEDURE:
+              printf("[ ERROR ] Procedure can not appear in expression: %s\n",
+                     entry->name);
               return 1;
             }    // switch (entry->type)
           }      // if(dim == 0)
