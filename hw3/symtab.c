@@ -512,8 +512,9 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
               struct Array_node *array_node = malloc(sizeof(struct Array_node));
               if (check_array_index(child->child->rsibling, entry,
                                     array_node) != 0) {
-                printf("[ ERROR ] Array index error (type check): %s\n",
-                       entry->name);
+                printf(
+                    "[ ERROR ] Array index error or element not inited: %s\n",
+                    entry->name);
                 free(array_node);
                 return 1;
               }
@@ -619,28 +620,6 @@ int check_parameter_list(struct Node *node, struct Entry *entry) {
     if (check_simple_expr_type(simple_expr, type, entry_para->dim) == 1) {
       return 1;
     }
-    // if (entry_para->dim > 0) {
-    //   struct Node *array_node = simple_expr->child->child->child;
-    //   if (array_node->node_type != TOKEN_IDENTIFIER) {
-    //     return 1;
-    //   }
-    //   if (array_node->rsibling->node_type ==
-    //       TOKEN_IDENTIFIER) { // should be TAIL
-    //     return 1;
-    //   }
-    //   struct Entry *array_entry = find_entry(cur_tab_idx,
-    //   array_node->content); if (array_entry == NULL) {
-    //     return 1;
-    //   }
-    //   if (array_entry->dim != entry_para->dim) {
-    //     return 1;
-    //   }
-    // } else {
-    //   int type = entry_para->type;
-    //   if (check_simple_expr_type(simple_expr, type, 0) == 1) {
-    //     return 1;
-    //   }
-    // }
     para_counter++;
     entry_para = entry_para->next;
     node_para = node_para->lsibling;
