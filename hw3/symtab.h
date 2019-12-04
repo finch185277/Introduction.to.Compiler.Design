@@ -20,6 +20,7 @@ struct Entry {
   int int_value;
   double double_value;
   int inited;
+  int para_amount;
   struct Array_node *array_head;
   struct Array_node *array_tail;
 };

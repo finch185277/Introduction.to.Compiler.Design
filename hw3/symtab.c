@@ -78,6 +78,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   symtab[cur_tab_idx].table[entry_idx].parameter_list = NULL;
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
   symtab[cur_tab_idx].table[entry_idx].range = range;
+  symtab[cur_tab_idx].table[entry_idx].para_amount = entry_idx;
   symtab[cur_tab_idx].table[entry_idx].array_head = NULL;
   symtab[cur_tab_idx].table[entry_idx].array_tail = NULL;
 
@@ -354,6 +355,17 @@ int check_simple_expr_type(struct Node *node, int type) {
             printf("[ ERROR ] Undeclared error: %s\n", child->child->content);
             return 1;
           } else {
+            if (entry->dim > 0) {
+              struct Array_node *array_node = malloc(sizeof(struct Array_node));
+              if (check_array_index(child->child->rsibling, entry,
+                                    array_node) != 0) {
+                printf("[ ERROR ] Array index error (type check): %s\n",
+                       entry->name);
+                free(array_node);
+                return 1;
+              }
+              free(array_node);
+            }
             switch (entry->type) {
             case TYPE_INT:
               if (type != TYPE_INT) {
@@ -433,20 +445,26 @@ int check_simple_expr_type(struct Node *node, int type) {
 }
 
 int check_parameter_list(struct Node *node, struct Entry *entry) {
-  struct Node *para_node = node->child->rsibling;
-  struct Para *para_ptr = entry->parameter_list;
-  int index = entry->index;
-  while (para_node->node_type != EXPR_LIST) {
-    if (para_ptr == NULL) {
+  struct Node *node_para = node->child;
+  print_type(node_para->rsibling);
+  struct Para *entry_para = entry->parameter_list;
+  int para_counter;
+  do {
+    if (entry_para == NULL) {
       return 1;
     }
-    struct Node *simple_expr = para_node->child->child;
-    int type = find_entry(para_ptr->scope, para_ptr->name)->type;
+    struct Node *simple_expr = node_para->child->child;
+    struct Entry *entry = find_entry(entry_para->scope, entry_para->name);
+    int type = entry->type;
     if (check_simple_expr_type(simple_expr, type) == 1) {
       return 1;
     }
-    para_ptr = para_ptr->next;
-    para_node = para_node->rsibling;
+    para_counter++;
+    entry_para = entry_para->next;
+    node_para = node_para->rsibling;
+  } while (node_para != node->child);
+  if (para_counter != entry->para_amount) {
+    return 1;
   }
   return 0;
 }
@@ -470,25 +488,31 @@ int check_factor(struct Node *node, int type) {
       return 1;
     }
     if (entry->dim == 0) {
-      if (entry->type == HEAD_FUNCTION) {
-        break;
-      }
-      if (entry->type == HEAD_PROCEDURE) {
-        printf("[ ERROR ] Assign error (procedure no return value): %s\n",
-               entry->name);
-        return 1;
-      }
-      if (entry->inited == 0) {
-        printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-        return 1;
-      }
       switch (entry->type) {
       case TYPE_INT:
+        if (entry->inited == 0) {
+          printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+          return 1;
+        }
         node->integer_value = entry->int_value;
         break;
       case TYPE_REAL:
+        if (entry->inited == 0) {
+          printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+          return 1;
+        }
         node->real_value = entry->double_value;
         break;
+      case HEAD_FUNCTION:
+        if (check_parameter_list(child->rsibling, entry) != 0) {
+          printf("[ ERROR ] Parameter error: %s\n", entry->name);
+          return 1;
+        }
+        break;
+      case HEAD_PROCEDURE:
+        printf("[ ERROR ] Assign error (procedure no return value): %s\n",
+               entry->name);
+        return 1;
       }
     } else {
       struct Node *tail = child->rsibling;
@@ -782,6 +806,32 @@ void traverse_asmt(struct Node *node) {
   return;
 }
 
+void traverse_proc_stmt(struct Node *node) {
+  struct Node *child = node->child;
+  struct Entry *entry = find_entry(cur_tab_idx, child->content);
+  if (entry == NULL) {
+    printf("[ ERROR ] Procedure not declared: %s\n", child->content);
+    is_error = 1;
+    return;
+  }
+  struct Node *expr_list = child->rsibling;
+
+  if (expr_list->node_type == TOKEN_IDENTIFIER) {
+    if (entry->para_amount != 0) {
+      printf("[ ERROR ] Procedure parameter amount error: %s", entry->name);
+      is_error = 1;
+      return;
+    }
+  } else {
+    if (check_parameter_list(expr_list, entry) == 1) {
+      printf("[ ERROR ] Procedure parameter error: %s", entry->name);
+      is_error = 1;
+      return;
+    }
+  }
+  return;
+}
+
 int semantic_check(struct Node *node) {
   if (node->visited == 1)
     return 0;
@@ -804,9 +854,14 @@ int semantic_check(struct Node *node) {
     }
     break;
   case STMT:
-    if (node->child->node_type == ASMT)
+    switch (node->child->node_type) {
+    case ASMT:
       traverse_asmt(node->child);
-    break;
+      break;
+    case PROC_STMT:
+      traverse_proc_stmt(node->child);
+      break;
+    }
   case END_FLAG:
     if (node->parent->parent->node_type != PROG) {
       printf("****************************************\n");
