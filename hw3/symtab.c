@@ -603,7 +603,7 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
 }
 
 int check_parameter_list(struct Node *node, struct Entry *entry) {
-  struct Node *node_para = node->child;
+  struct Node *node_para = node->child->lsibling;
   struct Para *entry_para = entry->parameter_list;
   int para_counter = 0;
   do {
@@ -639,8 +639,8 @@ int check_parameter_list(struct Node *node, struct Entry *entry) {
     // }
     para_counter++;
     entry_para = entry_para->next;
-    node_para = node_para->rsibling;
-  } while (node_para != node->child);
+    node_para = node_para->lsibling;
+  } while (node_para != node->child->lsibling);
   if (para_counter != entry->para_amount) {
     return 1;
   }
@@ -682,9 +682,11 @@ int check_factor(struct Node *node, int type) {
         node->real_value = entry->double_value;
         break;
       case HEAD_FUNCTION:
-        if (check_parameter_list(child->rsibling, entry) != 0) {
-          printf("[ ERROR ] Parameter error: %s\n", entry->name);
-          return 1;
+        if (entry->para_amount != 0) {
+          if (check_parameter_list(child->rsibling, entry) != 0) {
+            printf("[ ERROR ] Parameter error (function): %s\n", entry->name);
+            return 1;
+          }
         }
         break;
       case HEAD_PROCEDURE:
@@ -1037,7 +1039,7 @@ void traverse_proc_stmt(struct Node *node) {
     }
   } else {
     if (check_parameter_list(expr_list, entry) == 1) {
-      printf("[ ERROR ] Procedure parameter error: %s\n", entry->name);
+      printf("          Procedure parameter error: %s\n", entry->name);
       is_error = 1;
       return;
     }
