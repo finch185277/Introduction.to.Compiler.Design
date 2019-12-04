@@ -70,7 +70,7 @@ struct Array_node *find_array_node(struct Node *node, struct Entry *entry) {
 void add_entry(char *name, int scope, int type, int return_type, int dim,
                struct Range *range_list, int inited) {
   if (find_exact_entry(cur_tab_idx, name) != NULL) {
-    printf("[ ERROR ] Redefined error: %s\n", name);
+    printf("[ ERROR ] Duplicate declaration: %s\n", name);
     is_error = 1;
     return;
   }
@@ -117,7 +117,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
     }
 
     if (find_exact_entry(0, name) != NULL) {
-      printf("[ ERROR ] Duplicate define: %s\n", name);
+      printf("[ ERROR ] Duplicate declaration: %s\n", name);
       is_error = 1;
       return;
     }
@@ -276,7 +276,13 @@ void traverse_decls(struct Node *node) {
     }
     struct Node *grand_child = child->child;
     do {
-      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list, 0);
+      if (range_list != NULL) {
+        add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list,
+                  1);
+      } else {
+        add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list,
+                  0);
+      }
       grand_child = grand_child->rsibling;
     } while (grand_child != child->child);
     child = child->rsibling->rsibling;
@@ -311,7 +317,13 @@ void traverse_args(struct Node *node) {
     }
     struct Node *grand_child = para->rsibling->child;
     do {
-      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list, 0);
+      if (range_list != NULL) {
+        add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list,
+                  1);
+      } else {
+        add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list,
+                  0);
+      }
       grand_child = grand_child->rsibling;
     } while (grand_child != para->rsibling->child);
     para = para->rsibling->rsibling->rsibling;
