@@ -929,7 +929,11 @@ void traverse_asmt(struct Node *node) {
         is_error = 1;
         return;
       }
-      switch (var_entry->type) {
+      if (check_simple_expr_type(simple_expr, var_entry->return_type, 0) != 0) {
+        is_error = 1;
+        return;
+      }
+      switch (var_entry->return_type) {
       case TYPE_INT:
         if (check_simple_expr_result(simple_expr, TYPE_INT) == 1)
           is_error = 1;
