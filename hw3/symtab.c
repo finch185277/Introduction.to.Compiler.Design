@@ -356,7 +356,9 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
       if (child->node_type == FACTOR) {
         switch (child->child->node_type) {
         case TOKEN_INT:
-          if (type != TYPE_INT) {
+          if (type != TYPE_INT &&
+              child->parent->parent->parent->parent->parent->node_type !=
+                  TAIL) { // [x] could pass
             printf("[ ERROR ] Type error: type should not be INT: %d\n",
                    child->child->integer_value);
             return 1;
@@ -490,7 +492,7 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
             default:
               return 1;
             }
-          } else {
+          } else { // if (dim == 0)
             if (entry->dim > 0) {
               struct Array_node *array_node = malloc(sizeof(struct Array_node));
               if (check_array_index(child->child->rsibling, entry,
@@ -502,6 +504,7 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
               }
               free(array_node);
             }
+            struct Node *tail = child->child->rsibling;
             switch (entry->type) {
             case TYPE_INT:
               if (type != TYPE_INT) {
@@ -510,8 +513,10 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
                 return 1;
               }
               if (entry->inited == 0) {
-                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-                return 1;
+                if (find_array_node(tail, entry) == NULL) {
+                  printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                  return 1;
+                }
               }
               break;
             case TYPE_REAL:
@@ -521,8 +526,10 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
                 return 1;
               }
               if (entry->inited == 0) {
-                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-                return 1;
+                if (find_array_node(tail, entry) == NULL) {
+                  printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                  return 1;
+                }
               }
               break;
             case TYPE_STRING:
@@ -532,8 +539,10 @@ int check_simple_expr_type(struct Node *node, int type, int dim) {
                 return 1;
               }
               if (entry->inited == 0) {
-                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
-                return 1;
+                if (find_array_node(tail, entry) == NULL) {
+                  printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                  return 1;
+                }
               }
               break;
             case HEAD_FUNCTION:
@@ -679,7 +688,7 @@ int check_factor(struct Node *node, int type) {
       }
       struct Array_node *finder = find_array_node(tail, entry);
       if (finder == NULL) {
-        printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+        printf("[ ERROR ] Uninitialized array error: %s\n", entry->name);
         return 1;
       }
       switch (entry->type) {
@@ -1031,6 +1040,9 @@ int semantic_check(struct Node *node) {
     if (node->parent->rsibling->child->node_type == HEAD_FUNCTION ||
         node->parent->rsibling->child->node_type == HEAD_PROCEDURE) {
       print_table();
+    }
+    if (node->parent->parent->node_type == PROG) {
+      cur_tab_idx = 0;
     }
     break;
   case STMT:
