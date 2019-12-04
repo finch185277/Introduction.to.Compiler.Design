@@ -71,7 +71,7 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   }
 
   symtab[cur_tab_idx].table[entry_idx].index = entry_idx;
-  strcpy(symtab[cur_tab_idx].table[entry_idx].name, name);
+  symtab[cur_tab_idx].table[entry_idx].name = name;
   symtab[cur_tab_idx].table[entry_idx].scope = scope;
   symtab[cur_tab_idx].table[entry_idx].type = type;
   symtab[cur_tab_idx].table[entry_idx].return_type = return_type;

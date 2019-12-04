@@ -3,14 +3,13 @@
 
 #include "node.h"
 
-#define NAME_SIZE 100
 #define TAB_SIZE 100
 #define LIST_SIZE 100
 #define MAX_DIMENSION 10
 
 struct Entry {
   int index;
-  char name[NAME_SIZE];
+  char *name;
   int scope;
   int type;
   int return_type;
