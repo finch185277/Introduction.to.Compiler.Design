@@ -16,8 +16,6 @@ struct Node *ASTROOT;
 
 %}
 
-%error-verbose
-
 %start prog
 
 %union
