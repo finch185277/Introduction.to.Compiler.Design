@@ -13,6 +13,20 @@ struct Entry *find_entry(int scope, char *name) {
       return &symtab[scope].table[j];
     }
   }
+  for (int j = 0; j < symtab[0].next_entry_idx; j++) {
+    if (strcmp(name, symtab[0].table[j].name) == 0) {
+      return &symtab[0].table[j];
+    }
+  }
+  return NULL;
+}
+
+struct Entry *find_exact_entry(int scope, char *name) {
+  for (int j = 0; j < symtab[scope].next_entry_idx; j++) {
+    if (strcmp(name, symtab[scope].table[j].name) == 0) {
+      return &symtab[scope].table[j];
+    }
+  }
   return NULL;
 }
 
@@ -54,12 +68,11 @@ struct Array_node *find_array_node(struct Node *node, struct Entry *entry) {
 }
 
 void add_entry(char *name, int scope, int type, int return_type, int dim,
-               struct Range *range_list) {
-  if (find_entry(cur_tab_idx, name) != NULL) {
+               struct Range *range_list, int inited) {
+  if (find_exact_entry(cur_tab_idx, name) != NULL) {
     printf("[ ERROR ] Redefined error: %s\n", name);
     is_error = 1;
-    print_table();
-    exit(0);
+    return;
   }
 
   int entry_idx = symtab[cur_tab_idx].next_entry_idx;
@@ -78,23 +91,36 @@ void add_entry(char *name, int scope, int type, int return_type, int dim,
   symtab[cur_tab_idx].table[entry_idx].parameter_list = NULL;
   symtab[cur_tab_idx].table[entry_idx].dim = dim;
   symtab[cur_tab_idx].table[entry_idx].range_list = range_list;
+  symtab[cur_tab_idx].table[entry_idx].inited = inited;
   symtab[cur_tab_idx].table[entry_idx].para_amount = entry_idx;
   symtab[cur_tab_idx].table[entry_idx].array_head = NULL;
   symtab[cur_tab_idx].table[entry_idx].array_tail = NULL;
 
   if (type == HEAD_FUNCTION || type == HEAD_PROCEDURE) {
-    struct Para *tail;
     for (int para_id = 0; para_id < entry_idx; para_id++) {
       struct Para *para = malloc(sizeof(struct Para));
+      symtab[cur_tab_idx].table[para_id].inited = 1;
       para->scope = cur_tab_idx;
       para->name = symtab[cur_tab_idx].table[para_id].name;
-      tail = para;
+      para->type = symtab[cur_tab_idx].table[para_id].type;
+      para->dim = symtab[cur_tab_idx].table[para_id].dim;
+      para->next = NULL;
       if (symtab[cur_tab_idx].table[entry_idx].parameter_list == NULL) {
-        symtab[cur_tab_idx].table[entry_idx].parameter_list = tail;
+        symtab[cur_tab_idx].table[entry_idx].parameter_list = para;
+      } else {
+        struct Para *tail = symtab[cur_tab_idx].table[entry_idx].parameter_list;
+        while (tail->next != NULL) {
+          tail = tail->next;
+        }
+        tail->next = para;
       }
-      tail = tail->next;
     }
 
+    if (find_exact_entry(0, name) != NULL) {
+      printf("[ ERROR ] Duplicate define: %s\n", name);
+      is_error = 1;
+      return;
+    }
     int eid = symtab[0].next_entry_idx;
     symtab[0].table[eid] = symtab[cur_tab_idx].table[entry_idx];
     symtab[0].next_entry_idx++;
@@ -250,7 +276,7 @@ void traverse_decls(struct Node *node) {
     }
     struct Node *grand_child = child->child;
     do {
-      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list);
+      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list, 0);
       grand_child = grand_child->rsibling;
     } while (grand_child != child->child);
     child = child->rsibling->rsibling;
@@ -285,7 +311,7 @@ void traverse_args(struct Node *node) {
     }
     struct Node *grand_child = para->rsibling->child;
     do {
-      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list);
+      add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list, 0);
       grand_child = grand_child->rsibling;
     } while (grand_child != para->rsibling->child);
     para = para->rsibling->rsibling->rsibling;
@@ -315,15 +341,15 @@ void traverse_subprog_head(struct Node *node) {
   switch (node->child->node_type) {
   case HEAD_FUNCTION:;
     int return_type = node->child->lsibling->node_type;
-    add_entry(id_node->content, scope, HEAD_FUNCTION, return_type, 0, NULL);
+    add_entry(id_node->content, scope, HEAD_FUNCTION, return_type, 0, NULL, 0);
     break;
   case HEAD_PROCEDURE:
-    add_entry(id_node->content, scope, HEAD_PROCEDURE, 0, 0, NULL);
+    add_entry(id_node->content, scope, HEAD_PROCEDURE, 0, 0, NULL, 0);
     break;
   }
 }
 
-int check_simple_expr_type(struct Node *node, int type) {
+int check_simple_expr_type(struct Node *node, int type, int dim) {
   struct Node *child = node->child;
   if (child != NULL) {
     do {
@@ -332,21 +358,33 @@ int check_simple_expr_type(struct Node *node, int type) {
         case TOKEN_INT:
           if (type != TYPE_INT) {
             printf("[ ERROR ] Type error: type should not be INT: %d\n",
-                   child->integer_value);
+                   child->child->integer_value);
+            return 1;
+          }
+          if (dim > 0) {
+            printf("[ ERROR ] Type error: type should be array\n");
             return 1;
           }
           break;
         case TOKEN_REAL:
           if (type != TYPE_REAL) {
             printf("[ ERROR ] Type error: type should not be REAL: %lf\n",
-                   child->real_value);
+                   child->child->real_value);
+            return 1;
+          }
+          if (dim > 0) {
+            printf("[ ERROR ] Type error: type should be array\n");
             return 1;
           }
           break;
         case TOKEN_STRING:
           if (type != TYPE_STRING) {
             printf("[ ERROR ] Type error: type should not be STRING: %s\n",
-                   child->content);
+                   child->child->content);
+            return 1;
+          }
+          if (dim > 0) {
+            printf("[ ERROR ] Type error: type should be array\n");
             return 1;
           }
           break;
@@ -355,6 +393,103 @@ int check_simple_expr_type(struct Node *node, int type) {
           if (entry == NULL) {
             printf("[ ERROR ] Undeclared error: %s\n", child->child->content);
             return 1;
+          }
+          if (dim > 0) {
+            switch (entry->type) {
+            case TYPE_INT:
+              if (type != TYPE_INT) {
+                printf("[ ERROR ] Type error: type should not be INT: %s\n",
+                       entry->name);
+                return 1;
+              }
+              if (entry->inited == 0) {
+                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                return 1;
+              }
+              if (entry->dim != dim) {
+                printf("[ ERROR ] Type error: dimension error %s\n",
+                       entry->name);
+                return 1;
+              }
+              if (child->child->rsibling->child->rsibling->node_type !=
+                  LAMBDA) {
+                printf("[ ERROR ] Type error: type should be array\n");
+                return 1;
+              }
+              break;
+            case TYPE_REAL:
+              if (type != TYPE_REAL) {
+                printf("[ ERROR ] Type error: type should not be REAL: %s\n",
+                       entry->name);
+                return 1;
+              }
+              if (entry->inited == 0) {
+                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                return 1;
+              }
+              if (entry->dim != dim) {
+                printf("[ ERROR ] Type error: dimension error %s\n",
+                       entry->name);
+                return 1;
+              }
+              if (child->child->rsibling->child->rsibling->node_type !=
+                  LAMBDA) {
+                printf("[ ERROR ] Type error: type should be array\n");
+                return 1;
+              }
+              break;
+            case TYPE_STRING:
+              if (type != TYPE_STRING) {
+                printf("[ ERROR ] Type error: type should not be STRING: %s\n",
+                       entry->name);
+                return 1;
+              }
+              if (entry->inited == 0) {
+                printf("[ ERROR ] Uninitialized error: %s\n", entry->name);
+                return 1;
+              }
+              if (entry->dim != dim) {
+                printf("[ ERROR ] Type error: dimension error %s\n",
+                       entry->name);
+                return 1;
+              }
+              if (child->child->rsibling->child->rsibling->node_type !=
+                  LAMBDA) {
+                printf("[ ERROR ] Type error: type should be array\n");
+                return 1;
+              }
+              break;
+            case HEAD_FUNCTION:
+              switch (entry->return_type) {
+              case TYPE_INT:
+                if (type != TYPE_INT) {
+                  printf("[ ERROR ] Type error: "
+                         "function return type should not be INT: %s\n",
+                         entry->name);
+                  return 1;
+                }
+                break;
+              case TYPE_REAL:
+                if (type != TYPE_REAL) {
+                  printf("[ ERROR ] Type error: "
+                         "function return type should not be REAL: %s\n",
+                         entry->name);
+                  return 1;
+                }
+                break;
+              case TYPE_STRING:
+                if (type != TYPE_STRING) {
+                  printf("[ ERROR ] Type error:"
+                         " function return type should not be STRING: %s\n",
+                         entry->name);
+                  return 1;
+                }
+                break;
+              }      // switch (entry->return_type)
+              break; // case HEAD_FUNCTION
+            default:
+              return 1;
+            }
           } else {
             if (entry->dim > 0) {
               struct Array_node *array_node = malloc(sizeof(struct Array_node));
@@ -432,11 +567,11 @@ int check_simple_expr_type(struct Node *node, int type) {
             default:
               return 1;
             }    // switch (entry->type)
-          }      // if (entry != NULL)
+          }      // if(dim == 0)
           break; // case TOKEN_IDENTIFIER
         }        // switch (child->child->node_type)
       }          // if (child->node_type == FACTOR)
-      if (check_simple_expr_type(child, type) == 1)
+      if (check_simple_expr_type(child, type, dim) == 1)
         return 1;
       else
         child = child->rsibling;
@@ -447,19 +582,39 @@ int check_simple_expr_type(struct Node *node, int type) {
 
 int check_parameter_list(struct Node *node, struct Entry *entry) {
   struct Node *node_para = node->child;
-  print_type(node_para->rsibling);
   struct Para *entry_para = entry->parameter_list;
-  int para_counter;
+  int para_counter = 0;
   do {
     if (entry_para == NULL) {
       return 1;
     }
+    int type = entry_para->type;
     struct Node *simple_expr = node_para->child->child;
-    struct Entry *entry = find_entry(entry_para->scope, entry_para->name);
-    int type = entry->type;
-    if (check_simple_expr_type(simple_expr, type) == 1) {
+    if (check_simple_expr_type(simple_expr, type, entry_para->dim) == 1) {
       return 1;
     }
+    // if (entry_para->dim > 0) {
+    //   struct Node *array_node = simple_expr->child->child->child;
+    //   if (array_node->node_type != TOKEN_IDENTIFIER) {
+    //     return 1;
+    //   }
+    //   if (array_node->rsibling->node_type ==
+    //       TOKEN_IDENTIFIER) { // should be TAIL
+    //     return 1;
+    //   }
+    //   struct Entry *array_entry = find_entry(cur_tab_idx,
+    //   array_node->content); if (array_entry == NULL) {
+    //     return 1;
+    //   }
+    //   if (array_entry->dim != entry_para->dim) {
+    //     return 1;
+    //   }
+    // } else {
+    //   int type = entry_para->type;
+    //   if (check_simple_expr_type(simple_expr, type, 0) == 1) {
+    //     return 1;
+    //   }
+    // }
     para_counter++;
     entry_para = entry_para->next;
     node_para = node_para->rsibling;
@@ -669,7 +824,7 @@ int check_array_index(struct Node *node, struct Entry *entry,
   struct Range *tail = entry->range_list;
   for (int i = 0; i < entry->dim; i++) {
     struct Node *simple_expr = index->child->child;
-    if (check_simple_expr_type(simple_expr, TYPE_INT) == 1) {
+    if (check_simple_expr_type(simple_expr, TYPE_INT, 0) == 1) {
       return 1;
     }
     if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
@@ -703,15 +858,16 @@ void traverse_asmt(struct Node *node) {
     is_error = 1;
     return;
   }
+
   struct Node *simple_expr = expr->child->child;
-  // check type
-  if (check_simple_expr_type(simple_expr, var_entry->type) != 0) {
-    is_error = 1;
-    return;
-  }
+
   if (var_entry->dim == 0) { // real or int or string: assign value
     switch (var_entry->type) {
     case TYPE_INT:
+      if (check_simple_expr_type(simple_expr, var_entry->type, 0) != 0) {
+        is_error = 1;
+        return;
+      }
       if (check_simple_expr_result(simple_expr, TYPE_INT) == 1) {
         is_error = 1;
       } else {
@@ -720,6 +876,10 @@ void traverse_asmt(struct Node *node) {
       }
       break;
     case TYPE_REAL:
+      if (check_simple_expr_type(simple_expr, var_entry->type, 0) != 0) {
+        is_error = 1;
+        return;
+      }
       if (check_simple_expr_result(simple_expr, TYPE_REAL) == 1) {
         is_error = 1;
       } else {
@@ -728,6 +888,10 @@ void traverse_asmt(struct Node *node) {
       }
       break;
     case TYPE_STRING:
+      if (check_simple_expr_type(simple_expr, var_entry->type, 0) != 0) {
+        is_error = 1;
+        return;
+      }
       if (check_simple_expr_result(simple_expr, TYPE_STRING) == 1)
         is_error = 1;
       break;
@@ -751,6 +915,17 @@ void traverse_asmt(struct Node *node) {
   } else { // array: check index
     int dim = 0;
     struct Node *tail = var->child->rsibling;
+    if (tail->child->rsibling->node_type == LAMBDA) {
+      if (check_simple_expr_type(simple_expr, var_entry->type,
+                                 var_entry->dim) == 1) {
+        is_error = 1;
+      }
+      return;
+    }
+    if (check_simple_expr_type(simple_expr, var_entry->type, 0) != 0) {
+      is_error = 1;
+      return;
+    }
     dim = calculate_tail_dim(tail);
     if (dim != var_entry->dim) {
       printf("[ ERROR ] Array dimension error: ");
@@ -828,7 +1003,7 @@ void traverse_proc_stmt(struct Node *node) {
     }
   } else {
     if (check_parameter_list(expr_list, entry) == 1) {
-      printf("[ ERROR ] Procedure parameter error: %s", entry->name);
+      printf("[ ERROR ] Procedure parameter error: %s\n", entry->name);
       is_error = 1;
       return;
     }
@@ -853,7 +1028,8 @@ int semantic_check(struct Node *node) {
     traverse_decls(node);
     break;
   case BEGIN_FLAG:
-    if (node->parent->parent->node_type != PROG) {
+    if (node->parent->rsibling->child->node_type == HEAD_FUNCTION ||
+        node->parent->rsibling->child->node_type == HEAD_PROCEDURE) {
       print_table();
     }
     break;
@@ -870,8 +1046,7 @@ int semantic_check(struct Node *node) {
       break;
     }
   case END_FLAG:
-    if (node->parent->parent->node_type != PROG &&
-        node->parent->parent->node_type != OPT_STMTS) {
+    if (node->parent->parent->node_type == SUBPROG_DECL) {
       printf("****************************************\n");
       printf("*              Close Scope             *\n");
       printf("****************************************\n");
