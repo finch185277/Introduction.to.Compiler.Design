@@ -276,11 +276,9 @@ void traverse_args(struct Node *node) {
     int dim = 0;
     struct Range *range_list = NULL;
     if (type_node->child->rsibling != type_node->child) {
-      print_type(type_node);
       range_list = traverse_array(type_node);
       dim = range_list->dim;
     }
-    printf("after, dim: %d\n", dim);
     struct Node *grand_child = para->rsibling->child;
     do {
       add_entry(grand_child->content, cur_tab_idx, type, 0, dim, range_list);
